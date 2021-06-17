@@ -45,8 +45,11 @@ export const ExpoFS = {
       return FileSystem.deleteAsync(path, { idempotent: true });
     },
 
+    readdir(path: string): Promise<string[]> {
+      return FileSystem.readDirectoryAsync(path);
+    },
+
     // writeFile(file, data[, options])
-    // readdir(path[, options])
     // stat(path[, options])
     // lstat(path[, options])
   },
