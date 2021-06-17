@@ -33,10 +33,13 @@ export const ExpoFS = {
       }
     },
 
+    mkdir(path: string): Promise<void> {
+      return FileSystem.makeDirectoryAsync(path, { intermediates: true });
+    },
+
     // writeFile(file, data[, options])
     // unlink(path)
     // readdir(path[, options])
-    // mkdir(path[, mode])
     // rmdir(path)
     // stat(path[, options])
     // lstat(path[, options])
