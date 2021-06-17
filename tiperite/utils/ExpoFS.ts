@@ -37,10 +37,13 @@ export const ExpoFS = {
       return FileSystem.makeDirectoryAsync(path, { intermediates: true });
     },
 
+    rmdir(path: string): Promise<void> {
+      return FileSystem.deleteAsync(path, { idempotent: true });
+    },
+
     // writeFile(file, data[, options])
     // unlink(path)
     // readdir(path[, options])
-    // rmdir(path)
     // stat(path[, options])
     // lstat(path[, options])
   },
