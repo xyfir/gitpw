@@ -1,5 +1,27 @@
 import * as FileSystem from 'expo-file-system';
 
+function Err(name: string) {
+  return class extends Error {
+    constructor(...args) {
+      super(...args);
+      this.code = name;
+      if (this.message) {
+        this.message = name + ': ' + this.message;
+      } else {
+        this.message = name;
+      }
+    }
+  };
+}
+
+const EEXIST = Err('EEXIST');
+const ENOENT = Err('ENOENT');
+const ENOTDIR = Err('ENOTDIR');
+const ENOTEMPTY = Err('ENOTEMPTY');
+const ETIMEDOUT = Err('ETIMEDOUT');
+
+const STAT = 0;
+
 /**
  * Implements the required subset of Node's `fs` interface for `isomorphic-git`
  *
@@ -72,7 +94,25 @@ export const ExpoFS = {
       });
     },
 
-    // stat(path[, options])
-    // lstat(path[, options])
+    stat(filepath: string) {
+      return FileSystem.getInfoAsync(filepath, { size: true, md5: true }).then(
+        (info) => {
+          if (!info.exists) throw ENOENT;
+          return {
+            isDirectory: () => info.isDirectory,
+            mtimeMs: info.modificationTime || Date.now(),
+            isFile: () => !info.isDirectory,
+            type: info.isDirectory ? 'dir' : 'file',
+            size: info.size,
+            mode: 0o666,
+            ino: info.md5,
+          };
+        },
+      );
+    },
+
+    lstat(filepath: string) {
+      return this.stat(filepath);
+    },
   },
 };
