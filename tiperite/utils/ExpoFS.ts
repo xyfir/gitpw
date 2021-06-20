@@ -1,9 +1,11 @@
 import * as FileSystem from 'expo-file-system';
 
-function Err(name: string) {
+function FileSystemError(name: string) {
   return class extends Error {
-    constructor(...args) {
-      super(...args);
+    code: string;
+
+    constructor() {
+      super(...arguments);
       this.code = name;
       if (this.message) {
         this.message = name + ': ' + this.message;
@@ -14,13 +16,7 @@ function Err(name: string) {
   };
 }
 
-const EEXIST = Err('EEXIST');
-const ENOENT = Err('ENOENT');
-const ENOTDIR = Err('ENOTDIR');
-const ENOTEMPTY = Err('ENOTEMPTY');
-const ETIMEDOUT = Err('ETIMEDOUT');
-
-const STAT = 0;
+const ENOENT = FileSystemError('ENOENT');
 
 /**
  * Implements the required subset of Node's `fs` interface for `isomorphic-git`
