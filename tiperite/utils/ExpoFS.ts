@@ -49,7 +49,29 @@ export const ExpoFS = {
       return FileSystem.readDirectoryAsync(path);
     },
 
-    // writeFile(file, data[, options])
+    writeFile(
+      filepath: string,
+      data: Buffer | Uint8Array | string,
+      { encoding }: { encoding?: 'utf8' } = { encoding: 'utf8' },
+    ): Promise<void> {
+      // Save UTF8
+      if (typeof data == 'string') {
+        if (encoding != 'utf8') throw new Error('Invalid writeFile encoding');
+
+        return FileSystem.writeAsStringAsync(filepath, data, {
+          encoding: 'utf8',
+        });
+      }
+
+      // Convert uint8array to buffer
+      if (data instanceof Uint8Array) data = Buffer.from(data);
+
+      // Write buffer as base64
+      return FileSystem.writeAsStringAsync(filepath, data.toString('base64'), {
+        encoding: 'base64',
+      });
+    },
+
     // stat(path[, options])
     // lstat(path[, options])
   },
