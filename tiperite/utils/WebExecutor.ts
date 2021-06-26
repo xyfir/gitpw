@@ -37,6 +37,50 @@ export class WebExecutor {
     `);
   }
 
+  /** Handle HTTP request in React Native to bypass CORS */
+  public static async onFetch(res: ExecutionEvent): Promise<void> {
+    try {
+      // Get basic request data
+      const { headers = {}, method = 'GET', url } = res.payload;
+
+      // Convert body from base64 to buffer
+      const body = res.payload.body
+        ? Buffer.from(res.payload.body, 'base64url')
+        : undefined;
+
+      // Fetch response
+      const response = await fetch(url, { headers, method, body });
+
+      // Convert header to object
+      const responseHeaders: any = {};
+      // @ts-ignore
+      for (const [key, value] of response.headers.entries()) {
+        responseHeaders[key] = value;
+      }
+
+      const json = JSON.stringify({
+        response: {
+          statusMessage: response.statusText,
+          statusCode: response.status,
+          headers: responseHeaders,
+          method,
+          body: Buffer.from(await response.arrayBuffer()).toString('base64url'),
+          url: response.url,
+        },
+      });
+      this.exec(`
+        window.nativeRequest.responses[${res.id}](JSON.parse('${json}'));
+      `);
+    } catch (err) {
+      console.error(err);
+
+      const json = JSON.stringify({ error: err.toString() });
+      this.exec(`
+        window.nativeRequest.responses[${res.id}](JSON.parse('${json}'));
+      `);
+    }
+  }
+
   /** Execute JavaScript and return the response/error */
   public static exec<T = undefined>(
     js: string,
@@ -100,6 +144,10 @@ export class WebExecutor {
           }
           return true;
         });
+        break;
+      // Handle HTTP request
+      case 'fetch':
+        this.onFetch(res);
         break;
       // Trigger listener
       default:
