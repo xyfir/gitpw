@@ -4,16 +4,19 @@ const fs = require('fs').promises;
 (async () => {
   try {
     const isogitJS = await fs.readFile(
-      path.resolve(__dirname, './node_modules/isomorphic-git/index.umd.min.js'),
+      path.resolve(
+        __dirname,
+        '../node_modules/isomorphic-git/index.umd.min.js',
+      ),
       'utf8',
     );
     const html = await fs.readFile(
-      path.resolve(__dirname, './constants/WebExecutor.html'),
+      path.resolve(__dirname, '../WebExecutor.html'),
       'utf8',
     );
 
     await fs.writeFile(
-      path.resolve(__dirname, './constants/WebExecutorHTML.ts'),
+      path.resolve(__dirname, '../constants/WebExecutorHTML.ts'),
       [
         'export const WebExecutorHTML = `',
         html
