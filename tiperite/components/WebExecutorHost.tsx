@@ -17,9 +17,6 @@ export function WebExecutorHost(): JSX.Element {
 
   return (
     <WebView
-      mediaPlaybackRequiresUserAction={false}
-      allowsInlineMediaPlayback
-      removeClippedSubviews={false}
       containerStyle={styles.root}
       onMessage={(e) => WebExecutor.emit(e)}
       onLoadEnd={() => setLoaded(true)}
