@@ -1,12 +1,13 @@
 {
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
-    "start": "expo start",
+    "build-web-executor": "node scripts/build-web-executor.js",
     "android": "expo start --android",
-    "ios": "expo start --ios",
-    "web": "expo start --web",
+    "start": "expo start",
     "eject": "expo eject",
-    "test": "jest --watchAll"
+    "test": "jest --watchAll",
+    "ios": "expo start --ios",
+    "web": "expo start --web"
   },
   "jest": {
     "preset": "jest-expo"
