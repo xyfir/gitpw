@@ -1,13 +1,14 @@
+constants/WebExecutorHTML.ts
+*.mobileprovision
 node_modules/
-.expo/
 npm-debug.*
+web-build/
+*.orig.*
+.expo/
 *.jks
-*.p8
 *.p12
 *.key
-*.mobileprovision
-*.orig.*
-web-build/
+*.p8
 
 # macOS
 .DS_Store
