@@ -1,3 +1,4 @@
+import { WebExecutorHTML } from '../constants/WebExecutorHTML';
 import { WebExecutor } from '../utils/WebExecutor';
 import { StyleSheet } from 'react-native';
 import { WebView } from 'react-native-webview';
@@ -22,6 +23,7 @@ export function WebExecutorHost(): JSX.Element {
       containerStyle={styles.root}
       onMessage={(e) => WebExecutor.emit(e)}
       onLoadEnd={() => setLoaded(true)}
+      source={{ html: WebExecutorHTML }}
       style={styles.root}
       // @ts-ignore
       ref={(r) => (WebExecutor.webview = r)}
