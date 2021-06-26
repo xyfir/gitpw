@@ -8,6 +8,12 @@ const fs = require('fs').promises;
  */
 (async () => {
   try {
+    // Import the React Native HTTP proxy
+    const nativeProxyJS = await fs.readFile(
+      path.resolve(__dirname, '../native-proxy.js'),
+      'utf8',
+    );
+
     // Import the UMD build of isomorphic-git
     const isogitJS = await fs.readFile(
       path.resolve(
@@ -29,6 +35,10 @@ const fs = require('fs').promises;
       [
         'export const WebExecutorHTML = `',
         html
+          .replace(
+            '%NATIVE-PROXY%',
+            Buffer.from(nativeProxyJS).toString('base64'),
+          )
           .replace('%ISOGIT%', Buffer.from(isogitJS).toString('base64'))
           .trim(),
         '`;',
