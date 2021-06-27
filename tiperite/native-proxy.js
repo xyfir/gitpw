@@ -93,8 +93,8 @@ window.nativeProxy = {
               : undefined
             ).then((responseBody) => {
               resolve({
-                statusMessage: payload.response.statusText,
-                statusCode: payload.response.status,
+                statusMessage: payload.response.statusMessage,
+                statusCode: payload.response.statusCode,
                 headers: payload.response.headers,
                 method: payload.response.method,
                 body: responseBody,

@@ -74,7 +74,7 @@ export class WebExecutor {
             });
 
           resolve({
-            statusText: xhr.statusText,
+            statusMessage: xhr.statusText,
             statusCode: xhr.status,
             headers,
             body: xhr.response,
@@ -88,8 +88,8 @@ export class WebExecutor {
 
       const json = JSON.stringify({
         response: {
-          statusMessage: response.statusText,
-          statusCode: response.status,
+          statusMessage: response.statusMessage,
+          statusCode: response.statusCode,
           headers: response.headers,
           method,
           body:
