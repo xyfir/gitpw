@@ -10,7 +10,13 @@ const fs = require('fs').promises;
   try {
     // Import the React Native HTTP proxy
     const nativeProxyJS = await fs.readFile(
-      path.resolve(__dirname, '../native-proxy.js'),
+      path.resolve(__dirname, 'nativeProxy.js'),
+      'utf8',
+    );
+
+    // Get the HTML template we'll inject into WebExecutorHost
+    const indexHTML = await fs.readFile(
+      path.resolve(__dirname, 'index.html'),
       'utf8',
     );
 
@@ -23,20 +29,14 @@ const fs = require('fs').promises;
       'utf8',
     );
 
-    // Get the HTML template we'll inject into WebExecutorHost
-    const html = await fs.readFile(
-      path.resolve(__dirname, '../WebExecutor.html'),
-      'utf8',
-    );
-
     // Build a .ts file that'll export the HTML to inject into WebExecutor
     await fs.writeFile(
       path.resolve(__dirname, '../constants/WebExecutorHTML.ts'),
       [
         'export const WebExecutorHTML = `',
-        html
+        indexHTML
           .replace(
-            '%NATIVE-PROXY%',
+            '%NATIVEPROXY%',
             Buffer.from(nativeProxyJS).toString('base64'),
           )
           .replace('%ISOGIT%', Buffer.from(isogitJS).toString('base64'))
