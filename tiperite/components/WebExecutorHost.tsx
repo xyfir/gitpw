@@ -15,15 +15,16 @@ export function WebExecutorHost(): JSX.Element {
     if (loaded) WebExecutor.initialize();
   }, [loaded]);
 
+  // originWhitelist and baseUrl are required for IndexedDB to work
   return (
     <WebView
+      originWhitelist={['*']}
       containerStyle={styles.root}
       onMessage={(e) => WebExecutor.emit(e)}
       onLoadEnd={() => setLoaded(true)}
-      source={{ html: WebExecutorHTML }}
+      source={{ baseUrl: '/', html: WebExecutorHTML }}
       style={styles.root}
-      // @ts-ignore
-      ref={(r) => (WebExecutor.webview = r)}
+      ref={(r) => (WebExecutor.webview = r as any)}
     />
   );
 }
