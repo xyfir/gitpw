@@ -84,38 +84,38 @@ window.nativeProxy = {
    * @see https://github.com/isomorphic-git/isomorphic-git/blob/main/src/http/web/index.js
    */
   request({ headers = {}, method = 'GET', body, url }) {
-    return (body ? convertRequestBody(body) : Promise.resolve()).then(
-      (body) => {
-        return new Promise((resolve, reject) => {
-          // Listen for RN's response
-          const id = nativeProxy.requestId++;
-          nativeProxy.responses[id] = (payload) => {
-            delete nativeProxy.responses[id];
+    return (
+      body ? nativeProxy.convertRequestBody(body) : Promise.resolve()
+    ).then((body) => {
+      return new Promise((resolve, reject) => {
+        // Listen for RN's response
+        const id = nativeProxy.requestId++;
+        nativeProxy.responses[id] = (payload) => {
+          delete nativeProxy.responses[id];
 
-            if (payload.error) return reject(payload.error);
+          if (payload.error) return reject(payload.error);
 
-            (payload.response.body
-              ? nativeProxy.convertResponseBody(payload.response.body)
-              : undefined
-            ).then((responseBody) => {
-              resolve({
-                statusMessage: payload.response.statusMessage,
-                statusCode: payload.response.statusCode,
-                headers: payload.response.headers,
-                method: payload.response.method,
-                body: responseBody,
-                url: payload.response.url,
-              });
+          (payload.response.body
+            ? nativeProxy.convertResponseBody(payload.response.body)
+            : undefined
+          ).then((responseBody) => {
+            resolve({
+              statusMessage: payload.response.statusMessage,
+              statusCode: payload.response.statusCode,
+              headers: payload.response.headers,
+              method: payload.response.method,
+              body: responseBody,
+              url: payload.response.url,
             });
-          };
+          });
+        };
 
-          // Send to RN
-          const payload = { headers, body, method, url };
-          ReactNativeWebView.postMessage(
-            JSON.stringify({ payload, type: 'fetch', id }),
-          );
-        });
-      },
-    );
+        // Send to RN
+        const payload = { headers, body, method, url };
+        ReactNativeWebView.postMessage(
+          JSON.stringify({ payload, type: 'fetch', id }),
+        );
+      });
+    });
   },
 };
