@@ -82,7 +82,7 @@ window.nativeProxy = {
       (body) => {
         return new Promise((resolve, reject) => {
           // Initialize listener for response
-          const id = nativeProxy.requestId + 1;
+          const id = nativeProxy.requestId++;
           nativeProxy.responses[id] = (payload) => {
             delete nativeProxy.responses[id];
 
