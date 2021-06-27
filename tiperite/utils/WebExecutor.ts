@@ -38,45 +38,74 @@ export class WebExecutor {
   }
 
   /** Handle HTTP request in React Native to bypass CORS */
-  public static async onFetch(res: ExecutionEvent): Promise<void> {
+  public static async onFetch(req: ExecutionEvent): Promise<void> {
     try {
       // Get basic request data
-      const { headers = {}, method = 'GET', url } = res.payload;
-
-      // Convert body from base64 to buffer
-      const body = res.payload.body
-        ? Buffer.from(res.payload.body, 'base64url')
-        : undefined;
+      const { headers = {}, method = 'GET', url } = req.payload;
 
       // Fetch response
-      const response = await fetch(url, { headers, method, body });
+      const response: any = await new Promise((resolve) => {
+        // Convert body from base64 string to Buffer to ArrayBuffer
+        let body = req.payload.body;
+        if (body) {
+          body = Buffer.from(req.payload.body, 'base64url');
+          body = body.buffer.slice(
+            body.byteOffset,
+            body.byteOffset + body.byteLength,
+          );
+        }
 
-      // Convert header to object
-      const responseHeaders: any = {};
-      // @ts-ignore
-      for (const [key, value] of response.headers.entries()) {
-        responseHeaders[key] = value;
-      }
+        const xhr = new XMLHttpRequest();
+
+        for (const [key, value] of Object.entries(headers)) {
+          xhr.setRequestHeader(key, value as string);
+        }
+
+        xhr.responseType = 'arraybuffer';
+        xhr.onload = () => {
+          const headers: any = {};
+          xhr
+            .getAllResponseHeaders()
+            .trim()
+            .split(/[\r\n]+/)
+            .map((value) => value.split(/: /))
+            .forEach((keyValue) => {
+              headers[keyValue[0].trim()] = keyValue[1].trim();
+            });
+
+          resolve({
+            statusText: xhr.statusText,
+            statusCode: xhr.status,
+            headers,
+            body: xhr.response,
+            url: xhr.responseURL,
+          });
+        };
+
+        xhr.open(method, url, true);
+        xhr.send(body);
+      });
 
       const json = JSON.stringify({
         response: {
           statusMessage: response.statusText,
           statusCode: response.status,
-          headers: responseHeaders,
+          headers: response.headers,
           method,
-          body: Buffer.from(await response.arrayBuffer()).toString('base64url'),
+          body:
+            'data:*/*;base64,' + Buffer.from(response.body).toString('base64'),
           url: response.url,
         },
       });
       this.exec(`
-        window.nativeRequest.responses[${res.id}](JSON.parse('${json}'));
+        window.nativeProxy.responses[${req.id}](${json});
       `);
     } catch (err) {
-      console.error(err);
+      console.error('onFetch', err);
 
       const json = JSON.stringify({ error: err.toString() });
       this.exec(`
-        window.nativeRequest.responses[${res.id}](JSON.parse('${json}'));
+        window.nativeProxy.responses[${req.id}](${json});
       `);
     }
   }
