@@ -3,7 +3,20 @@ import { WebViewMessageEvent, WebView } from 'react-native-webview';
 /** An event from code executed in the browser */
 interface ExecutionEvent {
   payload: undefined | any;
-  type: 'return' | string;
+  type: string;
+  id: number;
+}
+
+/** An event to proxy a fetch request via RN for the webview */
+interface FetchEvent extends ExecutionEvent {
+  payload: {
+    headers: Record<string, string>;
+    method: string;
+    /** base64 url */
+    body?: string;
+    url: string;
+  };
+  type: 'fetch';
   id: number;
 }
 
@@ -38,31 +51,38 @@ export class WebExecutor {
   }
 
   /** Handle HTTP request in React Native to bypass CORS */
-  public static async onFetch(req: ExecutionEvent): Promise<void> {
+  public static async onFetch(req: FetchEvent): Promise<void> {
     try {
       // Get basic request data
-      const { headers = {}, method = 'GET', url } = req.payload;
+      const { headers, method, url } = req.payload;
 
       // Fetch response
-      const response: any = await new Promise((resolve) => {
+      const response: any = await new Promise((resolve, reject) => {
         // Convert body from base64 string to Buffer to ArrayBuffer
-        let body = req.payload.body;
+        // Why base64? Because we're sending binary data from/to webview via JSON
+        let body: ArrayBuffer | Buffer | string | undefined = req.payload.body;
         if (body) {
-          body = Buffer.from(req.payload.body, 'base64url');
-          body = body.buffer.slice(
-            body.byteOffset,
-            body.byteOffset + body.byteLength,
+          body = Buffer.from(req.payload.body as string, 'base64url');
+          body = (body as Buffer).buffer.slice(
+            (body as Buffer).byteOffset,
+            (body as Buffer).byteOffset + body.byteLength,
           );
         }
 
+        // Unfortunately React Native's fetch() implementation doesn't support
+        // arraybuffers so we need to use XMLHttpRequest
         const xhr = new XMLHttpRequest();
 
+        // Set request headers
         for (const [key, value] of Object.entries(headers)) {
           xhr.setRequestHeader(key, value as string);
         }
 
+        // Handle arraybuffer response
         xhr.responseType = 'arraybuffer';
+        xhr.onerror = reject;
         xhr.onload = () => {
+          // Set response headers
           const headers: any = {};
           xhr
             .getAllResponseHeaders()
@@ -73,6 +93,7 @@ export class WebExecutor {
               headers[keyValue[0].trim()] = keyValue[1].trim();
             });
 
+          // Send response object nativeProxy expects
           resolve({
             statusMessage: xhr.statusText,
             statusCode: xhr.status,
@@ -86,12 +107,16 @@ export class WebExecutor {
         xhr.send(body);
       });
 
+      // Convert the response back into base64 and JSON and trigger the correct
+      // nativeProxy response callback
       const json = JSON.stringify({
         response: {
           statusMessage: response.statusMessage,
           statusCode: response.statusCode,
           headers: response.headers,
           method,
+          // The buffer polyfill doesn't support base64url export even though
+          // it supports it for import...
           body:
             'data:*/*;base64,' + Buffer.from(response.body).toString('base64'),
           url: response.url,
@@ -176,7 +201,7 @@ export class WebExecutor {
         break;
       // Handle HTTP request
       case 'fetch':
-        this.onFetch(res);
+        this.onFetch(res as FetchEvent);
         break;
       // Trigger listener
       default:
