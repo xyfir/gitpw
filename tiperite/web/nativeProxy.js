@@ -61,6 +61,7 @@ window.nativeProxy = {
     return result;
   },
 
+  /** Convert uint8array to base64url */
   convertRequestBody(body) {
     return nativeProxy.collect(body).then((body) => {
       return new Promise((resolve) => {
@@ -71,17 +72,22 @@ window.nativeProxy = {
     });
   },
 
+  /** Convert base64url to uint8array */
   convertResponseBody(base64) {
     return fetch(base64)
       .then((res) => res.arrayBuffer())
       .then((buffer) => [new Uint8Array(buffer)]);
   },
 
+  /**
+   * Send request up to React Native to bypass CORS
+   * @see https://github.com/isomorphic-git/isomorphic-git/blob/main/src/http/web/index.js
+   */
   request({ headers = {}, method = 'GET', body, url }) {
     return (body ? convertRequestBody(body) : Promise.resolve()).then(
       (body) => {
         return new Promise((resolve, reject) => {
-          // Initialize listener for response
+          // Listen for RN's response
           const id = nativeProxy.requestId++;
           nativeProxy.responses[id] = (payload) => {
             delete nativeProxy.responses[id];
@@ -103,7 +109,7 @@ window.nativeProxy = {
             });
           };
 
-          // Send request up to React Native to bypass CORS
+          // Send to RN
           const payload = { headers, body, method, url };
           ReactNativeWebView.postMessage(
             JSON.stringify({ payload, type: 'fetch', id }),
