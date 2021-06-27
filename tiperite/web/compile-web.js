@@ -20,6 +20,15 @@ const fs = require('fs').promises;
       'utf8',
     );
 
+    // Import the UMD build of lightning-fs
+    const lightningJS = await fs.readFile(
+      path.resolve(
+        __dirname,
+        '../node_modules/@isomorphic-git/lightning-fs/dist/lightning-fs.min.js',
+      ),
+      'utf8',
+    );
+
     // Import the UMD build of isomorphic-git
     const isogitJS = await fs.readFile(
       path.resolve(
@@ -39,6 +48,7 @@ const fs = require('fs').promises;
             '%NATIVEPROXY%',
             Buffer.from(nativeProxyJS).toString('base64'),
           )
+          .replace('%LIGHTNINGFS%', Buffer.from(lightningJS).toString('base64'))
           .replace('%ISOGIT%', Buffer.from(isogitJS).toString('base64'))
           .trim(),
         '`;',
