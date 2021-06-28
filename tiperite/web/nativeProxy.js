@@ -67,7 +67,7 @@ window.nativeProxy = {
       return new Promise((resolve) => {
         const reader = new FileReader();
         reader.addEventListener('load', () => resolve(reader.result), false);
-        reader.readAsDataURL(body);
+        reader.readAsDataURL(new Blob([body]));
       });
     });
   },
