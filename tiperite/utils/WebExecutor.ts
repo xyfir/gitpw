@@ -58,11 +58,12 @@ export class WebExecutor {
 
       // Fetch response
       const response: any = await new Promise((resolve, reject) => {
-        // Convert body from base64 string to Buffer to ArrayBuffer
+        // Convert body from base64url string to Buffer to ArrayBuffer
         // Why base64? Because we're sending binary data from/to webview via JSON
         let body: ArrayBuffer | Buffer | string | undefined = req.payload.body;
-        if (body) {
-          body = Buffer.from(req.payload.body as string, 'base64url');
+        if (typeof body == 'string') {
+          // The buffer polyfill doesn't support base64url
+          body = Buffer.from(body.split(';base64,')[1], 'base64');
           body = (body as Buffer).buffer.slice(
             (body as Buffer).byteOffset,
             (body as Buffer).byteOffset + body.byteLength,
@@ -72,6 +73,7 @@ export class WebExecutor {
         // Unfortunately React Native's fetch() implementation doesn't support
         // arraybuffers so we need to use XMLHttpRequest
         const xhr = new XMLHttpRequest();
+        xhr.open(method, url, true);
 
         // Set request headers
         for (const [key, value] of Object.entries(headers)) {
@@ -103,7 +105,6 @@ export class WebExecutor {
           });
         };
 
-        xhr.open(method, url, true);
         xhr.send(body);
       });
 
@@ -115,8 +116,7 @@ export class WebExecutor {
           statusCode: response.statusCode,
           headers: response.headers,
           method,
-          // The buffer polyfill doesn't support base64url export even though
-          // it supports it for import...
+          // The buffer polyfill doesn't support base64url
           body:
             'data:*/*;base64,' + Buffer.from(response.body).toString('base64'),
           url: response.url,
