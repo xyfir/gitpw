@@ -1,11 +1,15 @@
 import { BottomTabParamList, TabOneParamList } from '../types';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
-import useColorScheme from '../hooks/useColorScheme';
+import { useColorScheme } from '../hooks/useColorScheme';
 import TabOneScreen from '../screens/TabOneScreen';
 import { Ionicons } from '@expo/vector-icons';
 import * as React from 'react';
 import Colors from '../constants/Colors';
+
+const BottomTabTabBarIcon = ({ color }: { color: string }) => (
+  <TabBarIcon name="ios-code" color={color} />
+);
 
 const BottomTab = createBottomTabNavigator<BottomTabParamList>();
 
@@ -20,11 +24,7 @@ export default function BottomTabNavigator(): JSX.Element {
       <BottomTab.Screen
         name="TabOne"
         component={TabOneNavigator}
-        options={{
-          tabBarIcon: ({ color }) => (
-            <TabBarIcon name="ios-code" color={color} />
-          ),
-        }}
+        options={{ tabBarIcon: BottomTabTabBarIcon }}
       />
     </BottomTab.Navigator>
   );

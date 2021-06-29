@@ -3,10 +3,10 @@ import { Buffer } from 'buffer';
 
 global.Buffer = Buffer;
 
+import { useCachedResources } from './hooks/useCachedResources';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { WebExecutorHost } from './components/WebExecutorHost';
-import useCachedResources from './hooks/useCachedResources';
-import useColorScheme from './hooks/useColorScheme';
+import { useColorScheme } from './hooks/useColorScheme';
 import { Navigation } from './navigation/Navigation';
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';

@@ -42,6 +42,7 @@ const fs = require('fs').promises;
     await fs.writeFile(
       path.resolve(__dirname, '../constants/WebExecutorHTML.ts'),
       [
+        '/* eslint-disable */',
         'export const WebExecutorHTML = `',
         indexHTML
           .replace(
