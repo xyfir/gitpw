@@ -24,7 +24,7 @@ export function WebExecutorHost(): JSX.Element {
       onLoadEnd={() => setLoaded(true)}
       source={{ baseUrl: '/', html: WebExecutorHTML }}
       style={styles.root}
-      ref={(r) => (WebExecutor.webview = r as any)}
+      ref={(r) => (WebExecutor.webview = r as WebView)}
     />
   );
 }

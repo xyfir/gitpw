@@ -36,7 +36,7 @@ export class WebExecutor {
   /** Execution response listeners */
   private static listeners: ExecutionListener[] = [];
   /** Each execution gets its own unique ID for response tracking */
-  private static execId: number = 0;
+  private static execId = 0;
 
   /** Reference to the WebView component that we inject JavaScript into */
   public static webview: WebView;
@@ -85,7 +85,7 @@ export class WebExecutor {
         xhr.onerror = reject;
         xhr.onload = () => {
           // Set response headers
-          const headers: any = {};
+          const headers: Record<string, string> = {};
           xhr
             .getAllResponseHeaders()
             .trim()
