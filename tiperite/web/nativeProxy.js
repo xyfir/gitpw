@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 window.nativeProxy = {
   responses: {},
   requestId: 0,
