@@ -2,7 +2,7 @@ import { WebViewMessageEvent, WebView } from 'react-native-webview';
 
 /** An event from code executed in the browser */
 interface ExecutionEvent {
-  payload: undefined | any;
+  payload: undefined | unknown;
   type: string;
   id: number;
 }
@@ -57,7 +57,13 @@ export class WebExecutor {
       const { headers, method, url } = req.payload;
 
       // Fetch response
-      const response: any = await new Promise((resolve, reject) => {
+      const response = await new Promise<{
+        statusMessage?: string;
+        statusCode: number;
+        headers: Record<string, string>;
+        body: string;
+        url: string;
+      }>((resolve, reject) => {
         // Convert body from base64url string to Buffer to ArrayBuffer
         // Why base64? Because we're sending binary data from/to webview via JSON
         let body: ArrayBuffer | Buffer | string | undefined = req.payload.body;
@@ -149,7 +155,7 @@ export class WebExecutor {
       this.listeners.push({
         type: 'return',
         cb: (payload) =>
-          payload instanceof Error ? reject(payload) : resolve(payload),
+          payload instanceof Error ? reject(payload) : resolve(payload as T),
         id,
       });
 
@@ -193,7 +199,7 @@ export class WebExecutor {
             return false;
           }
           if (res.type == 'reject') {
-            l.cb(new Error(res.payload || 'error'));
+            l.cb(new Error((res.payload as string) || 'error'));
             return false;
           }
           return true;
