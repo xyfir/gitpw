@@ -44,9 +44,7 @@ export class WebExecutor {
   /** Initialize web environment */
   public static initialize(): void {
     this.webview.injectJavaScript(`
-      const script = document.createElement('script');
-      script.src = '';
-      document.head.appendChild(script);
+      window.fs = new LightningFS('git');
     `);
   }
 
