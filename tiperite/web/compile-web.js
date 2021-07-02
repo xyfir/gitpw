@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 const path = require('path');
 const fs = require('fs').promises;
 
@@ -29,6 +31,12 @@ const fs = require('fs').promises;
       'utf8',
     );
 
+    // Import the UMD build of openpgp
+    const openpgpJS = await fs.readFile(
+      path.resolve(__dirname, '../node_modules/openpgp/dist/openpgp.min.js'),
+      'utf8',
+    );
+
     // Import the UMD build of isomorphic-git
     const isogitJS = await fs.readFile(
       path.resolve(
@@ -50,6 +58,7 @@ const fs = require('fs').promises;
             Buffer.from(nativeProxyJS).toString('base64'),
           )
           .replace('%LIGHTNINGFS%', Buffer.from(lightningJS).toString('base64'))
+          .replace('%OPENPGP%', Buffer.from(openpgpJS).toString('base64'))
           .replace('%ISOGIT%', Buffer.from(isogitJS).toString('base64'))
           .trim(),
         '`;',
