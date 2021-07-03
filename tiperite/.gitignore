@@ -3,12 +3,12 @@ constants/WebExecutorHTML.ts
 node_modules/
 npm-debug.*
 web-build/
+.DS_Store
 *.orig.*
 .expo/
+.dev/
 *.jks
 *.p12
 *.key
 *.p8
 
-# macOS
-.DS_Store
