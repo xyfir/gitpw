@@ -16,13 +16,14 @@ export function WebExecutorHost(): JSX.Element {
   }, [loaded]);
 
   // originWhitelist and baseUrl are required for IndexedDB to work
+  // Android requires file:/// to give us an actual file host url
   return (
     <WebView
       originWhitelist={['*']}
       containerStyle={styles.root}
       onMessage={(e) => WebExecutor.emit(e)}
       onLoadEnd={() => setLoaded(true)}
-      source={{ baseUrl: '/', html: WebExecutorHTML }}
+      source={{ baseUrl: 'file:///', html: WebExecutorHTML }}
       style={styles.root}
       ref={(r) => (WebExecutor.webview = r as WebView)}
     />
