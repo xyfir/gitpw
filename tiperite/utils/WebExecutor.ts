@@ -142,6 +142,7 @@ export class WebExecutor {
   /** Execute JavaScript and return the response/error */
   public static exec<T = undefined>(
     js: string,
+    params: Record<string, unknown> = {},
   ): {
     promise: Promise<T>;
     id: number;
@@ -157,6 +158,11 @@ export class WebExecutor {
         id,
       });
 
+      const stringifiedParams = Buffer.from(
+        JSON.stringify(params),
+        'utf8',
+      ).toString('base64');
+
       this.webview.injectJavaScript(`(async () => {
         try {
           function emit(type, data) {
@@ -165,7 +171,11 @@ export class WebExecutor {
             );
           }
 
-          const payload = await (async () => { ${js} })();
+          const payload = await (async () => {
+            const params = JSON.parse(atob('${stringifiedParams}'));
+
+            ${js}
+          })();
 
           window.ReactNativeWebView.postMessage(
             JSON.stringify({ payload, type: 'resolve', id: ${id} })
