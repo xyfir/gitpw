@@ -19,11 +19,11 @@ export class KeyDeriver {
    */
   public static generateSalt(): Promise<string> {
     return WebExecutor.exec<string>(/* js */ `
-    return String.fromCharCode.apply(
-      null,
-      crypto.getRandomValues(new Uint8Array(16)),
-    );
-  `).promise;
+      return String.fromCharCode.apply(
+        null,
+        crypto.getRandomValues(new Uint8Array(16)),
+      );
+    `).promise;
   }
 
   /**
