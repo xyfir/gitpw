@@ -10,7 +10,7 @@ export class KeyDeriver {
    * **Min:** 1,000,000\
    * **Max:** 1,099,999
    */
-  public static generateIterationsCount(): number {
+  public static generateIterations(): number {
     return 1000000 + +Math.random().toString().slice(-5);
   }
 
