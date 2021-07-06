@@ -35,54 +35,56 @@ export class KeyDeriver {
     salt: string,
     itr: number,
   ): Promise<string> {
-    // Convert these to base64 just to transfer them into WebExecutor without
-    // unexpected characters breaking our code
-    pass = Buffer.from(pass, 'utf8').toString('base64');
-    salt = Buffer.from(salt, 'utf8').toString('base64');
+    return WebExecutor.exec<string>(
+      /* js */ `
+        function toBase64(arr) {
+          return new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.addEventListener(
+              'load',
+              () => resolve(reader.result),
+              false
+            );
+            reader.readAsDataURL(new Blob([arr]));
+          });
+        }
 
-    return WebExecutor.exec<string>(`
-      function toBase64(arr) {
-        return new Promise((resolve) => {
-          const reader = new FileReader();
-          reader.addEventListener(
-            'load',
-            () => resolve(reader.result),
-            false
-          );
-          reader.readAsDataURL(new Blob([arr]));
-        });
-      }
+        const passBuffer = new TextEncoder('utf-8').encode(params.pass);
+        const saltBuffer = new TextEncoder('utf-8').encode(params.salt);
 
-      const passBuffer = new TextEncoder('utf-8').encode(btoa('${pass}'));
-      const saltBuffer = new TextEncoder('utf-8').encode(btoa('${salt}'));
+        const key = await crypto.subtle.importKey(
+          'raw',
+          passBuffer,
+          { name: 'PBKDF2' },
+          false,
+          ['deriveBits', 'deriveKey']
+        );
 
-      const key = await crypto.subtle.importKey(
-        'raw',
-        passBuffer,
-        { name: 'PBKDF2' },
-        false,
-        ['deriveBits', 'deriveKey']
-      );
+        const derivedKey = await crypto.subtle.deriveKey(
+          {
+            iterations: params.itr,
+            salt: saltBuffer,
+            hash: 'SHA-512',
+            name: 'PBKDF2',
+          },
+          key,
+          {
+            length: 256,
+            name: 'AES-GCM',
+          },
+          true,
+          ['encrypt', 'decrypt']
+        );
 
-      const derivedKey = await crypto.subtle.deriveKey(
-        {
-          iterations: ${itr},
-          salt: saltBuffer,
-          hash: 'SHA-512',
-          name: 'PBKDF2',
-        },
-        key,
-        {
-          length: 256,
-          name: 'AES-GCM',
-        },
-        true,
-        ['encrypt', 'decrypt']
-      );
+        const keyBuffer = await crypto.subtle.exportKey('raw', derivedKey);
 
-      const keyBuffer = await crypto.subtle.exportKey('raw', derivedKey);
-
-      return await toBase64(keyBuffer);
-   `).promise;
+        return await toBase64(keyBuffer);
+      `,
+      {
+        pass,
+        salt,
+        itr,
+      },
+    ).promise;
   }
 }
