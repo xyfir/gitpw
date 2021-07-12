@@ -25,7 +25,9 @@ export class AES {
         // Convert the key's hex string into a CryptoKey
         const cryptoKey = await crypto.subtle.importKey(
           'raw',
-          new TextEncoder().encode(params.keyHex),
+          new Uint8Array(
+            params.keyHex.match(/.{2}/g).map((byte) => parseInt(byte, 16))
+          ),
           alg,
           false,
           ['encrypt'],
@@ -83,7 +85,9 @@ export class AES {
         // Convert the key's hex string into a CryptoKey
         const cryptoKey = await crypto.subtle.importKey(
           'raw',
-          new TextEncoder().encode(params.keyHex),
+          new Uint8Array(
+            params.keyHex.match(/.{2}/g).map((byte) => parseInt(byte, 16))
+          ),
           alg,
           false,
           ['decrypt'],
