@@ -15,7 +15,7 @@ export class AES {
    *
    * @returns `${ivHex}${cipherTextBase64}`
    */
-  encrypt(plaintext: string, keyHex: string): Promise<string> {
+  public static encrypt(plaintext: string, keyHex: string): Promise<string> {
     return WebExecutor.exec<string>(
       /* js */ `
         // Generate a random IV and set our algo config
@@ -65,7 +65,10 @@ export class AES {
    * @param ciphertext Ciphertext to be decrypted
    * @param keyHex Hex string of derived key
    */
-  async decrypt(ciphertext: string, keyHex: string): Promise<string> {
+  public static async decrypt(
+    ciphertext: string,
+    keyHex: string,
+  ): Promise<string> {
     return WebExecutor.exec<string>(
       /* js */ `
         // Extract IV from ciphertext
