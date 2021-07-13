@@ -1,7 +1,7 @@
 {
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
-    "pre:compile-web": "npx tsc web/*.ts --target es2020 --outfile dist.js --removeComments",
+    "precompile-web": "npx tsc web/*.ts --target es2020 --outfile web/dist.js --removeComments",
     "compile-web": "node web/compile-web.js",
     "fix-eslint": "eslint . --ext .ts,.tsx,.json --fix",
     "android": "expo start --android",
