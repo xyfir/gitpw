@@ -1,8 +1,8 @@
 {
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
-    "precompile-web": "npx tsc web/*.ts --target es2020 --outfile web/dist.js --removeComments",
-    "compile-web": "node web/compile-web.js",
+    "_______________compile-web": "npx tsc web/*.ts --target es2020 --outfile web/dist.js --removeComments --module system; node web/compile-web.js; echo \"Compile complete!\"",
+    "compile-web": "parcel build web/index.ts --out-dir web --out-file dist.js --no-cache --no-source-maps; node web/compile-web.js; echo \"Compile complete!\"",
     "fix-eslint": "eslint . --ext .ts,.tsx,.json --fix",
     "android": "expo start --android",
     "eslint": "eslint . --ext .ts,.tsx,.json --max-warnings 0",
