@@ -64,6 +64,8 @@ const fs = require('fs').promises;
         '`;',
       ].join('\n'),
     );
+
+    console.log('=== Compile complete! ===');
   } catch (err) {
     console.error(err);
   }
