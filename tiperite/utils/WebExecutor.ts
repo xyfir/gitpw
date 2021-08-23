@@ -181,6 +181,7 @@ export class WebExecutor {
             JSON.stringify({ payload, type: 'resolve', id: ${id} })
           );
         } catch (err) {
+          console.error(err);
           window.ReactNativeWebView.postMessage(
             JSON.stringify({ payload: String(err), type: 'reject', id: ${id} })
           );
