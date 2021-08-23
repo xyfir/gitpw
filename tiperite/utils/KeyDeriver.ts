@@ -19,10 +19,7 @@ export class KeyDeriver {
    */
   public static generateSalt(): Promise<string> {
     return WebExecutor.exec<string>(/* js */ `
-      return String.fromCharCode.apply(
-        null,
-        crypto.getRandomValues(new Uint8Array(16)),
-      );
+      return KeyDeriverWeb.generateSalt();
     `).promise;
   }
 
@@ -37,48 +34,7 @@ export class KeyDeriver {
   ): Promise<string> {
     return WebExecutor.exec<string>(
       /* js */ `
-        function toBase64(arr) {
-          return new Promise((resolve) => {
-            const reader = new FileReader();
-            reader.addEventListener(
-              'load',
-              () => resolve(reader.result),
-              false
-            );
-            reader.readAsDataURL(new Blob([arr]));
-          });
-        }
-
-        const passBuffer = new TextEncoder('utf-8').encode(params.pass);
-        const saltBuffer = new TextEncoder('utf-8').encode(params.salt);
-
-        const key = await crypto.subtle.importKey(
-          'raw',
-          passBuffer,
-          { name: 'PBKDF2' },
-          false,
-          ['deriveBits', 'deriveKey']
-        );
-
-        const derivedKey = await crypto.subtle.deriveKey(
-          {
-            iterations: params.itr,
-            salt: saltBuffer,
-            hash: 'SHA-512',
-            name: 'PBKDF2',
-          },
-          key,
-          {
-            length: 256,
-            name: 'AES-GCM',
-          },
-          true,
-          ['encrypt', 'decrypt']
-        );
-
-        const keyBuffer = await crypto.subtle.exportKey('raw', derivedKey);
-
-        return await toBase64(keyBuffer);
+        return KeyDeriverWeb.deriveKey(params);
       `,
       {
         pass,
