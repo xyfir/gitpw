@@ -2,6 +2,7 @@ constants/WebExecutorHTML.ts
 *.mobileprovision
 node_modules/
 npm-debug.*
+web/dist.js
 web-build/
 .DS_Store
 *.orig.*
