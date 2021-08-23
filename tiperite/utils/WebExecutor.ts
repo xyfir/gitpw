@@ -41,13 +41,6 @@ export class WebExecutor {
   /** Reference to the WebView component that we inject JavaScript into */
   public static webview: WebView;
 
-  /** Initialize web environment */
-  public static initialize(): void {
-    this.webview.injectJavaScript(`
-      window.fs = new LightningFS('git');
-    `);
-  }
-
   /** Handle HTTP request in React Native to bypass CORS */
   public static async onFetch(req: FetchEvent): Promise<void> {
     try {

@@ -9,12 +9,6 @@ import React from 'react';
  * @see WebExecutor
  */
 export function WebExecutorHost(): JSX.Element {
-  const [loaded, setLoaded] = React.useState(false);
-
-  React.useEffect(() => {
-    if (loaded) WebExecutor.initialize();
-  }, [loaded]);
-
   // originWhitelist and baseUrl are required for IndexedDB to work
   // Android requires file:/// to give us an actual file host url
   return (
@@ -22,7 +16,6 @@ export function WebExecutorHost(): JSX.Element {
       originWhitelist={['*']}
       containerStyle={styles.root}
       onMessage={(e) => WebExecutor.emit(e)}
-      onLoadEnd={() => setLoaded(true)}
       source={{ baseUrl: 'file:///', html: WebExecutorHTML }}
       style={styles.root}
       ref={(r) => (WebExecutor.webview = r as WebView)}
