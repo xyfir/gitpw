@@ -101,10 +101,7 @@ export class AESWeb {
       cryptoKey,
       new Uint8Array(
         (
-          window
-            .atob(ciphertext.slice(24))
-            // Note that we're in a template string and need to double escape
-            .match(/[\\s\\S]/g) as RegExpMatchArray
+          window.atob(ciphertext.slice(24)).match(/[\s\S]/g) as RegExpMatchArray
         ).map((ch) => ch.charCodeAt(0)),
       ),
     );
