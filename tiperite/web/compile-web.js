@@ -40,6 +40,12 @@ const fs = require('fs').promises;
       'utf8',
     );
 
+    // Import the compiled TypeScript
+    const distJS = await fs.readFile(
+      path.resolve(__dirname, 'dist.js'),
+      'utf8',
+    );
+
     // Build a .ts file that'll export the HTML to inject into WebExecutor
     await fs.writeFile(
       path.resolve(__dirname, '../constants/WebExecutorHTML.ts'),
@@ -53,6 +59,7 @@ const fs = require('fs').promises;
           )
           .replace('%LIGHTNINGFS%', Buffer.from(lightningJS).toString('base64'))
           .replace('%ISOGIT%', Buffer.from(isogitJS).toString('base64'))
+          .replace('%DIST%', Buffer.from(distJS).toString('base64'))
           .trim(),
         '`;',
       ].join('\n'),
