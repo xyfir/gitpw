@@ -39,40 +39,7 @@ export class AES {
   ): Promise<string> {
     return WebExecutor.exec<string>(
       /* js */ `
-        // Extract IV from ciphertext
-        const iv = params.ciphertext
-          .slice(0, 24)
-          .match(/.{2}/g)
-          .map((byte) => parseInt(byte, 16));
-
-        // Configure algo
-        const alg = { name: 'AES-GCM', iv: new Uint8Array(iv) };
-
-        // Convert the key's hex string into a CryptoKey
-        const cryptoKey = await crypto.subtle.importKey(
-          'raw',
-          new Uint8Array(
-            params.keyHex.match(/.{2}/g).map((byte) => parseInt(byte, 16))
-          ),
-          alg,
-          false,
-          ['decrypt'],
-        );
-
-        // Convert ciphertext to binary and decrypt it
-        const plainBuffer = await crypto.subtle.decrypt(
-          alg,
-          cryptoKey,
-          new Uint8Array(
-            atob(params.ciphertext.slice(24))
-              // Note that we're in a template string and need to double escape
-              .match(/[\\s\\S]/g)
-              .map((ch) => ch.charCodeAt(0)),
-          ),
-        );
-
-        // Convert and return decrypted binary to text
-        return new TextDecoder().decode(plainBuffer);
+        return AESWeb.decrypt(params);
       `,
       {
         ciphertext,
