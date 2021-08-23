@@ -18,41 +18,7 @@ export class AES {
   public static encrypt(plaintext: string, keyHex: string): Promise<string> {
     return WebExecutor.exec<string>(
       /* js */ `
-        // Generate a random IV and set our algo config
-        const iv = crypto.getRandomValues(new Uint8Array(12));
-        const alg = { name: 'AES-GCM', iv };
-
-        // Convert the key's hex string into a CryptoKey
-        const cryptoKey = await crypto.subtle.importKey(
-          'raw',
-          new Uint8Array(
-            params.keyHex.match(/.{2}/g).map((byte) => parseInt(byte, 16))
-          ),
-          alg,
-          false,
-          ['encrypt'],
-        );
-
-        // Convert plaintext to binary and encrypt it
-        const ciphertextBuffer = await crypto.subtle.encrypt(
-          alg,
-          cryptoKey,
-          new TextEncoder().encode(params.plaintext),
-        );
-
-        // Convert ciphertext to a base64 string
-        const ctBase64 = btoa(
-          Array.from(new Uint8Array(ciphertextBuffer))
-            .map((byte) => String.fromCharCode(byte))
-            .join(''),
-        );
-
-        // Convert IV to a hex string
-        const ivHex = Array.from(iv)
-          .map((b) => ('00' + b.toString(16)).slice(-2))
-          .join('');
-
-        return ivHex + ctBase64;
+        return AESWeb.encrypt(params);
       `,
       {
         plaintext,
