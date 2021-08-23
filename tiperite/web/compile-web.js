@@ -22,15 +22,6 @@ const fs = require('fs').promises;
       'utf8',
     );
 
-    // Import the UMD build of isomorphic-git
-    const isogitJS = await fs.readFile(
-      path.resolve(
-        __dirname,
-        '../node_modules/isomorphic-git/index.umd.min.js',
-      ),
-      'utf8',
-    );
-
     // Import the compiled TypeScript
     const distJS = await fs.readFile(
       path.resolve(__dirname, 'dist.js'),
@@ -48,7 +39,6 @@ const fs = require('fs').promises;
             '%NATIVEPROXY%',
             Buffer.from(nativeProxyJS).toString('base64'),
           )
-          .replace('%ISOGIT%', Buffer.from(isogitJS).toString('base64'))
           .replace('%DIST%', Buffer.from(distJS).toString('base64'))
           .trim(),
         '`;',

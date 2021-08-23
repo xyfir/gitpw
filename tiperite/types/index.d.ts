@@ -1,3 +1,5 @@
+import * as git from 'isomorphic-git';
+
 declare global {
   interface Window {
     ReactNativeWebView: {
@@ -7,6 +9,7 @@ declare global {
     LightningFS: unknown;
     NativeProxy: unknown;
     AESWeb: unknown;
+    git: typeof git;
     fs: unknown;
   }
 }
