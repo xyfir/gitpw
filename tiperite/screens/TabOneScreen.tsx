@@ -1,7 +1,6 @@
 /* eslint-disable */
 
 import { StyleSheet, View } from 'react-native';
-import { WebExecutor } from '../utils/WebExecutor';
 import { KeyDeriver } from '../utils/KeyDeriver';
 import { Button } from 'react-native';
 import * as React from 'react';
@@ -16,16 +15,15 @@ export default function TabOneScreen() {
       console.log('itr', itr);
 
       const key = await KeyDeriver.deriveKey('password', salt, itr);
-      const keyHex = Buffer.from(key.split(',')[1], 'base64').toString('hex');
-      console.log('keyHex', keyHex);
+      console.log('keyHex', key);
 
       const ciphertext = await AES.encrypt(
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-        keyHex,
+        key,
       );
       console.log('ciphertext', ciphertext);
 
-      const decryptedText = await AES.decrypt(ciphertext, keyHex);
+      const decryptedText = await AES.decrypt(ciphertext, key);
       console.log('decryptedText', decryptedText);
     } catch (err) {
       console.error(err);

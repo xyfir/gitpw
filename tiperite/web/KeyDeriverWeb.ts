@@ -1,14 +1,4 @@
-function convertBufferToBase64URL(arr: ArrayBuffer): Promise<string> {
-  return new Promise((resolve) => {
-    const reader = new FileReader();
-    reader.addEventListener(
-      'load',
-      () => resolve(reader.result as string),
-      false,
-    );
-    reader.readAsDataURL(new Blob([arr]));
-  });
-}
+import { Buffer } from 'buffer';
 
 /**
  * Derive key from a user-supplied password
@@ -67,6 +57,6 @@ export class KeyDeriverWeb {
     );
 
     const keyBuffer = await crypto.subtle.exportKey('raw', derivedKey);
-    return await convertBufferToBase64URL(keyBuffer);
+    return Buffer.from(keyBuffer).toString('hex');
   }
 }

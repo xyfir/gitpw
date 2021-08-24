@@ -25,6 +25,7 @@ export class KeyDeriver {
 
   /**
    * Uses web's `SubtleCrypto` PBKDF2 interface to convert a password to a key
+   *
    * @return derived key as a hex string
    */
   public static deriveKey(
