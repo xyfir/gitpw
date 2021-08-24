@@ -10,12 +10,6 @@ const fs = require('fs').promises;
  */
 (async () => {
   try {
-    // Import the React Native HTTP proxy
-    const nativeProxyJS = await fs.readFile(
-      path.resolve(__dirname, 'nativeProxy.js'),
-      'utf8',
-    );
-
     // Get the HTML template we'll inject into WebExecutorHost
     const indexHTML = await fs.readFile(
       path.resolve(__dirname, 'index.html'),
@@ -35,10 +29,6 @@ const fs = require('fs').promises;
         '/* eslint-disable */',
         'export const WebExecutorHTML = `',
         indexHTML
-          .replace(
-            '%NATIVEPROXY%',
-            Buffer.from(nativeProxyJS).toString('base64'),
-          )
           .replace('%DIST%', Buffer.from(distJS).toString('base64'))
           .trim(),
         '`;',

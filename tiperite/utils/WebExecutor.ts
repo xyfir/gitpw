@@ -106,7 +106,7 @@ export class WebExecutor {
       });
 
       // Convert the response back into base64 and JSON and trigger the correct
-      // nativeProxy response callback
+      // NativeProxy response callback
       const json = JSON.stringify({
         response: {
           statusMessage: response.statusMessage,
@@ -120,14 +120,14 @@ export class WebExecutor {
         },
       });
       this.exec(`
-        window.nativeProxy.responses[${req.id}](${json});
+        window.NativeProxy.responses[${req.id}](${json});
       `);
     } catch (err) {
       console.error('onFetch', err);
 
       const json = JSON.stringify({ error: err.toString() });
       this.exec(`
-        window.nativeProxy.responses[${req.id}](${json});
+        window.NativeProxy.responses[${req.id}](${json});
       `);
     }
   }
