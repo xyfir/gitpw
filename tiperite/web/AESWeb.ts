@@ -1,3 +1,6 @@
+import { convertBufferToArrayBuffer } from './convertBufferToArrayBuffer';
+import { Buffer } from 'buffer';
+
 /**
  * AES-256 GCM utility based on web crypto running in `WebExecutor`
  *
@@ -27,11 +30,7 @@ export class AESWeb {
     // Convert the key's hex string into a CryptoKey
     const cryptoKey = await crypto.subtle.importKey(
       'raw',
-      new Uint8Array(
-        (keyHex.match(/.{2}/g) as RegExpMatchArray).map((byte) =>
-          parseInt(byte, 16),
-        ),
-      ),
+      convertBufferToArrayBuffer(Buffer.from(keyHex, 'hex')),
       alg,
       false,
       ['encrypt'],
@@ -45,16 +44,10 @@ export class AESWeb {
     );
 
     // Convert ciphertext to a base64 string
-    const ctBase64 = window.btoa(
-      Array.from(new Uint8Array(ciphertextBuffer))
-        .map((byte) => String.fromCharCode(byte))
-        .join(''),
-    );
+    const ctBase64 = Buffer.from(ciphertextBuffer).toString('base64');
 
     // Convert IV to a hex string
-    const ivHex = Array.from(iv)
-      .map((b) => ('00' + b.toString(16)).slice(-2))
-      .join('');
+    const ivHex = Buffer.from(iv).toString('hex');
 
     return ivHex + ctBase64;
   }
@@ -75,21 +68,15 @@ export class AESWeb {
     keyHex: string;
   }): Promise<string> {
     // Extract IV from ciphertext
-    const iv = (ciphertext.slice(0, 24).match(/.{2}/g) as RegExpMatchArray).map(
-      (byte) => parseInt(byte, 16),
+    const iv = convertBufferToArrayBuffer(
+      Buffer.from(ciphertext.slice(0, 24), 'hex'),
     );
-
-    // Configure algo
-    const alg = { name: 'AES-GCM', iv: new Uint8Array(iv) };
+    const alg = { name: 'AES-GCM', iv };
 
     // Convert the key's hex string into a CryptoKey
     const cryptoKey = await crypto.subtle.importKey(
       'raw',
-      new Uint8Array(
-        (keyHex.match(/.{2}/g) as RegExpMatchArray).map((byte) =>
-          parseInt(byte, 16),
-        ),
-      ),
+      convertBufferToArrayBuffer(Buffer.from(keyHex, 'hex')),
       alg,
       false,
       ['decrypt'],
