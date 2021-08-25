@@ -1,4 +1,5 @@
 import { WebViewMessageEvent, WebView } from 'react-native-webview';
+import { NativeProxyResponsePayload } from '../web/NativeProxy';
 
 /** An event from code executed in the browser */
 interface ExecutionEvent {
@@ -8,7 +9,7 @@ interface ExecutionEvent {
 }
 
 /** An event to proxy a fetch request via RN for the webview */
-interface FetchEvent extends ExecutionEvent {
+export interface FetchEvent extends ExecutionEvent {
   payload: {
     headers: Record<string, string>;
     method: string;
@@ -16,6 +17,7 @@ interface FetchEvent extends ExecutionEvent {
     body?: string;
     url: string;
   };
+  error?: string;
   type: 'fetch';
   id: number;
 }
@@ -118,7 +120,7 @@ export class WebExecutor {
             'data:*/*;base64,' + Buffer.from(response.body).toString('base64'),
           url: response.url,
         },
-      });
+      } as NativeProxyResponsePayload);
       this.exec(`
         window.NativeProxy.responses[${req.id}](${json});
       `);

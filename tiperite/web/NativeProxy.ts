@@ -1,7 +1,23 @@
 import { Buffer } from 'buffer';
+import { FetchEvent } from '../utils/WebExecutor';
+
+export interface NativeProxyResponsePayload {
+  response: {
+    statusMessage: string;
+    statusCode: number;
+    headers: Record<string, string>;
+    method: string;
+    body: string;
+    url: string;
+  };
+  error?: string;
+}
 
 export class NativeProxy {
-  private static responses: Record<number, (payload: unknown) => void> = {};
+  private static responses: Record<
+    number,
+    (payload: NativeProxyResponsePayload) => void
+  > = {};
   private static requestId = 0;
 
   private static mergeRequestBodyArrays(arrays: Uint8Array[]): Uint8Array {
@@ -50,20 +66,27 @@ export class NativeProxy {
     method: string;
     body?: Uint8Array[];
     url: string;
-  }): Promise<any> {
+  }): Promise<{
+    statusMessage: string;
+    statusCode: number;
+    headers: Record<string, string>;
+    method: string;
+    body: Uint8Array[] | undefined;
+    url: string;
+  }> {
     const base64body = body ? NativeProxy.convertRequestBody(body) : undefined;
 
     return new Promise((resolve, reject) => {
       // Listen for RN's response
       const id = NativeProxy.requestId++;
-      NativeProxy.responses[id] = (payload: any) => {
+      NativeProxy.responses[id] = (payload: NativeProxyResponsePayload) => {
         delete NativeProxy.responses[id];
 
         if (payload.error) return reject(payload.error);
 
         (payload.response.body
           ? NativeProxy.convertResponseBody(payload.response.body)
-          : Promise.resolve()
+          : Promise.resolve(undefined)
         ).then((responseBody) => {
           resolve({
             statusMessage: payload.response.statusMessage,
@@ -77,10 +100,17 @@ export class NativeProxy {
       };
 
       // Send to RN
-      const payload = { headers, body: base64body, method, url };
-      window.ReactNativeWebView.postMessage(
-        JSON.stringify({ payload, type: 'fetch', id }),
-      );
+      const fetchEvent: FetchEvent = {
+        payload: {
+          headers,
+          method,
+          body: base64body,
+          url,
+        },
+        type: 'fetch',
+        id,
+      };
+      window.ReactNativeWebView.postMessage(JSON.stringify(fetchEvent));
     });
   }
 }
