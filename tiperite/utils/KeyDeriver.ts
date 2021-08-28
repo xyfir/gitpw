@@ -2,6 +2,8 @@ import { WebExecutor } from './WebExecutor';
 
 /**
  * Derive key from a user-supplied password
+ *
+ * @see KeyDeriverWeb
  */
 export class KeyDeriver {
   /**
@@ -11,7 +13,7 @@ export class KeyDeriver {
    * **Max:** 1,099,999
    */
   public static generateIterations(): number {
-    return 1000000 + +Math.random().toString().slice(-5);
+    return 1000000 + Number(Math.random().toString().slice(-5));
   }
 
   /**

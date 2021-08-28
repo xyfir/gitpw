@@ -2,6 +2,8 @@ import { Buffer } from 'buffer';
 
 /**
  * Derive key from a user-supplied password
+ *
+ * @see KeyDeriver
  */
 export class KeyDeriverWeb {
   /**
