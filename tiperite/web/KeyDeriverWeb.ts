@@ -1,3 +1,4 @@
+import { HexString } from '../types';
 import { Buffer } from 'buffer';
 
 /**
@@ -19,8 +20,6 @@ export class KeyDeriverWeb {
 
   /**
    * Uses web's `SubtleCrypto` PBKDF2 interface to convert a password to a key
-   *
-   * @return derived key as a hex string
    */
   public static async deriveKey({
     pass,
@@ -30,7 +29,7 @@ export class KeyDeriverWeb {
     pass: string;
     salt: string;
     itr: number;
-  }): Promise<string> {
+  }): Promise<HexString> {
     const passBuffer = new TextEncoder().encode(pass);
     const saltBuffer = new TextEncoder().encode(salt);
 

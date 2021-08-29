@@ -1,4 +1,5 @@
 import { WebExecutor } from './WebExecutor';
+import { HexString } from '../types';
 
 /**
  * Derive key from a user-supplied password
@@ -27,14 +28,12 @@ export class KeyDeriver {
 
   /**
    * Uses web's `SubtleCrypto` PBKDF2 interface to convert a password to a key
-   *
-   * @return derived key as a hex string
    */
   public static deriveKey(
     pass: string,
     salt: string,
     itr: number,
-  ): Promise<string> {
+  ): Promise<HexString> {
     return WebExecutor.exec<string>(
       /* js */ `
         return KeyDeriverWeb.deriveKey(params);
