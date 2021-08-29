@@ -14,5 +14,8 @@ declare global {
   }
 }
 
+export * from './common';
+export * from './config';
+export * from './filesystem';
 export * from './lightning-fs';
 export * from './navigation';
