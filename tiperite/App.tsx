@@ -1,6 +1,7 @@
 import 'react-native-gesture-handler';
 import { Buffer } from 'buffer';
 
+// @ts-ignore
 global.Buffer = Buffer;
 
 import { useCachedResources } from './hooks/useCachedResources';
