@@ -8,7 +8,7 @@ import { TiperiteVersion, TiperiteConfig, HexString, UUID } from '.';
  *
  * @todo update `UUID` with actual type references
  */
-export interface DeviceFile {
+export interface DeviceFileData {
   // /** Track any extensions installed on the local device */
   // extensions: {
   //   manifest: unknown;
@@ -46,7 +46,7 @@ export interface DeviceFile {
  *
  * The first file the app loads. Always unencrypted.
  */
-export interface BootFile {
+export interface BootFileData {
   hasDevicePassword: boolean;
   passwordLength: number | null;
   passwordType: 'number' | 'text' | null;
