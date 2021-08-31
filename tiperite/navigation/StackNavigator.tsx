@@ -1,5 +1,5 @@
-import { RootStackParamList } from '../types';
-import BottomTabNavigator from './BottomTabNavigator';
+import { StackNavigatorParams } from '../types';
+import { HomeScreen } from '../screens/HomeScreen';
 import * as React from 'react';
 import {
   StackNavigationOptions,
@@ -9,12 +9,10 @@ import {
 const options: StackNavigationOptions = {
   headerShown: false,
 };
-const Stack = createStackNavigator<RootStackParamList>();
+const { Navigator, Screen } = createStackNavigator<StackNavigatorParams>();
 
-export function StackNavigator(): JSX.Element {
-  return (
-    <Stack.Navigator screenOptions={options}>
-      <Stack.Screen name="Root" component={BottomTabNavigator} />
-    </Stack.Navigator>
-  );
-}
+export const StackNavigator = (): JSX.Element => (
+  <Navigator screenOptions={options}>
+    <Screen component={HomeScreen} name="Home" />
+  </Navigator>
+);
