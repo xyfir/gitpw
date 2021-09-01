@@ -5,6 +5,21 @@ import { WebExecutor } from './WebExecutor';
  */
 export class FS {
   /**
+   * Write a file as a string
+   */
+  public static writeFile(path: string, data: string): Promise<void> {
+    return WebExecutor.exec<void>(
+      /* js */ `
+        return await window.fs.promises.writeFile(params.path, params.data);
+      `,
+      {
+        path,
+        data,
+      },
+    ).promise;
+  }
+
+  /**
    * Read a file as a string or return `null` if the file doesn't exist
    */
   public static readFile(path: string): Promise<string | null> {
