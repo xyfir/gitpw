@@ -66,7 +66,7 @@ export class BootFile {
    */
   public static async getData(): Promise<BootFileData> {
     // Read file and passkey
-    const ciphertext: EncryptedString | null = await FS.readFile(this.PATH);
+    const ciphertext = await FS.readFile<EncryptedString>(this.PATH);
     const passkey = await this.getPasskey();
 
     // Initialize file with default data
@@ -81,5 +81,14 @@ export class BootFile {
       const plaintext = await AES.decrypt(ciphertext, passkey);
       return JSON.parse(plaintext) as BootFileData;
     }
+  }
+
+  /**
+   * Updates the data in the boot file
+   */
+  public static async setData(data: BootFileData): Promise<void> {
+    const passkey = await this.getPasskey();
+    const ciphertext = await AES.encrypt(JSON.stringify(data), passkey);
+    await FS.writeFile(this.PATH, ciphertext);
   }
 }
