@@ -50,6 +50,7 @@ export interface BootFileData {
   hasDevicePassword: boolean;
   passwordLength: number | null;
   passwordType: 'number' | 'text' | null;
+  firstLaunch: boolean;
   /** The version of Tiperite that last saved this file */
   version: TiperiteVersion;
 }

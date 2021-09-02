@@ -57,6 +57,7 @@ export class BootFile {
       hasDevicePassword: false,
       passwordLength: null,
       passwordType: null,
+      firstLaunch: true,
       version: Constants.nativeAppVersion as TiperiteVersion,
     };
   }
