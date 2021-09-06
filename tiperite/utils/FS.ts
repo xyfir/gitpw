@@ -28,10 +28,11 @@ export class FS {
   public static readFile<T extends string>(path: string): Promise<T | null> {
     return WebExecutor.exec<T | null>(
       /* js */ `
-        return await window.fs.readFile(params.path, 'utf8').catch((e) => {
-          if (e.code == 'ENOENT') return null;
-          throw e;
-        });
+        return await window.fs.promises.readFile(params.path, 'utf8')
+          .catch((e) => {
+            if (e.code == 'ENOENT') return null;
+            throw e;
+          });
       `,
       {
         path,
