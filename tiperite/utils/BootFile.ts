@@ -52,13 +52,18 @@ export class BootFile {
   /**
    * Returns a default `BootFileData` object
    */
-  private static getDefaultData(): BootFileData {
+  private static async getDefaultData(): Promise<BootFileData> {
+    const iterations = await Random.integer(50000, 100000);
+    const salt = await KeyDeriver.generateSalt();
+
     return {
       hasDevicePassword: false,
       passwordLength: null,
       passwordType: null,
       firstLaunch: true,
+      iterations,
       version: Constants.nativeAppVersion as TiperiteVersion,
+      salt,
     };
   }
 

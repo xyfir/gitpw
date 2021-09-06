@@ -16,10 +16,14 @@ export interface DeviceFileData {
   //   repo: string;
   //   id: UUID;
   // }[];
-  /** Track any workspaces saved on the local device */
+  /**
+   * Track any workspaces saved on the local device
+   */
   workspaces: {
     config: TiperiteConfig;
-    /** @example "https://github.com/example/workspace.git" */
+    /**
+     * @example "https://github.com/example/workspace.git"
+     */
     repo: string;
     name: string;
     /**
@@ -30,7 +34,9 @@ export interface DeviceFileData {
     key: HexString;
     id: UUID;
   }[];
-  /** The version of Tiperite that last saved this file */
+  /**
+   * The version of Tiperite that last saved this file
+   */
   version: TiperiteVersion;
   memory: {
     activeWorkspaceId: UUID | null;
@@ -51,6 +57,16 @@ export interface BootFileData {
   passwordLength: number | null;
   passwordType: 'number' | 'text' | null;
   firstLaunch: boolean;
-  /** The version of Tiperite that last saved this file */
+  /**
+   * The iterations to use to generate the passkey for `/device.json`
+   */
+  iterations: number;
+  /**
+   * The version of Tiperite that last saved this file
+   */
   version: TiperiteVersion;
+  /**
+   * The salt to use to generate the passkey for `/device.json`
+   */
+  salt: string;
 }

@@ -39,12 +39,12 @@ export class DeviceFile {
     if (this.passkey !== null) return this.passkey;
 
     const bootPasskey = await BootFile.getPasskey();
+    const bootData = await BootFile.getData();
 
-    /** @todo */
     return await KeyDeriver.deriveKey(
       `${bootPasskey}-${passcode}`,
-      '9T7Uh^B^ZmEJ',
-      100000,
+      bootData.salt,
+      bootData.iterations,
     );
   }
 
