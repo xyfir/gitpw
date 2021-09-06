@@ -33,9 +33,9 @@ export interface DeviceFileData {
   /** The version of Tiperite that last saved this file */
   version: TiperiteVersion;
   memory: {
-    activeWorkspaceId: UUID;
+    activeWorkspaceId: UUID | null;
+    githubToken: string | null;
     pinnedFiles: UUID[];
-    githubToken: string;
     recentFiles: UUID[];
   };
   config: TiperiteConfig;
