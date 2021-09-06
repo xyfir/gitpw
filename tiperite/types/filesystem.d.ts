@@ -3,8 +3,8 @@ import { TiperiteVersion, TiperiteConfig, HexString, UUID } from '.';
 /**
  * `/device.json`
  *
- * The main file that persists the app's state on the device. Sometimes
- *  encrypted. Loaded after `/boot.json`.
+ * The main file that persists the app's state on the device. Loaded after
+ *  `/boot.json`.
  *
  * @todo update `UUID` with actual type references
  */
@@ -50,7 +50,7 @@ export interface DeviceFileData {
 /**
  * `/boot.json`
  *
- * The first file the app loads. Always unencrypted.
+ * The first file the app loads.
  */
 export interface BootFileData {
   hasDevicePassword: boolean;
