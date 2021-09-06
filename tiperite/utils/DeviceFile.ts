@@ -90,7 +90,7 @@ export class DeviceFile {
    *
    * @throws if `passcode` is incorrect
    */
-  public static async unlock(passcode = ''): Promise<void> {
+  public static async unlock(passcode: string): Promise<void> {
     // Read file and passkey
     const ciphertext = await FS.readFile<EncryptedString>(this.PATH);
     const passkey = await this.getPasskey(passcode);
