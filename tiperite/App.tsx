@@ -13,14 +13,17 @@ import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 
 export default function App(): JSX.Element | null {
-  const isLoadingComplete = useCachedResources();
+  const [webReady, setWebReady] = React.useState(false);
+  const resourcesReady = useCachedResources();
   const colorScheme = useColorScheme();
 
-  return isLoadingComplete ? (
+  return resourcesReady ? (
     <SafeAreaProvider>
       <StatusBar />
-      <Navigation colorScheme={colorScheme} />
-      <WebExecutorHost />
+
+      {webReady && <Navigation colorScheme={colorScheme} />}
+
+      <WebExecutorHost onLoadEnd={() => setWebReady(true)} />
     </SafeAreaProvider>
   ) : null;
 }
