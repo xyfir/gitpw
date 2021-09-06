@@ -32,7 +32,7 @@ export class BootFile {
   /**
    * Returns the boot passkey after generating the key if needed
    */
-  private static async getPasskey(): Promise<HexString> {
+  public static async getPasskey(): Promise<HexString> {
     if (this.passkey !== null) return this.passkey;
 
     // Get previously generated passkey and return if available
