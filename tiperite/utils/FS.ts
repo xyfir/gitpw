@@ -1,7 +1,10 @@
 import { WebExecutor } from './WebExecutor';
 
 /**
- * A wrapper for the web-based filesystem
+ * A wrapper for the web-based filesystem, LightningFS, based on Node's `fs`
+ *
+ * @see https://github.com/isomorphic-git/lightning-fs
+ * @see https://nodejs.org/api/fs.html
  */
 export class FS {
   /**
@@ -29,6 +32,20 @@ export class FS {
           if (e.code == 'ENOENT') return null;
           throw e;
         });
+      `,
+      {
+        path,
+      },
+    ).promise;
+  }
+
+  /**
+   * Delete a file
+   */
+  public static unlink(path: string): Promise<void> {
+    return WebExecutor.exec<void>(
+      /* js */ `
+        return await window.fs.promises.unlink(params.path);
       `,
       {
         path,
