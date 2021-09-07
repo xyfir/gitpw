@@ -19,7 +19,7 @@ export function HomeScreen(): JSX.Element | null {
     } as BootFileData;
 
     BootFile.setData(data)
-      .then(() => DeviceFile.unlock(passcode))
+      .then(() => DeviceFile.unlock(''))
       .then(() => {
         setDeviceFileData(DeviceFile.getData());
         setBootFileData(data);
@@ -70,7 +70,21 @@ export function HomeScreen(): JSX.Element | null {
   }
 
   React.useEffect(() => {
-    BootFile.getData().then(setBootFileData);
+    BootFile.getData().then((data) => {
+      // Skip 'unlock' screen because the user has configured a no-pass login
+      if (!data.hasDevicePassword && !data.firstLaunch) {
+        DeviceFile.unlock('').then(() => {
+          setDeviceFileData(DeviceFile.getData());
+          setBootFileData(data);
+          setConfigPasscode(false);
+          setAuthenticated(true);
+        });
+      }
+      // Load boot file as normal
+      else {
+        setBootFileData(data);
+      }
+    });
   }, []);
 
   return !bootFileData ? null : configPasscode ? (
