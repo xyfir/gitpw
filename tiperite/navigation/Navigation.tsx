@@ -1,5 +1,5 @@
-import { ColorSchemeName } from 'react-native';
 import { StackNavigator } from './StackNavigator';
+import { useIsDark } from '../hooks/useIsDark';
 import * as React from 'react';
 import {
   NavigationContainer,
@@ -7,12 +7,11 @@ import {
   DarkTheme,
 } from '@react-navigation/native';
 
-export const Navigation = ({
-  colorScheme,
-}: {
-  colorScheme: ColorSchemeName;
-}): JSX.Element => (
-  <NavigationContainer theme={colorScheme == 'dark' ? DarkTheme : DefaultTheme}>
-    <StackNavigator />
-  </NavigationContainer>
-);
+export function Navigation(): JSX.Element {
+  const dark = useIsDark();
+  return (
+    <NavigationContainer theme={dark ? DarkTheme : DefaultTheme}>
+      <StackNavigator />
+    </NavigationContainer>
+  );
+}
