@@ -9,6 +9,8 @@ import {
   Ubuntu_700Bold,
 } from '@expo-google-fonts/ubuntu';
 import {
+  UbuntuMono_400Regular_Italic,
+  UbuntuMono_700Bold_Italic,
   UbuntuMono_400Regular,
   UbuntuMono_700Bold,
 } from '@expo-google-fonts/ubuntu-mono';
@@ -21,6 +23,8 @@ SplashScreen.preventAutoHideAsync();
 export function useCachedResources(): boolean {
   const [fontsLoaded] = Font.useFonts({
     // Ubuntu Mono
+    UbuntuMono_400Regular_Italic,
+    UbuntuMono_700Bold_Italic,
     UbuntuMono_400Regular,
     UbuntuMono_700Bold,
 
