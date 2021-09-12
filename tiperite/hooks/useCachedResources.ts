@@ -3,18 +3,12 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import * as Font from 'expo-font';
 import React from 'react';
 import {
-  Ubuntu_400Regular_Italic,
-  Ubuntu_500Medium_Italic,
-  Ubuntu_300Light_Italic,
-  Ubuntu_700Bold_Italic,
   Ubuntu_400Regular,
   Ubuntu_500Medium,
   Ubuntu_300Light,
   Ubuntu_700Bold,
 } from '@expo-google-fonts/ubuntu';
 import {
-  UbuntuMono_400Regular_Italic,
-  UbuntuMono_700Bold_Italic,
   UbuntuMono_400Regular,
   UbuntuMono_700Bold,
 } from '@expo-google-fonts/ubuntu-mono';
@@ -27,16 +21,10 @@ SplashScreen.preventAutoHideAsync();
 export function useCachedResources(): boolean {
   const [fontsLoaded] = Font.useFonts({
     // Ubuntu Mono
-    UbuntuMono_400Regular_Italic,
-    UbuntuMono_700Bold_Italic,
     UbuntuMono_400Regular,
     UbuntuMono_700Bold,
 
     // Ubuntu
-    Ubuntu_400Regular_Italic,
-    Ubuntu_500Medium_Italic,
-    Ubuntu_300Light_Italic,
-    Ubuntu_700Bold_Italic,
     Ubuntu_400Regular,
     Ubuntu_500Medium,
     Ubuntu_300Light,
