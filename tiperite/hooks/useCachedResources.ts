@@ -1,33 +1,54 @@
 import * as SplashScreen from 'expo-splash-screen';
-import { Ionicons } from '@expo/vector-icons';
-import * as React from 'react';
+import { FontAwesome5 } from '@expo/vector-icons';
 import * as Font from 'expo-font';
+import React from 'react';
+import {
+  Ubuntu_400Regular_Italic,
+  Ubuntu_500Medium_Italic,
+  Ubuntu_300Light_Italic,
+  Ubuntu_700Bold_Italic,
+  Ubuntu_400Regular,
+  Ubuntu_500Medium,
+  Ubuntu_300Light,
+  Ubuntu_700Bold,
+} from '@expo-google-fonts/ubuntu';
+import {
+  UbuntuMono_400Regular_Italic,
+  UbuntuMono_700Bold_Italic,
+  UbuntuMono_400Regular,
+  UbuntuMono_700Bold,
+} from '@expo-google-fonts/ubuntu-mono';
 
+SplashScreen.preventAutoHideAsync();
+
+/**
+ * Preload fonts/icons and hide the splash screen after
+ */
 export function useCachedResources(): boolean {
-  const [isLoadingComplete, setLoadingComplete] = React.useState(false);
+  const [fontsLoaded] = Font.useFonts({
+    // Ubuntu Mono
+    UbuntuMono_400Regular_Italic,
+    UbuntuMono_700Bold_Italic,
+    UbuntuMono_400Regular,
+    UbuntuMono_700Bold,
 
-  // Load any resources or data that we need prior to rendering the app
+    // Ubuntu
+    Ubuntu_400Regular_Italic,
+    Ubuntu_500Medium_Italic,
+    Ubuntu_300Light_Italic,
+    Ubuntu_700Bold_Italic,
+    Ubuntu_400Regular,
+    Ubuntu_500Medium,
+    Ubuntu_300Light,
+    Ubuntu_700Bold,
+
+    // Icons
+    ...FontAwesome5.font,
+  });
+
   React.useEffect(() => {
-    async function loadResourcesAndDataAsync(): Promise<void> {
-      try {
-        SplashScreen.preventAutoHideAsync();
+    if (fontsLoaded) SplashScreen.hideAsync();
+  }, [fontsLoaded]);
 
-        // Load fonts
-        await Font.loadAsync({
-          ...Ionicons.font,
-          'space-mono': require('../assets/fonts/SpaceMono-Regular.ttf'),
-        });
-      } catch (e) {
-        // We might want to provide this error information to an error reporting service
-        console.warn(e);
-      } finally {
-        setLoadingComplete(true);
-        SplashScreen.hideAsync();
-      }
-    }
-
-    loadResourcesAndDataAsync();
-  }, []);
-
-  return isLoadingComplete;
+  return fontsLoaded;
 }
