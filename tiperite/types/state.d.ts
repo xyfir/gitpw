@@ -1,6 +1,5 @@
-import { DeviceFileData, BootFileData } from '.';
+import { store } from '../state/store';
 
-export interface AppState {
-  deviceFileData: DeviceFileData;
-  bootFileData: BootFileData;
-}
+export type AppDispatch = typeof store.dispatch;
+
+export type RootState = ReturnType<typeof store.getState>;
