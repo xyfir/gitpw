@@ -1,6 +1,4 @@
 import { StyleSheet, TextInput, Button, Alert, Text, View } from 'react-native';
-import { deviceFileDataSlice } from '../state/deviceFileDataSlice';
-import { bootFileDataSlice } from '../state/bootFileDataSlice';
 import { BootFileData } from '../types';
 import { useSelector } from '../hooks/useSelector';
 import { useDispatch } from '../hooks/useDispatch';
@@ -9,13 +7,21 @@ import { Monospace } from '../constants/Monospace';
 import { BootFile } from '../utils/BootFile';
 import { FS } from '../utils/FS';
 import React from 'react';
+import {
+  selectDeviceFileData,
+  deviceFileDataSlice,
+} from '../state/deviceFileDataSlice';
+import {
+  selectBootFileData,
+  bootFileDataSlice,
+} from '../state/bootFileDataSlice';
 
 export function HomeScreen(): JSX.Element | null {
   const [configPasscode, setConfigPasscode] = React.useState(false);
   const [authenticated, setAuthenticated] = React.useState(false);
   const [passcode, setPasscode] = React.useState('');
-  const deviceFileData = useSelector((s) => s.deviceFileData);
-  const bootFileData = useSelector((s) => s.bootFileData);
+  const deviceFileData = useSelector(selectDeviceFileData);
+  const bootFileData = useSelector(selectBootFileData);
   const dispatch = useDispatch();
 
   function onDisablePasscode(): void {

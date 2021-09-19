@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { BootFileData } from '../types';
+import { BootFileData, RootState } from '../types';
 
 export const bootFileDataSlice = createSlice({
   initialState: null as BootFileData | null,
@@ -13,3 +13,7 @@ export const bootFileDataSlice = createSlice({
   },
   name: 'bootFileData',
 });
+
+export const selectBootFileData = (
+  s: RootState,
+): ReturnType<typeof bootFileDataSlice.reducer> => s.bootFileData;
