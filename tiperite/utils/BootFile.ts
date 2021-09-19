@@ -50,12 +50,12 @@ export class BootFile {
   }
 
   /**
-   * Generates a default `BootFileData` object
+   * Returns a default `BootFileData` object
    */
-  public static generateDefaultData(
-    iterations: number,
-    salt: string,
-  ): BootFileData {
+  private static async getDefaultData(): Promise<BootFileData> {
+    const iterations = await Random.integer(50000, 100000);
+    const salt = await KeyDeriver.generateSalt();
+
     return {
       hasDevicePassword: false,
       passwordLength: null,
@@ -65,15 +65,6 @@ export class BootFile {
       version: Constants.nativeAppVersion as TiperiteVersion,
       salt,
     };
-  }
-
-  /**
-   * Returns a default `BootFileData` object
-   */
-  private static async getDefaultData(): Promise<BootFileData> {
-    const iterations = await Random.integer(50000, 100000);
-    const salt = await KeyDeriver.generateSalt();
-    return this.generateDefaultData(iterations, salt);
   }
 
   /**
