@@ -51,7 +51,7 @@ export class DeviceFile {
   /**
    * Returns a default `DeviceFileData` object
    */
-  private static getDefaultData(): Readonly<DeviceFileData> {
+  public static getDefaultData(): Readonly<DeviceFileData> {
     return Object.freeze({
       workspaces: [],
       version: Constants.nativeAppVersion as TiperiteVersion,
