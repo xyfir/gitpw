@@ -1,16 +1,22 @@
-import { StyleSheet, TextInput, Button, Text, View, Alert } from 'react-native';
-import { DeviceFileData, BootFileData } from '../types';
+import { StyleSheet, TextInput, Button, Alert, Text, View } from 'react-native';
+import { deviceFileDataSlice } from '../state/deviceFileDataSlice';
+import { bootFileDataSlice } from '../state/bootFileDataSlice';
+import { BootFileData } from '../types';
+import { useSelector } from '../hooks/useSelector';
+import { useDispatch } from '../hooks/useDispatch';
 import { DeviceFile } from '../utils/DeviceFile';
+import { Monospace } from '../constants/Monospace';
 import { BootFile } from '../utils/BootFile';
 import { FS } from '../utils/FS';
 import React from 'react';
 
 export function HomeScreen(): JSX.Element | null {
-  const [deviceFileData, setDeviceFileData] = React.useState<DeviceFileData>();
   const [configPasscode, setConfigPasscode] = React.useState(false);
   const [authenticated, setAuthenticated] = React.useState(false);
-  const [bootFileData, setBootFileData] = React.useState<BootFileData>();
   const [passcode, setPasscode] = React.useState('');
+  const deviceFileData = useSelector((s) => s.deviceFileData);
+  const bootFileData = useSelector((s) => s.bootFileData);
+  const dispatch = useDispatch();
 
   function onDisablePasscode(): void {
     const data: BootFileData = {
@@ -21,8 +27,11 @@ export function HomeScreen(): JSX.Element | null {
     BootFile.setData(data)
       .then(() => DeviceFile.unlock(''))
       .then(() => {
-        setDeviceFileData(DeviceFile.getData());
-        setBootFileData(data);
+        dispatch(
+          deviceFileDataSlice.actions.setDeviceFileData(DeviceFile.getData()),
+        );
+        dispatch(bootFileDataSlice.actions.setBootFileData(data));
+
         setConfigPasscode(false);
         setAuthenticated(true);
       });
@@ -44,8 +53,11 @@ export function HomeScreen(): JSX.Element | null {
     BootFile.setData(data)
       .then(() => DeviceFile.unlock(passcode))
       .then(() => {
-        setDeviceFileData(DeviceFile.getData());
-        setBootFileData(data);
+        dispatch(
+          deviceFileDataSlice.actions.setDeviceFileData(DeviceFile.getData()),
+        );
+        dispatch(bootFileDataSlice.actions.setBootFileData(data));
+
         setConfigPasscode(false);
         setAuthenticated(true);
       });
@@ -54,7 +66,10 @@ export function HomeScreen(): JSX.Element | null {
   function onUnlock(): void {
     DeviceFile.unlock(passcode)
       .then(() => {
-        setDeviceFileData(DeviceFile.getData());
+        dispatch(
+          deviceFileDataSlice.actions.setDeviceFileData(DeviceFile.getData()),
+        );
+
         setAuthenticated(true);
       })
       .catch(() => Alert.alert('Incorrect passcode!'));
@@ -74,15 +89,18 @@ export function HomeScreen(): JSX.Element | null {
       // Skip 'unlock' screen because the user has configured a no-pass login
       if (!data.hasDevicePassword && !data.firstLaunch) {
         DeviceFile.unlock('').then(() => {
-          setDeviceFileData(DeviceFile.getData());
-          setBootFileData(data);
+          dispatch(
+            deviceFileDataSlice.actions.setDeviceFileData(DeviceFile.getData()),
+          );
+          dispatch(bootFileDataSlice.actions.setBootFileData(data));
+
           setConfigPasscode(false);
           setAuthenticated(true);
         });
       }
       // Load boot file as normal
       else {
-        setBootFileData(data);
+        dispatch(bootFileDataSlice.actions.setBootFileData(data));
       }
     });
   }, []);
@@ -97,8 +115,8 @@ export function HomeScreen(): JSX.Element | null {
         returnKeyType="done"
         onChangeText={setPasscode}
         keyboardType="numeric"
-        value={passcode}
         style={{ backgroundColor: 'gray', width: 200 }}
+        value={passcode}
       />
 
       <Button onPress={onDisablePasscode} title="Cancel" />
@@ -106,7 +124,14 @@ export function HomeScreen(): JSX.Element | null {
     </View>
   ) : authenticated ? (
     <View style={styles.root}>
-      <Text>Welcome!</Text>
+      <Text
+        style={{
+          fontFamily: Monospace.Bold,
+          fontSize: 30,
+        }}
+      >
+        Welcome!
+      </Text>
 
       <Button onPress={onReset} title="Reset" />
 
