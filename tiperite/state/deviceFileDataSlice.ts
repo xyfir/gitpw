@@ -1,9 +1,8 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { DeviceFileData } from '../types';
-import { DeviceFile } from '../utils/DeviceFile';
 
 export const deviceFileDataSlice = createSlice({
-  initialState: DeviceFile.getDefaultData(),
+  initialState: null as DeviceFileData | null,
   reducers: {
     setDeviceFileData(
       _,
