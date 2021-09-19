@@ -4,10 +4,10 @@ import { DeviceFileData } from '../types';
 export const deviceFileDataSlice = createSlice({
   initialState: null as DeviceFileData | null,
   reducers: {
-    setDeviceFileData(
-      _,
-      action: PayloadAction<DeviceFileData>,
-    ): DeviceFileData {
+    /**
+     * Set the entire `deviceFileData` object
+     */
+    set(_, action: PayloadAction<DeviceFileData>): DeviceFileData {
       return action.payload;
     },
   },

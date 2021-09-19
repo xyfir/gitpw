@@ -27,10 +27,8 @@ export function HomeScreen(): JSX.Element | null {
     BootFile.setData(data)
       .then(() => DeviceFile.unlock(''))
       .then(() => {
-        dispatch(
-          deviceFileDataSlice.actions.setDeviceFileData(DeviceFile.getData()),
-        );
-        dispatch(bootFileDataSlice.actions.setBootFileData(data));
+        dispatch(deviceFileDataSlice.actions.set(DeviceFile.getData()));
+        dispatch(bootFileDataSlice.actions.set(data));
 
         setConfigPasscode(false);
         setAuthenticated(true);
@@ -53,10 +51,8 @@ export function HomeScreen(): JSX.Element | null {
     BootFile.setData(data)
       .then(() => DeviceFile.unlock(passcode))
       .then(() => {
-        dispatch(
-          deviceFileDataSlice.actions.setDeviceFileData(DeviceFile.getData()),
-        );
-        dispatch(bootFileDataSlice.actions.setBootFileData(data));
+        dispatch(deviceFileDataSlice.actions.set(DeviceFile.getData()));
+        dispatch(bootFileDataSlice.actions.set(data));
 
         setConfigPasscode(false);
         setAuthenticated(true);
@@ -66,9 +62,7 @@ export function HomeScreen(): JSX.Element | null {
   function onUnlock(): void {
     DeviceFile.unlock(passcode)
       .then(() => {
-        dispatch(
-          deviceFileDataSlice.actions.setDeviceFileData(DeviceFile.getData()),
-        );
+        dispatch(deviceFileDataSlice.actions.set(DeviceFile.getData()));
 
         setAuthenticated(true);
       })
@@ -89,10 +83,8 @@ export function HomeScreen(): JSX.Element | null {
       // Skip 'unlock' screen because the user has configured a no-pass login
       if (!data.hasDevicePassword && !data.firstLaunch) {
         DeviceFile.unlock('').then(() => {
-          dispatch(
-            deviceFileDataSlice.actions.setDeviceFileData(DeviceFile.getData()),
-          );
-          dispatch(bootFileDataSlice.actions.setBootFileData(data));
+          dispatch(deviceFileDataSlice.actions.set(DeviceFile.getData()));
+          dispatch(bootFileDataSlice.actions.set(data));
 
           setConfigPasscode(false);
           setAuthenticated(true);
@@ -100,7 +92,7 @@ export function HomeScreen(): JSX.Element | null {
       }
       // Load boot file as normal
       else {
-        dispatch(bootFileDataSlice.actions.setBootFileData(data));
+        dispatch(bootFileDataSlice.actions.set(data));
       }
     });
   }, []);
