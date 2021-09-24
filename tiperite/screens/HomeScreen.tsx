@@ -1,10 +1,10 @@
-import { StyleSheet, TextInput, Button, Alert, Text, View } from 'react-native';
+import { TextInput, Button, Alert, Text, View } from 'react-native';
 import { BootFileData } from '../types';
 import { useSelector } from '../hooks/useSelector';
 import { useDispatch } from '../hooks/useDispatch';
 import { DeviceFile } from '../utils/DeviceFile';
-import { Monospace } from '../constants/Monospace';
 import { BootFile } from '../utils/BootFile';
+import { useTheme } from '../hooks/useTheme';
 import { FS } from '../utils/FS';
 import React from 'react';
 import {
@@ -23,6 +23,7 @@ export function HomeScreen(): JSX.Element | null {
   const deviceFileData = useSelector(selectDeviceFileData);
   const bootFileData = useSelector(selectBootFileData);
   const dispatch = useDispatch();
+  const theme = useTheme('HomeScreen');
 
   function onDisablePasscode(): void {
     const data: BootFileData = {
@@ -49,7 +50,7 @@ export function HomeScreen(): JSX.Element | null {
     const data: BootFileData = {
       ...bootFileData,
       hasDevicePassword: true,
-      passwordLength: passcode?.length,
+      passwordLength: passcode.length,
       passwordType: 'number',
       firstLaunch: false,
     } as BootFileData;
@@ -104,7 +105,7 @@ export function HomeScreen(): JSX.Element | null {
   }, []);
 
   return !bootFileData ? null : configPasscode ? (
-    <View style={styles.root}>
+    <View style={theme.root}>
       <Text>Passcode</Text>
       <Text>Configure your passcode</Text>
 
@@ -113,7 +114,7 @@ export function HomeScreen(): JSX.Element | null {
         returnKeyType="done"
         onChangeText={setPasscode}
         keyboardType="numeric"
-        style={{ backgroundColor: 'gray', width: 200 }}
+        style={theme.textInput}
         value={passcode}
       />
 
@@ -121,15 +122,8 @@ export function HomeScreen(): JSX.Element | null {
       <Button onPress={onSavePasscode} title="Save" />
     </View>
   ) : authenticated ? (
-    <View style={styles.root}>
-      <Text
-        style={{
-          fontFamily: Monospace.Bold,
-          fontSize: 30,
-        }}
-      >
-        Welcome!
-      </Text>
+    <View style={theme.root}>
+      <Text>Welcome!</Text>
 
       <Button onPress={onReset} title="Reset" />
 
@@ -138,7 +132,7 @@ export function HomeScreen(): JSX.Element | null {
       <Text>{JSON.stringify(deviceFileData, null, 2)}</Text>
     </View>
   ) : bootFileData.firstLaunch ? (
-    <View style={styles.root}>
+    <View style={theme.root}>
       <Text>Passcode</Text>
       <Text>Would you like to set a device passcode?</Text>
 
@@ -146,7 +140,7 @@ export function HomeScreen(): JSX.Element | null {
       <Button onPress={onEnablePasscode} title="Yes" />
     </View>
   ) : (
-    <View style={styles.root}>
+    <View style={theme.root}>
       <Text>Passcode</Text>
       <Text>Enter your passcode</Text>
 
@@ -155,7 +149,7 @@ export function HomeScreen(): JSX.Element | null {
         returnKeyType="done"
         onChangeText={setPasscode}
         keyboardType="numeric"
-        style={{ backgroundColor: 'gray', width: 200 }}
+        style={theme.textInput}
         value={passcode}
       />
 
@@ -163,11 +157,3 @@ export function HomeScreen(): JSX.Element | null {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  root: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    flex: 1,
-  },
-});
