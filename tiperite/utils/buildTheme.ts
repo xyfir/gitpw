@@ -18,6 +18,9 @@ export function buildTheme(isDark: boolean): RootStyles {
   const styleGroupKeys = Object.keys(newStyles) as RootStylesKey[];
 
   for (const styleGroupKey of styleGroupKeys) {
+    // Create an editable copy
+    newStyles[styleGroupKey] = { ...newStyles[styleGroupKey] };
+
     // Component element or common element key
     const styleSubGroupKeys = Object.keys(
       newStyles[styleGroupKey],
