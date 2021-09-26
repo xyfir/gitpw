@@ -57,11 +57,16 @@ export class ThemeBuilder {
         // Merge dark styles with original styles to build the final object
         // `Component.button` = `Component.button` + `Component.button_dark`
         if (styleSubGroupKey.endsWith('_dark')) {
-          newStyles[styleGroupKey][styleSubGroupKey] = {
+          const originalStyleSubGroupKey = styleSubGroupKey.split(
+            '_',
+          )[0] as RootStylesSubkey;
+
+          newStyles[styleGroupKey][originalStyleSubGroupKey] = {
             // Original styles
-            ...(newStyles[styleGroupKey][
-              styleSubGroupKey.split('_')[0] as RootStylesSubkey
-            ] as Record<string, unknown>),
+            ...(newStyles[styleGroupKey][originalStyleSubGroupKey] as Record<
+              string,
+              unknown
+            >),
             // Dark styles
             ...(newStyles[styleGroupKey][styleSubGroupKey] as Record<
               string,
