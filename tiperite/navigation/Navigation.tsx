@@ -1,16 +1,12 @@
+import { NavigationContainer } from '@react-navigation/native';
 import { StackNavigator } from './StackNavigator';
-import { useIsDark } from '../hooks/useIsDark';
+import { useTheme } from '../hooks/useTheme';
 import * as React from 'react';
-import {
-  NavigationContainer,
-  DefaultTheme,
-  DarkTheme,
-} from '@react-navigation/native';
 
 export function Navigation(): JSX.Element {
-  const dark = useIsDark();
+  const theme = useTheme('NavigationContainer');
   return (
-    <NavigationContainer theme={dark ? DarkTheme : DefaultTheme}>
+    <NavigationContainer theme={theme.root}>
       <StackNavigator />
     </NavigationContainer>
   );
