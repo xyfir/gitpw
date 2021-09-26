@@ -1,9 +1,9 @@
-import { NavigationContainerStyles } from './common/NavigationContainerStyles';
+import { NavigationRootStyles } from './navigation/NavigationRootStyles';
 import { HomeScreenStyles } from './screens/HomeScreenStyles';
 
 export const styles = {
   ...HomeScreenStyles,
-  ...NavigationContainerStyles,
+  ...NavigationRootStyles,
 };
 
 export type RootStyles = typeof styles;

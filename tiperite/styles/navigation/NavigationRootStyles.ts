@@ -1,13 +1,13 @@
 import { Theme as NavigationContainerTheme } from '@react-navigation/native';
 
-export const NavigationContainerStyles: {
-  NavigationContainer: {
-    root_dark: NavigationContainerTheme;
-    root: NavigationContainerTheme;
+export const NavigationRootStyles: {
+  NavigationRoot: {
+    container_dark: NavigationContainerTheme;
+    container: NavigationContainerTheme;
   };
 } = {
-  NavigationContainer: {
-    root_dark: {
+  NavigationRoot: {
+    container_dark: {
       colors: {
         notification: 'red',
         background: '#000',
@@ -18,7 +18,7 @@ export const NavigationContainerStyles: {
       },
       dark: true,
     },
-    root: {
+    container: {
       colors: {
         notification: 'red',
         background: '#FFF',
