@@ -20,16 +20,14 @@ export default function App(): JSX.Element | null {
   const dark = useIsDark();
 
   return resourcesReady ? (
-    <React.StrictMode>
-      <ReduxProvider store={store}>
-        <SafeAreaProvider>
-          <StatusBar animated style={dark ? 'light' : 'dark'} />
+    <ReduxProvider store={store}>
+      <SafeAreaProvider>
+        <StatusBar animated style={dark ? 'light' : 'dark'} />
 
-          {webReady && <Navigation />}
+        {webReady && <Navigation />}
 
-          <WebExecutorHost onLoadEnd={() => setWebReady(true)} />
-        </SafeAreaProvider>
-      </ReduxProvider>
-    </React.StrictMode>
+        <WebExecutorHost onLoadEnd={() => setWebReady(true)} />
+      </SafeAreaProvider>
+    </ReduxProvider>
   ) : null;
 }
