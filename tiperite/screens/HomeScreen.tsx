@@ -106,8 +106,8 @@ export function HomeScreen(): JSX.Element | null {
 
   return !bootFileData ? null : configPasscode ? (
     <View style={theme.root}>
-      <Text>Passcode</Text>
-      <Text>Configure your passcode</Text>
+      <Text style={theme.text}>Passcode</Text>
+      <Text style={theme.text}>Configure your passcode</Text>
 
       <TextInput
         onSubmitEditing={onSavePasscode}
@@ -123,26 +123,26 @@ export function HomeScreen(): JSX.Element | null {
     </View>
   ) : authenticated ? (
     <View style={theme.root}>
-      <Text>Welcome!</Text>
+      <Text style={theme.text}>Welcome!</Text>
 
       <Button onPress={onReset} title="Reset" />
 
-      <Text>{JSON.stringify(bootFileData, null, 2)}</Text>
+      <Text style={theme.text}>{JSON.stringify(bootFileData, null, 2)}</Text>
 
-      <Text>{JSON.stringify(deviceFileData, null, 2)}</Text>
+      <Text style={theme.text}>{JSON.stringify(deviceFileData, null, 2)}</Text>
     </View>
   ) : bootFileData.firstLaunch ? (
     <View style={theme.root}>
-      <Text>Passcode</Text>
-      <Text>Would you like to set a device passcode?</Text>
+      <Text style={theme.text}>Passcode</Text>
+      <Text style={theme.text}>Would you like to set a device passcode?</Text>
 
       <Button onPress={onDisablePasscode} title="No" />
       <Button onPress={onEnablePasscode} title="Yes" />
     </View>
   ) : (
     <View style={theme.root}>
-      <Text>Passcode</Text>
-      <Text>Enter your passcode</Text>
+      <Text style={theme.text}>Passcode</Text>
+      <Text style={theme.text}>Enter your passcode</Text>
 
       <TextInput
         onSubmitEditing={onSavePasscode}
