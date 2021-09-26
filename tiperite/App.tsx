@@ -9,6 +9,7 @@ import { useCachedResources } from './hooks/useCachedResources';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { WebExecutorHost } from './components/WebExecutorHost';
 import { NavigationRoot } from './navigation/NavigationRoot';
+import { themeSlice } from './state/themeSlice';
 import { useIsDark } from './hooks/useIsDark';
 import { StatusBar } from 'expo-status-bar';
 import { store } from './state/store';
@@ -17,12 +18,17 @@ import React from 'react';
 export default function App(): JSX.Element | null {
   const [webReady, setWebReady] = React.useState(false);
   const resourcesReady = useCachedResources();
-  const dark = useIsDark();
+  const isDark = useIsDark();
+
+  // Toggle dark theme
+  React.useEffect(() => {
+    store.dispatch(themeSlice.actions.build({ isDark }));
+  }, [isDark]);
 
   return resourcesReady ? (
     <ReduxProvider store={store}>
       <SafeAreaProvider>
-        <StatusBar animated style={dark ? 'light' : 'dark'} />
+        <StatusBar animated style={isDark ? 'light' : 'dark'} />
 
         {webReady && <NavigationRoot />}
 
