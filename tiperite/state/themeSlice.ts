@@ -1,10 +1,9 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { buildTheme } from '../utils/buildTheme';
+import { ThemeBuilder } from '../utils/ThemeBuilder';
 import { RootStyles } from '../styles/styles';
-import { Appearance } from 'react-native';
 
 export const themeSlice = createSlice({
-  initialState: buildTheme(Appearance.getColorScheme() == 'dark'),
+  initialState: ThemeBuilder.build(),
   reducers: {
     /**
      * Set the entire `theme` object
