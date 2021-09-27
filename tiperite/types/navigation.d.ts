@@ -1,3 +1,3 @@
 export type StackNavigatorParams = {
-  Home: undefined;
+  HomeScreen: undefined;
 };

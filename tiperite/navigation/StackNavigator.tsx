@@ -13,6 +13,6 @@ const { Navigator, Screen } = createStackNavigator<StackNavigatorParams>();
 
 export const StackNavigator = (): JSX.Element => (
   <Navigator screenOptions={options}>
-    <Screen component={HomeScreen} name="Home" />
+    <Screen component={HomeScreen} name="HomeScreen" />
   </Navigator>
 );
