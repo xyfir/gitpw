@@ -1,4 +1,7 @@
 import { StackNavigatorParams } from '../types';
+import { EnterPasscodeScreen } from '../screens/EnterPasscodeScreen';
+import { SetPasscodeScreen } from '../screens/SetPasscodeScreen';
+import { EntryScreen } from '../screens/EntryScreen';
 import { HomeScreen } from '../screens/HomeScreen';
 import * as React from 'react';
 import {
@@ -12,7 +15,10 @@ const options: StackNavigationOptions = {
 const { Navigator, Screen } = createStackNavigator<StackNavigatorParams>();
 
 export const StackNavigator = (): JSX.Element => (
-  <Navigator screenOptions={options}>
+  <Navigator initialRouteName="EntryScreen" screenOptions={options}>
+    <Screen component={EnterPasscodeScreen} name="EnterPasscodeScreen" />
+    <Screen component={SetPasscodeScreen} name="SetPasscodeScreen" />
+    <Screen component={EntryScreen} name="EntryScreen" />
     <Screen component={HomeScreen} name="HomeScreen" />
   </Navigator>
 );
