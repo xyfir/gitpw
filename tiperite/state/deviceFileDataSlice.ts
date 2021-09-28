@@ -17,3 +17,8 @@ export const deviceFileDataSlice = createSlice({
 export const selectDeviceFileData = (
   s: RootState,
 ): ReturnType<typeof deviceFileDataSlice.reducer> => s.deviceFileData;
+
+export const selectNonNullableDeviceFileData = (
+  s: RootState,
+): NonNullable<ReturnType<typeof deviceFileDataSlice.reducer>> =>
+  s.deviceFileData as NonNullable<DeviceFileData>;
