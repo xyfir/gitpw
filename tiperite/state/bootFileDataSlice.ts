@@ -17,3 +17,8 @@ export const bootFileDataSlice = createSlice({
 export const selectBootFileData = (
   s: RootState,
 ): ReturnType<typeof bootFileDataSlice.reducer> => s.bootFileData;
+
+export const selectNonNullableBootFileData = (
+  s: RootState,
+): NonNullable<ReturnType<typeof bootFileDataSlice.reducer>> =>
+  s.bootFileData as NonNullable<BootFileData>;
