@@ -1,9 +1,10 @@
-import { TextInput, Button, Alert, Text, View } from 'react-native';
+import { TextInput, Alert, Text, View } from 'react-native';
 import { StackNavigatorScreenProps } from '../types';
 import { deviceFileDataSlice } from '../state/deviceFileDataSlice';
 import { useDispatch } from '../hooks/useDispatch';
 import { DeviceFile } from '../utils/DeviceFile';
 import { useTheme } from '../hooks/useTheme';
+import { TrButton } from '../components/TrButton';
 import React from 'react';
 
 /**
@@ -43,7 +44,7 @@ export function EnterPasscodeScreen({
         value={passcode}
       />
 
-      <Button onPress={onUnlock} title="Unlock" />
+      <TrButton onPress={onUnlock} title="Unlock" />
     </View>
   );
 }
