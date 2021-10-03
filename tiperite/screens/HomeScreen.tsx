@@ -1,7 +1,8 @@
 import { selectNonNullableDeviceFileData } from '../state/deviceFileDataSlice';
 import { selectNonNullableBootFileData } from '../state/bootFileDataSlice';
-import { Button, Text, View } from 'react-native';
 import { useSelector } from '../hooks/useSelector';
+import { Text, View } from 'react-native';
+import { TrButton } from '../components/TrButton';
 import { useTheme } from '../hooks/useTheme';
 import { FS } from '../utils/FS';
 import React from 'react';
@@ -29,7 +30,7 @@ export function HomeScreen(): JSX.Element {
     <View style={theme.root}>
       <Text style={theme.text}>Welcome!</Text>
 
-      <Button onPress={onReset} title="Reset" />
+      <TrButton onPress={onReset} title="Reset" />
 
       <Text style={theme.text}>{JSON.stringify(bootFileData, null, 2)}</Text>
 

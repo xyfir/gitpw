@@ -1,10 +1,11 @@
-import { TextInput, Button, Text, View } from 'react-native';
 import { StackNavigatorScreenProps } from '../types';
+import { TextInput, Text, View } from 'react-native';
 import { deviceFileDataSlice } from '../state/deviceFileDataSlice';
 import { BootFileData } from '../types';
 import { useSelector } from '../hooks/useSelector';
 import { useDispatch } from '../hooks/useDispatch';
 import { DeviceFile } from '../utils/DeviceFile';
+import { TrButton } from '../components/TrButton';
 import { BootFile } from '../utils/BootFile';
 import { useTheme } from '../hooks/useTheme';
 import React from 'react';
@@ -76,16 +77,16 @@ export function SetPasscodeScreen({
         value={passcode}
       />
 
-      <Button onPress={onSkip} title="Cancel" />
-      <Button onPress={onSave} title="Save" />
+      <TrButton onPress={onSkip} title="Cancel" />
+      <TrButton onPress={onSave} title="Save" />
     </View>
   ) : (
     <View style={theme.root}>
       <Text style={theme.text}>Passcode</Text>
       <Text style={theme.text}>Would you like to set a device passcode?</Text>
 
-      <Button onPress={onSkip} title="No" />
-      <Button onPress={() => setConfiguring(true)} title="Yes" />
+      <TrButton onPress={onSkip} title="No" />
+      <TrButton onPress={() => setConfiguring(true)} title="Yes" />
     </View>
   );
 }
