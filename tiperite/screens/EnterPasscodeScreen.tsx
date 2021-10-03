@@ -1,6 +1,7 @@
-import { TextInput, Alert, Text, View } from 'react-native';
 import { StackNavigatorScreenProps } from '../types';
 import { deviceFileDataSlice } from '../state/deviceFileDataSlice';
+import { Alert, Text, View } from 'react-native';
+import { TrTextInput } from '../components/TrTextInput';
 import { useDispatch } from '../hooks/useDispatch';
 import { DeviceFile } from '../utils/DeviceFile';
 import { useTheme } from '../hooks/useTheme';
@@ -35,12 +36,12 @@ export function EnterPasscodeScreen({
       <Text style={theme.text}>Passcode</Text>
       <Text style={theme.text}>Enter your passcode</Text>
 
-      <TextInput
+      <TrTextInput
         onSubmitEditing={onUnlock}
         returnKeyType="done"
         onChangeText={setPasscode}
         keyboardType="numeric"
-        style={theme.textInput}
+        placeholder="hunter2"
         value={passcode}
       />
 

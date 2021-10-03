@@ -1,10 +1,11 @@
 import { StackNavigatorScreenProps } from '../types';
-import { TextInput, Text, View } from 'react-native';
 import { deviceFileDataSlice } from '../state/deviceFileDataSlice';
 import { BootFileData } from '../types';
+import { TrTextInput } from '../components/TrTextInput';
 import { useSelector } from '../hooks/useSelector';
 import { useDispatch } from '../hooks/useDispatch';
 import { DeviceFile } from '../utils/DeviceFile';
+import { Text, View } from 'react-native';
 import { TrButton } from '../components/TrButton';
 import { BootFile } from '../utils/BootFile';
 import { useTheme } from '../hooks/useTheme';
@@ -68,12 +69,12 @@ export function SetPasscodeScreen({
       <Text style={theme.text}>Passcode</Text>
       <Text style={theme.text}>Configure your passcode</Text>
 
-      <TextInput
+      <TrTextInput
         onSubmitEditing={onSave}
         returnKeyType="done"
         onChangeText={setPasscode}
         keyboardType="numeric"
-        style={theme.textInput}
+        placeholder="hunter2"
         value={passcode}
       />
 
