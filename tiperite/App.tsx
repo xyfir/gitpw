@@ -7,7 +7,6 @@ global.Buffer = Buffer;
 import { Provider as ReduxProvider } from 'react-redux';
 import { useCachedResources } from './hooks/useCachedResources';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { WebExecutorHost } from './components/WebExecutorHost';
 import { NavigationRoot } from './navigation/NavigationRoot';
 import { themeSlice } from './state/themeSlice';
 import { useIsDark } from './hooks/useIsDark';
@@ -16,7 +15,6 @@ import { store } from './state/store';
 import React from 'react';
 
 export default function App(): JSX.Element | null {
-  const [webReady, setWebReady] = React.useState(false);
   const resourcesReady = useCachedResources();
   const isDark = useIsDark();
 
@@ -30,9 +28,7 @@ export default function App(): JSX.Element | null {
       <SafeAreaProvider>
         <StatusBar animated style={isDark ? 'light' : 'dark'} />
 
-        {webReady && <NavigationRoot />}
-
-        <WebExecutorHost onLoadEnd={() => setWebReady(true)} />
+        <NavigationRoot />
       </SafeAreaProvider>
     </ReduxProvider>
   ) : null;
