@@ -1,5 +1,4 @@
 import { v4 as uuidv4 } from 'uuid';
-import { WebExecutor } from './WebExecutor';
 import { UUID } from '../types';
 
 /**
@@ -18,10 +17,8 @@ export class Random {
    * A cryptographically secure replacement for `Math.random()`. Returns a
    *  number between `0` (inclusive) and `1` (exclusive).
    */
-  public static float(): Promise<number> {
-    return WebExecutor.exec<number>(/* js */ `
-      return crypto.getRandomValues(new Uint32Array(1))[0] / Math.pow(2, 32);
-    `).promise;
+  public static float(): number {
+    return crypto.getRandomValues(new Uint32Array(1))[0] / Math.pow(2, 32);
   }
 
   /**

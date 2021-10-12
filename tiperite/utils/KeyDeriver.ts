@@ -28,15 +28,11 @@ export class KeyDeriver {
   /**
    * Uses web's `SubtleCrypto` PBKDF2 interface to convert a password to a key
    */
-  public static async deriveKey({
-    pass,
-    salt,
-    itr,
-  }: {
-    pass: string;
-    salt: string;
-    itr: number;
-  }): Promise<HexString> {
+  public static async deriveKey(
+    pass: string,
+    salt: string,
+    itr: number,
+  ): Promise<HexString> {
     const passBuffer = new TextEncoder().encode(pass);
     const saltBuffer = new TextEncoder().encode(salt);
 

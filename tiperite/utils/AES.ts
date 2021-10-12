@@ -8,13 +8,10 @@ export class AES {
   /**
    * Encrypts plaintext using AES-256 GCM
    */
-  public static async encrypt({
-    plaintext,
-    keyHex,
-  }: {
-    plaintext: string;
-    keyHex: HexString;
-  }): Promise<EncryptedString> {
+  public static async encrypt(
+    plaintext: string,
+    keyHex: HexString,
+  ): Promise<EncryptedString> {
     // Generate a random IV and set our algo config
     const iv = crypto.getRandomValues(new Uint8Array(12));
     const alg = { name: 'AES-GCM', iv };
@@ -47,13 +44,10 @@ export class AES {
   /**
    * Decrypts AES-256 GCM ciphertext
    */
-  public static async decrypt({
-    ciphertext,
-    keyHex,
-  }: {
-    ciphertext: EncryptedString;
-    keyHex: HexString;
-  }): Promise<string> {
+  public static async decrypt(
+    ciphertext: EncryptedString,
+    keyHex: HexString,
+  ): Promise<string> {
     // Extract IV from ciphertext
     const iv = convertBufferToArrayBuffer(
       Buffer.from(ciphertext.slice(0, 24), 'hex'),
