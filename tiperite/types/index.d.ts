@@ -1,12 +1,33 @@
-import * as git from 'isomorphic-git';
-
 declare global {
   interface Window {
-    ReactNativeWebView: {
-      postMessage(msg: string): void;
+    Tiperite: {
+      HTTP: {
+        responses: Record<
+          number,
+          (payload: {
+            response: {
+              statusMessage: string;
+              statusCode: number;
+              headers: Record<string, string>;
+              method: string;
+              body: string;
+              url: string;
+            };
+            error?: string;
+          }) => void
+        > = {};
+
+        requestId: number;
+
+        request(params: {
+          headers: Record<string, string>;
+          method: string;
+          body: string | undefined;
+          url: string;
+          id: number;
+        }): void;
+      };
     };
-    NativeProxy: unknown;
-    git: typeof git;
   }
 }
 

@@ -1,25 +1,4 @@
-import { Buffer } from 'buffer';
-import { FetchEvent } from '../utils/WebExecutor';
-
-export interface NativeProxyResponsePayload {
-  response: {
-    statusMessage: string;
-    statusCode: number;
-    headers: Record<string, string>;
-    method: string;
-    body: string;
-    url: string;
-  };
-  error?: string;
-}
-
-export class NativeProxy {
-  private static responses: Record<
-    number,
-    (payload: NativeProxyResponsePayload) => void
-  > = {};
-  private static requestId = 0;
-
+export class HTTP {
   private static mergeRequestBodyArrays(arrays: Uint8Array[]): Uint8Array {
     let size = 0;
     for (const value of arrays) {
@@ -37,14 +16,18 @@ export class NativeProxy {
     return merged;
   }
 
-  /** Convert uint8array to base64url */
+  /**
+   * Convert uint8array to base64url
+   */
   private static convertRequestBody(body: Uint8Array[]): string {
     return `data:*/*;base64,${Buffer.from(
-      NativeProxy.mergeRequestBodyArrays(body),
+      HTTP.mergeRequestBodyArrays(body),
     ).toString('base64')}`;
   }
 
-  /** Convert base64url to uint8array */
+  /**
+   * Convert base64url to uint8array
+   */
   private static convertResponseBody(base64url: string): Promise<Uint8Array[]> {
     return fetch(base64url)
       .then((res) => res.arrayBuffer())
@@ -74,18 +57,18 @@ export class NativeProxy {
     body: Uint8Array[] | undefined;
     url: string;
   }> {
-    const base64body = body ? NativeProxy.convertRequestBody(body) : undefined;
+    const base64body = body ? HTTP.convertRequestBody(body) : undefined;
 
     return new Promise((resolve, reject) => {
       // Listen for RN's response
-      const id = NativeProxy.requestId++;
-      NativeProxy.responses[id] = (payload: NativeProxyResponsePayload) => {
-        delete NativeProxy.responses[id];
+      const id = window.Tiperite.HTTP.requestId++;
+      window.Tiperite.HTTP.responses[id] = (payload) => {
+        delete window.Tiperite.HTTP.responses[id];
 
         if (payload.error) return reject(payload.error);
 
         (payload.response.body
-          ? NativeProxy.convertResponseBody(payload.response.body)
+          ? HTTP.convertResponseBody(payload.response.body)
           : Promise.resolve(undefined)
         ).then((responseBody) => {
           resolve({
@@ -99,18 +82,13 @@ export class NativeProxy {
         });
       };
 
-      // Send to RN
-      const fetchEvent: FetchEvent = {
-        payload: {
-          headers,
-          method,
-          body: base64body,
-          url,
-        },
-        type: 'fetch',
+      window.Tiperite.HTTP.request({
+        headers,
+        method,
+        body: base64body,
+        url,
         id,
-      };
-      window.ReactNativeWebView.postMessage(JSON.stringify(fetchEvent));
+      });
     });
   }
 }
