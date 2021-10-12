@@ -5,12 +5,8 @@ declare global {
     ReactNativeWebView: {
       postMessage(msg: string): void;
     };
-    KeyDeriverWeb: unknown;
-    LightningFS: unknown;
     NativeProxy: unknown;
-    AESWeb: unknown;
     git: typeof git;
-    fs: unknown;
   }
 }
 
