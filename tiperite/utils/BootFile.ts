@@ -1,4 +1,3 @@
-import * as SecureStore from 'expo-secure-store';
 import { KeyDeriver } from '../utils/KeyDeriver';
 import { Random } from '../utils/Random';
 import Constants from 'expo-constants';
@@ -36,16 +35,16 @@ export class BootFile {
     if (this.passkey !== null) return this.passkey;
 
     // Get previously generated passkey and return if available
-    this.passkey = await SecureStore.getItemAsync(this.SECURESTORE_KEY);
+    this.passkey = localStorage.getItem(this.SECURESTORE_KEY);
     if (this.passkey) return this.passkey;
 
     // Generate a passkey
-    const salt = await KeyDeriver.generateSalt();
+    const salt = KeyDeriver.generateSalt();
     const itr = await Random.integer(50000, 100000);
     this.passkey = await KeyDeriver.deriveKey(Random.uuid(), salt, itr);
 
     // Save and return passkey
-    await SecureStore.setItemAsync(this.SECURESTORE_KEY, this.passkey);
+    localStorage.setItem(this.SECURESTORE_KEY, this.passkey);
     return this.passkey;
   }
 
