@@ -16,26 +16,28 @@ export function EntryScreen({
   const dispatch = useDispatch();
 
   React.useEffect(() => {
-    BootFile.getData().then((data) => {
-      // Skip 'unlock' screen because the user has configured a no-pass login
-      if (!data.hasDevicePassword && !data.firstLaunch) {
-        DeviceFile.unlock('').then(() => {
-          dispatch(deviceFileDataSlice.actions.set(DeviceFile.getData()));
+    BootFile.getData()
+      .then((data) => {
+        // Skip 'unlock' screen because the user has configured a no-pass login
+        if (!data.hasDevicePassword && !data.firstLaunch) {
+          DeviceFile.unlock('').then(() => {
+            dispatch(deviceFileDataSlice.actions.set(DeviceFile.getData()));
+            dispatch(bootFileDataSlice.actions.set(data));
+            navigation.replace('HomeScreen');
+          });
+        }
+        // Let the user configure (or skip configuring) a passcode
+        else if (data.firstLaunch) {
           dispatch(bootFileDataSlice.actions.set(data));
-          navigation.replace('HomeScreen');
-        });
-      }
-      // Let the user configure (or skip configuring) a passcode
-      else if (data.firstLaunch) {
-        dispatch(bootFileDataSlice.actions.set(data));
-        navigation.replace('SetPasscodeScreen');
-      }
-      // Make user enter a passcode before accessing the app
-      else {
-        dispatch(bootFileDataSlice.actions.set(data));
-        navigation.replace('EnterPasscodeScreen');
-      }
-    });
+          navigation.replace('SetPasscodeScreen');
+        }
+        // Make user enter a passcode before accessing the app
+        else {
+          dispatch(bootFileDataSlice.actions.set(data));
+          navigation.replace('EnterPasscodeScreen');
+        }
+      })
+      .catch(console.error);
   }, []);
 
   return null;
