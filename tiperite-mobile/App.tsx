@@ -104,7 +104,7 @@ class WebExecutor {
               headers[keyValue[0].trim()] = keyValue[1].trim();
             });
 
-          // Send response object nativeProxy expects
+          // Send response object
           resolve({
             statusMessage: xhr.statusText,
             statusCode: xhr.status,
@@ -118,22 +118,18 @@ class WebExecutor {
       });
 
       // Convert the response back into base64 and JSON and trigger the correct
-      // NativeProxy response callback
-      const json = JSON.stringify(
-        {
-          response: {
-            statusMessage: response.statusMessage,
-            statusCode: response.statusCode,
-            headers: response.headers,
-            method,
-            // The buffer polyfill doesn't support base64url
-            body:
-              'data:*/*;base64,' +
-              Buffer.from(response.body).toString('base64'),
-            url: response.url,
-          },
-        }, // as NativeProxyResponsePayload
-      );
+      const json = JSON.stringify({
+        response: {
+          statusMessage: response.statusMessage,
+          statusCode: response.statusCode,
+          headers: response.headers,
+          method,
+          // The buffer polyfill doesn't support base64url
+          body:
+            'data:*/*;base64,' + Buffer.from(response.body).toString('base64'),
+          url: response.url,
+        },
+      });
       this.exec(`
         window.NativeProxy.responses[${req.id}](${json});
       `);
