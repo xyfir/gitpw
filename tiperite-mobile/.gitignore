@@ -6,6 +6,7 @@ web/dist.js
 web-build/
 .DS_Store
 *.orig.*
+html.js
 .expo/
 .dev/
 *.jks
