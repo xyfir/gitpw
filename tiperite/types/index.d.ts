@@ -37,3 +37,4 @@ export * from './filesystem';
 export * from './lightning-fs';
 export * from './navigation';
 export * from './state';
+export * from './workspaces';

@@ -1,4 +1,4 @@
-import { TiperiteVersion, TiperiteConfig, HexString, UUID } from '.';
+import { StorageFileWorkspace, TiperiteVersion, TiperiteConfig } from '.';
 
 /**
  * `/storage.json`
@@ -19,26 +19,7 @@ export interface StorageFileData {
   /**
    * Track any workspaces saved on the local device
    */
-  workspaces: {
-    lastViewedAt: number;
-    config: TiperiteConfig;
-    /**
-     * @example "https://github.com/example/workspace.git"
-     */
-    repo: string;
-    name: string;
-    auth: {
-      user: string;
-      pass: string;
-    };
-    /**
-     * The final plaintext passkey for the workspace. This is the output from
-     *  `KeyDeriver.deriveKey()` using the user-supplied password and the
-     *  requirements from the workspace's manifest.
-     */
-    key: HexString;
-    id: UUID;
-  }[];
+  workspaces: StorageFileWorkspace[];
   /**
    * The version of Tiperite that last saved this file
    */
