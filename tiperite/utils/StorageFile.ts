@@ -52,17 +52,12 @@ export class StorageFile {
    * Returns a default `StorageFileData` object
    */
   private static getDefaultData(): Readonly<StorageFileData> {
-    return Object.freeze({
+    const data: StorageFileData = {
       workspaces: [],
       version: Constants.nativeAppVersion as TiperiteVersion,
       config: {},
-      memory: {
-        activeWorkspaceId: null,
-        githubToken: null,
-        pinnedFiles: [],
-        recentFiles: [],
-      },
-    });
+    };
+    return Object.freeze(data);
   }
 
   /**
