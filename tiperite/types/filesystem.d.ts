@@ -20,12 +20,17 @@ export interface DeviceFileData {
    * Track any workspaces saved on the local device
    */
   workspaces: {
+    lastViewedAt: number;
     config: TiperiteConfig;
     /**
      * @example "https://github.com/example/workspace.git"
      */
     repo: string;
     name: string;
+    auth: {
+      user: string;
+      pass: string;
+    };
     /**
      * The final plaintext passkey for the workspace. This is the output from
      *  `KeyDeriver.deriveKey()` using the user-supplied password and the
@@ -38,12 +43,6 @@ export interface DeviceFileData {
    * The version of Tiperite that last saved this file
    */
   version: TiperiteVersion;
-  memory: {
-    activeWorkspaceId: UUID | null;
-    githubToken: string | null;
-    pinnedFiles: UUID[];
-    recentFiles: UUID[];
-  };
   config: TiperiteConfig;
 }
 
