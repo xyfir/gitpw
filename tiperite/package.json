@@ -1,15 +1,12 @@
 {
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
-    "compile-web": "parcel build web/index.ts --out-dir web --out-file dist.js --no-cache --no-source-maps; node web/compile-web.js",
-    "fix-eslint": "eslint . --ext .ts,.tsx,.json --fix",
-    "android": "expo start --android",
+    "postbuild": "mv webpack.config.js prod.webpack.config.js",
+    "prebuild": "mv prod.webpack.config.js webpack.config.js",
     "eslint": "eslint . --ext .ts,.tsx,.json --max-warnings 0",
     "start": "expo start",
-    "eject": "expo eject",
-    "test": "jest --watchAll",
-    "ios": "expo start --ios",
-    "web": "expo start --web"
+    "build": "expo build:web",
+    "test": "jest --watchAll"
   },
   "jest": {
     "preset": "jest-expo"
