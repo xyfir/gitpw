@@ -6,34 +6,34 @@ import { FS } from './FS';
 import {
   TiperiteVersion,
   EncryptedString,
-  DeviceFileData,
+  StorageFileData,
   HexString,
 } from '../types';
 
 /**
- * Read and write to `/device.json`
+ * Read and write to `/storage.json`
  */
-export class DeviceFile {
+export class StorageFile {
   /**
    * The passcode is appended to the passkey for `/boot.json` to form the
-   *  password that generates the passkey for `/device.json`
+   *  password that generates the passkey for `/storage.json`
    */
   private static passcode: string | null = null;
   /**
-   * The passkey is used to encrypt `/device.json`
+   * The passkey is used to encrypt `/storage.json`
    */
   private static passkey: HexString | null = null;
   /**
    * The path on the filesystem
    */
-  private static PATH: '/device.json' = '/device.json';
+  private static PATH: '/storage.json' = '/storage.json';
   /**
-   * The decrypted in-memory object read from `/device.json`
+   * The decrypted in-memory object read from `/storage.json`
    */
-  private static data: DeviceFileData | null = null;
+  private static data: StorageFileData | null = null;
 
   /**
-   * Returns the device passkey after generating it if needed
+   * Returns the storage passkey after generating it if needed
    */
   private static async getPasskey(passcode: string): Promise<HexString> {
     if (this.passkey !== null) return this.passkey;
@@ -49,9 +49,9 @@ export class DeviceFile {
   }
 
   /**
-   * Returns a default `DeviceFileData` object
+   * Returns a default `StorageFileData` object
    */
-  private static getDefaultData(): Readonly<DeviceFileData> {
+  private static getDefaultData(): Readonly<StorageFileData> {
     return Object.freeze({
       workspaces: [],
       version: Constants.nativeAppVersion as TiperiteVersion,
@@ -66,27 +66,27 @@ export class DeviceFile {
   }
 
   /**
-   * Returns the in-memory `DeviceFileData` if available
+   * Returns the in-memory `StorageFileData` if available
    */
-  public static getData(): Readonly<DeviceFileData> {
+  public static getData(): Readonly<StorageFileData> {
     if (this.data === null) throw Error('Cannot get data before unlock');
     return this.data;
   }
 
   /**
-   * Updates the data in the device file and in-memory cache
+   * Updates the data in the storage file and in-memory cache
    */
-  public static async setData(data: DeviceFileData): Promise<void> {
+  public static async setData(data: StorageFileData): Promise<void> {
     if (this.data === null) throw Error('Cannot set data before unlock');
 
-    this.data = Object.freeze({ ...data }) as DeviceFileData;
+    this.data = Object.freeze({ ...data }) as StorageFileData;
     const passkey = await this.getPasskey(this.passcode as string);
     const ciphertext = await AES.encrypt(JSON.stringify(this.data), passkey);
     await FS.writeFile(this.PATH, ciphertext);
   }
 
   /**
-   * Read the device file to memory and decrypt using `passcode`
+   * Read the storage file to memory and decrypt using `passcode`
    *
    * @throws if `passcode` is incorrect
    */
@@ -106,7 +106,7 @@ export class DeviceFile {
     else {
       const plaintext = await AES.decrypt(ciphertext, passkey);
       this.passcode = passcode;
-      this.data = Object.freeze(JSON.parse(plaintext)) as DeviceFileData;
+      this.data = Object.freeze(JSON.parse(plaintext)) as StorageFileData;
     }
   }
 }

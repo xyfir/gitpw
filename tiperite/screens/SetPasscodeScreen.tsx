@@ -1,10 +1,10 @@
 import { StackNavigatorScreenProps } from '../types';
-import { deviceFileDataSlice } from '../state/deviceFileDataSlice';
+import { storageFileDataSlice } from '../state/storageFileDataSlice';
 import { BootFileData } from '../types';
 import { TrTextInput } from '../components/TrTextInput';
 import { useSelector } from '../hooks/useSelector';
 import { useDispatch } from '../hooks/useDispatch';
-import { DeviceFile } from '../utils/DeviceFile';
+import { StorageFile } from '../utils/StorageFile';
 import { Text, View } from 'react-native';
 import { TrButton } from '../components/TrButton';
 import { BootFile } from '../utils/BootFile';
@@ -38,9 +38,9 @@ export function SetPasscodeScreen({
     } as BootFileData;
 
     BootFile.setData(data)
-      .then(() => DeviceFile.unlock(''))
+      .then(() => StorageFile.unlock(''))
       .then(() => {
-        dispatch(deviceFileDataSlice.actions.set(DeviceFile.getData()));
+        dispatch(storageFileDataSlice.actions.set(StorageFile.getData()));
         dispatch(bootFileDataSlice.actions.set(data));
         navigation.replace('HomeScreen');
       });
@@ -56,9 +56,9 @@ export function SetPasscodeScreen({
     } as BootFileData;
 
     BootFile.setData(data)
-      .then(() => DeviceFile.unlock(passcode))
+      .then(() => StorageFile.unlock(passcode))
       .then(() => {
-        dispatch(deviceFileDataSlice.actions.set(DeviceFile.getData()));
+        dispatch(storageFileDataSlice.actions.set(StorageFile.getData()));
         dispatch(bootFileDataSlice.actions.set(data));
         navigation.replace('HomeScreen');
       });

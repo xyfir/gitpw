@@ -1,9 +1,9 @@
 import { StackNavigatorScreenProps } from '../types';
-import { deviceFileDataSlice } from '../state/deviceFileDataSlice';
+import { storageFileDataSlice } from '../state/storageFileDataSlice';
 import { Alert, Text, View } from 'react-native';
 import { TrTextInput } from '../components/TrTextInput';
 import { useDispatch } from '../hooks/useDispatch';
-import { DeviceFile } from '../utils/DeviceFile';
+import { StorageFile } from '../utils/StorageFile';
 import { useTheme } from '../hooks/useTheme';
 import { TrButton } from '../components/TrButton';
 import React from 'react';
@@ -11,9 +11,9 @@ import React from 'react';
 /**
  * This can be the first screen a user sees when they open the app if they've
  *  configured a passcode. They will be required to enter in their passcode
- *  correctly to decrypt `/device.json` and access their data.
+ *  correctly to decrypt `/storage.json` and access their data.
  *
- * @see DeviceFile
+ * @see StorageFile
  */
 export function EnterPasscodeScreen({
   navigation,
@@ -23,9 +23,9 @@ export function EnterPasscodeScreen({
   const theme = useTheme('EnterPasscodeScreen');
 
   function onUnlock(): void {
-    DeviceFile.unlock(passcode)
+    StorageFile.unlock(passcode)
       .then(() => {
-        dispatch(deviceFileDataSlice.actions.set(DeviceFile.getData()));
+        dispatch(storageFileDataSlice.actions.set(StorageFile.getData()));
         navigation.replace('HomeScreen');
       })
       .catch(() => Alert.alert('Incorrect passcode!'));

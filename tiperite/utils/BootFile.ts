@@ -20,7 +20,7 @@ export class BootFile {
   private static SECURESTORE_KEY: 'boot-passkey' = 'boot-passkey';
   /**
    * The boot passkey is used to encrypt `/boot.json` and is also used as the
-   *  encryption key (or part of it) for `/device.json`
+   *  encryption key (or part of it) for `/storage.json`
    */
   private static passkey: HexString | null = null;
   /**

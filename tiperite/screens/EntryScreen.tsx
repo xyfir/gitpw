@@ -1,8 +1,8 @@
 import { StackNavigatorScreenProps } from '../types';
-import { deviceFileDataSlice } from '../state/deviceFileDataSlice';
+import { storageFileDataSlice } from '../state/storageFileDataSlice';
 import { bootFileDataSlice } from '../state/bootFileDataSlice';
 import { useDispatch } from '../hooks/useDispatch';
-import { DeviceFile } from '../utils/DeviceFile';
+import { StorageFile } from '../utils/StorageFile';
 import { BootFile } from '../utils/BootFile';
 import React from 'react';
 
@@ -20,8 +20,8 @@ export function EntryScreen({
       .then((data) => {
         // Skip 'unlock' screen because the user has configured a no-pass login
         if (!data.hasDevicePassword && !data.firstLaunch) {
-          DeviceFile.unlock('').then(() => {
-            dispatch(deviceFileDataSlice.actions.set(DeviceFile.getData()));
+          StorageFile.unlock('').then(() => {
+            dispatch(storageFileDataSlice.actions.set(StorageFile.getData()));
             dispatch(bootFileDataSlice.actions.set(data));
             navigation.replace('HomeScreen');
           });

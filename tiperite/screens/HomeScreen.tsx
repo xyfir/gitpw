@@ -1,4 +1,4 @@
-import { selectNonNullableDeviceFileData } from '../state/deviceFileDataSlice';
+import { selectNonNullableStorageFileData } from '../state/storageFileDataSlice';
 import { selectNonNullableBootFileData } from '../state/bootFileDataSlice';
 import { useSelector } from '../hooks/useSelector';
 import { Text, View } from 'react-native';
@@ -13,14 +13,14 @@ import React from 'react';
  *  passcode).
  */
 export function HomeScreen(): JSX.Element {
-  const deviceFileData = useSelector(selectNonNullableDeviceFileData);
+  const storageFileData = useSelector(selectNonNullableStorageFileData);
   const bootFileData = useSelector(selectNonNullableBootFileData);
   const theme = useTheme('HomeScreen');
 
   function onReset(): void {
-    FS.unlink('/device.json')
-      .then(() => console.log('reset device'))
-      .catch((e) => console.error('reset device', e));
+    FS.unlink('/storage.json')
+      .then(() => console.log('reset storage'))
+      .catch((e) => console.error('reset storage', e));
     FS.unlink('/boot.json')
       .then(() => console.log('reset boot'))
       .catch((e) => console.error('reset boot', e));
@@ -34,7 +34,7 @@ export function HomeScreen(): JSX.Element {
 
       <Text style={theme.text}>{JSON.stringify(bootFileData, null, 2)}</Text>
 
-      <Text style={theme.text}>{JSON.stringify(deviceFileData, null, 2)}</Text>
+      <Text style={theme.text}>{JSON.stringify(storageFileData, null, 2)}</Text>
     </View>
   );
 }

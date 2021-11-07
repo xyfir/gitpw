@@ -1,14 +1,14 @@
 import { TiperiteVersion, TiperiteConfig, HexString, UUID } from '.';
 
 /**
- * `/device.json`
+ * `/storage.json`
  *
  * The main file that persists the app's state on the device. Loaded after
  *  `/boot.json`.
  *
  * @todo update `UUID` with actual type references
  */
-export interface DeviceFileData {
+export interface StorageFileData {
   // /** Track any extensions installed on the local device */
   // extensions: {
   //   manifest: unknown;
@@ -57,7 +57,7 @@ export interface BootFileData {
   passwordType: 'number' | 'text' | null;
   firstLaunch: boolean;
   /**
-   * The iterations to use to generate the passkey for `/device.json`
+   * The iterations to use to generate the passkey for `/storage.json`
    */
   iterations: number;
   /**
@@ -65,7 +65,7 @@ export interface BootFileData {
    */
   version: TiperiteVersion;
   /**
-   * The salt to use to generate the passkey for `/device.json`
+   * The salt to use to generate the passkey for `/storage.json`
    */
   salt: string;
 }
