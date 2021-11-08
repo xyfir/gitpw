@@ -1,5 +1,5 @@
 import { StyleProp, ViewStyle, TextStyle } from 'react-native';
-import { SansSerif } from '../../constants/SansSerif';
+import { SansSerifFont } from '../../constants/fonts';
 
 export const TrTextInputStyles: {
   TrTextInput: {
@@ -41,7 +41,7 @@ export const TrTextInputStyles: {
       paddingBottom: 10,
       paddingRight: 10,
       paddingLeft: 10,
-      fontFamily: SansSerif.Regular,
+      fontFamily: SansSerifFont,
       paddingTop: 10,
       textAlign: 'center',
       fontSize: 14,
@@ -50,7 +50,8 @@ export const TrTextInputStyles: {
     },
     label: {
       marginBottom: 7,
-      fontFamily: SansSerif.Bold,
+      fontFamily: SansSerifFont,
+      fontWeight: '700',
       fontSize: 14,
       color: '#000',
     },

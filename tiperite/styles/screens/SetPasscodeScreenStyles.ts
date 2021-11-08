@@ -1,5 +1,5 @@
 import { StyleProp, ViewStyle, TextStyle } from 'react-native';
-import { SansSerif } from '../../constants/SansSerif';
+import { SansSerifFont } from '../../constants/fonts';
 
 export const SetPasscodeScreenStyles: {
   SetPasscodeScreen: {
@@ -18,7 +18,7 @@ export const SetPasscodeScreenStyles: {
       flex: 1,
     },
     text: {
-      fontFamily: SansSerif.Regular,
+      fontFamily: SansSerifFont,
       color: '#000',
     },
   },

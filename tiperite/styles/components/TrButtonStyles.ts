@@ -1,5 +1,5 @@
 import { StyleProp, ViewStyle, TextStyle } from 'react-native';
-import { SansSerif } from '../../constants/SansSerif';
+import { SansSerifFont } from '../../constants/fonts';
 
 export const TrButtonStyles: {
   TrButton: {
@@ -17,7 +17,8 @@ export const TrButtonStyles: {
       backgroundColor: '#FFF',
     },
     title: {
-      fontFamily: SansSerif.Bold,
+      fontFamily: SansSerifFont,
+      fontWeight: '700',
       textAlign: 'center',
       fontSize: 14,
       color: '#FFF',
