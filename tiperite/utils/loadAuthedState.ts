@@ -1,4 +1,5 @@
 import { bootFileDataSlice } from '../state/bootFileDataSlice';
+import { credentialsSlice } from '../state/credentialsSlice';
 import { workspacesSlice } from '../state/workspacesSlice';
 import { BootFileData } from '../types';
 import { StorageFile } from './StorageFile';
@@ -13,6 +14,9 @@ export function loadAuthedState(bootFileData?: BootFileData): void {
   // Note that the dispatch order matters due to how StorageFileWriter works
   const storageFileData = StorageFile.getData();
   store.dispatch(configSlice.actions.set(storageFileData.config));
+  store.dispatch(
+    credentialsSlice.actions.initialize(storageFileData.credentials),
+  );
   store.dispatch(
     workspacesSlice.actions.initialize(storageFileData.workspaces),
   );
