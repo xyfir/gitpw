@@ -10,11 +10,12 @@ import { store } from '../state/store';
  */
 export function loadAuthedState(bootFileData?: BootFileData): void {
   // Load data from the storage file into state
+  // Note that the dispatch order matters due to how StorageFileWriter works
   const storageFileData = StorageFile.getData();
+  store.dispatch(configSlice.actions.set(storageFileData.config));
   store.dispatch(
     workspacesSlice.actions.initialize(storageFileData.workspaces),
   );
-  store.dispatch(configSlice.actions.set(storageFileData.config));
 
   // Load bootFileData into state
   if (bootFileData) {
