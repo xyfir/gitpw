@@ -53,6 +53,7 @@ export class StorageFile {
    */
   private static getDefaultData(): Readonly<StorageFileData> {
     const data: StorageFileData = {
+      credentials: [],
       workspaces: [],
       version: Constants.nativeAppVersion as TiperiteVersion,
       config: {},

@@ -1,12 +1,15 @@
-import { StorageFileWorkspace, TiperiteVersion, TiperiteConfig } from '.';
+import {
+  StorageFileWorkspace,
+  TiperiteVersion,
+  TiperiteConfig,
+  Credential,
+} from '.';
 
 /**
  * `/storage.json`
  *
  * The main file that persists the app's state on the device. Loaded after
  *  `/boot.json`.
- *
- * @todo update `UUID` with actual type references
  */
 export interface StorageFileData {
   // /** Track any extensions installed on the local device */
@@ -16,9 +19,7 @@ export interface StorageFileData {
   //   repo: string;
   //   id: UUID;
   // }[];
-  /**
-   * Track any workspaces saved on the local device
-   */
+  credentials: Credential[];
   workspaces: StorageFileWorkspace[];
   /**
    * The version of Tiperite that last saved this file
