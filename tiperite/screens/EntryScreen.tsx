@@ -1,6 +1,6 @@
 import { StackNavigatorScreenProps } from '../types';
-import { storageFileDataSlice } from '../state/storageFileDataSlice';
 import { bootFileDataSlice } from '../state/bootFileDataSlice';
+import { loadAuthedState } from '../utils/loadAuthedState';
 import { useDispatch } from '../hooks/useDispatch';
 import { StorageFile } from '../utils/StorageFile';
 import { BootFile } from '../utils/BootFile';
@@ -17,23 +17,22 @@ export function EntryScreen({
 
   React.useEffect(() => {
     BootFile.getData()
-      .then((data) => {
+      .then((bootFileData) => {
         // Skip 'unlock' screen because the user has configured a no-pass login
-        if (!data.hasDevicePassword && !data.firstLaunch) {
+        if (!bootFileData.hasDevicePassword && !bootFileData.firstLaunch) {
           StorageFile.unlock('').then(() => {
-            dispatch(storageFileDataSlice.actions.set(StorageFile.getData()));
-            dispatch(bootFileDataSlice.actions.set(data));
+            loadAuthedState(bootFileData);
             navigation.replace('HomeScreen');
           });
         }
         // Let the user configure (or skip configuring) a passcode
-        else if (data.firstLaunch) {
-          dispatch(bootFileDataSlice.actions.set(data));
+        else if (bootFileData.firstLaunch) {
+          dispatch(bootFileDataSlice.actions.set(bootFileData));
           navigation.replace('SetPasscodeScreen');
         }
         // Make user enter a passcode before accessing the app
         else {
-          dispatch(bootFileDataSlice.actions.set(data));
+          dispatch(bootFileDataSlice.actions.set(bootFileData));
           navigation.replace('EnterPasscodeScreen');
         }
       })

@@ -1,8 +1,7 @@
 import { StackNavigatorScreenProps } from '../types';
-import { storageFileDataSlice } from '../state/storageFileDataSlice';
 import { Alert, Text, View } from 'react-native';
+import { loadAuthedState } from '../utils/loadAuthedState';
 import { TrTextInput } from '../components/TrTextInput';
-import { useDispatch } from '../hooks/useDispatch';
 import { StorageFile } from '../utils/StorageFile';
 import { useTheme } from '../hooks/useTheme';
 import { TrButton } from '../components/TrButton';
@@ -19,13 +18,12 @@ export function EnterPasscodeScreen({
   navigation,
 }: StackNavigatorScreenProps<'EnterPasscodeScreen'>): JSX.Element {
   const [passcode, setPasscode] = React.useState('');
-  const dispatch = useDispatch();
   const theme = useTheme('EnterPasscodeScreen');
 
   function onUnlock(): void {
     StorageFile.unlock(passcode)
       .then(() => {
-        dispatch(storageFileDataSlice.actions.set(StorageFile.getData()));
+        loadAuthedState();
         navigation.replace('HomeScreen');
       })
       .catch(() => Alert.alert('Incorrect passcode!'));

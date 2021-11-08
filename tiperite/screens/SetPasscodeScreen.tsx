@@ -1,19 +1,15 @@
+import { selectNonNullableBootFileData } from '../state/bootFileDataSlice';
 import { StackNavigatorScreenProps } from '../types';
-import { storageFileDataSlice } from '../state/storageFileDataSlice';
+import { loadAuthedState } from '../utils/loadAuthedState';
 import { BootFileData } from '../types';
 import { TrTextInput } from '../components/TrTextInput';
 import { useSelector } from '../hooks/useSelector';
-import { useDispatch } from '../hooks/useDispatch';
 import { StorageFile } from '../utils/StorageFile';
 import { Text, View } from 'react-native';
 import { TrButton } from '../components/TrButton';
 import { BootFile } from '../utils/BootFile';
 import { useTheme } from '../hooks/useTheme';
 import React from 'react';
-import {
-  selectNonNullableBootFileData,
-  bootFileDataSlice,
-} from '../state/bootFileDataSlice';
 
 /**
  * This is the first screen shown upon opening the app for the first time. It
@@ -28,7 +24,6 @@ export function SetPasscodeScreen({
   const [configuring, setConfiguring] = React.useState(false);
   const [passcode, setPasscode] = React.useState('');
   const bootFileData = useSelector(selectNonNullableBootFileData);
-  const dispatch = useDispatch();
   const theme = useTheme('SetPasscodeScreen');
 
   function onSkip(): void {
@@ -40,8 +35,7 @@ export function SetPasscodeScreen({
     BootFile.setData(data)
       .then(() => StorageFile.unlock(''))
       .then(() => {
-        dispatch(storageFileDataSlice.actions.set(StorageFile.getData()));
-        dispatch(bootFileDataSlice.actions.set(data));
+        loadAuthedState(data);
         navigation.replace('HomeScreen');
       });
   }
@@ -58,8 +52,7 @@ export function SetPasscodeScreen({
     BootFile.setData(data)
       .then(() => StorageFile.unlock(passcode))
       .then(() => {
-        dispatch(storageFileDataSlice.actions.set(StorageFile.getData()));
-        dispatch(bootFileDataSlice.actions.set(data));
+        loadAuthedState(data);
         navigation.replace('HomeScreen');
       });
   }
