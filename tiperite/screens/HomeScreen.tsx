@@ -1,7 +1,7 @@
-import { selectNonNullableBootFileData } from '../state/bootFileDataSlice';
-import { useSelector } from '../hooks/useSelector';
-import { Text, View } from 'react-native';
+import { StackNavigatorScreenProps } from '../types';
+import { TrButton } from '../components/TrButton';
 import { useTheme } from '../hooks/useTheme';
+import { View } from 'react-native';
 import React from 'react';
 
 /**
@@ -9,15 +9,18 @@ import React from 'react';
  *  it's the first visible screen upon opening the app if they don't have a
  *  passcode).
  */
-export function HomeScreen(): JSX.Element {
-  const bootFileData = useSelector(selectNonNullableBootFileData);
+export function HomeScreen({
+  navigation,
+}: StackNavigatorScreenProps<'HomeScreen'>): JSX.Element {
   const theme = useTheme('HomeScreen');
+
+  function onAddWorkspace(): void {
+    navigation.navigate('AddWorkspaceScreen');
+  }
 
   return (
     <View style={theme.root}>
-      <Text style={theme.text}>Welcome!</Text>
-
-      <Text style={theme.text}>{JSON.stringify(bootFileData, null, 2)}</Text>
+      <TrButton onPress={onAddWorkspace} title="Add Workspace" />
     </View>
   );
 }
