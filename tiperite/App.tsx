@@ -6,6 +6,7 @@ global.Buffer = Buffer;
 
 import { Provider as ReduxProvider } from 'react-redux';
 import { useCachedResources } from './hooks/useCachedResources';
+import { StorageFileWriter } from './components/StorageFileWriter';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { NavigationRoot } from './navigation/NavigationRoot';
 import { themeSlice } from './state/themeSlice';
@@ -29,6 +30,8 @@ export default function App(): JSX.Element | null {
         <StatusBar animated style={isDark ? 'light' : 'dark'} />
 
         <NavigationRoot />
+
+        <StorageFileWriter />
       </SafeAreaProvider>
     </ReduxProvider>
   ) : null;
