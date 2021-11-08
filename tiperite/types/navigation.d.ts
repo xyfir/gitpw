@@ -5,6 +5,7 @@ import type { StackScreenProps } from '@react-navigation/stack';
  */
 export type StackNavigatorParams = {
   EnterPasscodeScreen: undefined;
+  AddWorkspaceScreen: undefined;
   SetPasscodeScreen: undefined;
   EntryScreen: undefined;
   HomeScreen: undefined;
