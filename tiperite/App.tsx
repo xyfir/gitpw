@@ -5,7 +5,6 @@ import { Buffer } from 'buffer';
 global.Buffer = Buffer;
 
 import { Provider as ReduxProvider } from 'react-redux';
-import { useCachedResources } from './hooks/useCachedResources';
 import { StorageFileWriter } from './components/StorageFileWriter';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { NavigationRoot } from './navigation/NavigationRoot';
@@ -16,7 +15,6 @@ import { store } from './state/store';
 import React from 'react';
 
 export default function App(): JSX.Element | null {
-  const resourcesReady = useCachedResources();
   const isDark = useIsDark();
 
   // Toggle dark theme
@@ -24,7 +22,7 @@ export default function App(): JSX.Element | null {
     store.dispatch(themeSlice.actions.build({ isDark }));
   }, [isDark]);
 
-  return resourcesReady ? (
+  return (
     <ReduxProvider store={store}>
       <SafeAreaProvider>
         <StatusBar animated style={isDark ? 'light' : 'dark'} />
@@ -34,5 +32,5 @@ export default function App(): JSX.Element | null {
         <StorageFileWriter />
       </SafeAreaProvider>
     </ReduxProvider>
-  ) : null;
+  );
 }

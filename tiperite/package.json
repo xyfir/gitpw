@@ -12,9 +12,6 @@
     "preset": "jest-expo"
   },
   "dependencies": {
-    "@expo-google-fonts/ubuntu": "^0.2.0",
-    "@expo-google-fonts/ubuntu-mono": "^0.2.0",
-    "@expo/vector-icons": "^12.0.0",
     "@isomorphic-git/lightning-fs": "^4.4.1",
     "@react-native-community/masked-view": "0.1.10",
     "@react-navigation/bottom-tabs": "^6.0.9",
@@ -27,10 +24,8 @@
     "expo-asset": "~8.4.3",
     "expo-constants": "~12.1.3",
     "expo-file-system": "~13.0.3",
-    "expo-font": "~10.0.3",
     "expo-haptics": "~11.0.3",
     "expo-linking": "~2.4.2",
-    "expo-splash-screen": "~0.13.4",
     "expo-status-bar": "~1.1.0",
     "isomorphic-git": "^1.8.2",
     "react": "17.0.1",
