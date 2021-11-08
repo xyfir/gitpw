@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { TiperiteConfig } from '../types';
+import { RootState, TiperiteConfig } from '../types';
 
 export const configSlice = createSlice({
   initialState: {} as TiperiteConfig,
@@ -10,3 +10,7 @@ export const configSlice = createSlice({
   },
   name: 'config',
 });
+
+export const selectConfig = (
+  s: RootState,
+): ReturnType<typeof configSlice.reducer> => s.config;

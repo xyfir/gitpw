@@ -1,4 +1,4 @@
-import { StorageFileWorkspace, WorkspacesState } from '../types';
+import { RootState, StorageFileWorkspace, WorkspacesState } from '../types';
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 export const workspacesSlice = createSlice({
@@ -19,3 +19,7 @@ export const workspacesSlice = createSlice({
   },
   name: 'workspaces',
 });
+
+export const selectWorkspaces = (
+  s: RootState,
+): ReturnType<typeof workspacesSlice.reducer> => s.workspaces;
