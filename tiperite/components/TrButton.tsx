@@ -9,15 +9,11 @@ import {
 
 export interface TrButtonProps
   extends Omit<TouchableOpacityProps, 'activeOpacity'> {
-  startAdornment?: JSX.Element;
-  endAdornment?: JSX.Element;
   title?: string;
   busy?: boolean;
 }
 
 export function TrButton({
-  startAdornment,
-  endAdornment,
   disabled,
   onPress,
   style,
@@ -39,13 +35,7 @@ export function TrButton({
       {busy ? (
         <ActivityIndicator size="small" />
       ) : (
-        <>
-          {startAdornment}
-
-          <Text style={theme.title}>{title}</Text>
-
-          {endAdornment}
-        </>
+        <Text style={theme.title}>{title}</Text>
       )}
     </TouchableOpacity>
   );
