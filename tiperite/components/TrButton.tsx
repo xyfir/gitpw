@@ -9,11 +9,13 @@ import {
 
 export interface TrButtonProps
   extends Omit<TouchableOpacityProps, 'activeOpacity'> {
+  secondary?: boolean;
   title?: string;
   busy?: boolean;
 }
 
 export function TrButton({
+  secondary,
   disabled,
   onPress,
   style,
@@ -28,14 +30,26 @@ export function TrButton({
       activeOpacity={disabled ? 0.5 : 0.2}
       disabled={disabled || busy}
       onPress={onPress}
-      style={[theme.root, { opacity: disabled ? 0.5 : 1 }, style]}
+      style={[
+        theme.root,
+        secondary ? theme.secondaryRoot : theme.primaryRoot,
+        { opacity: disabled ? 0.5 : 1 },
+        style,
+      ]}
       key={disabled ? 0 : 1}
       {...props}
     >
       {busy ? (
         <ActivityIndicator size="small" />
       ) : (
-        <Text style={theme.title}>{title}</Text>
+        <Text
+          style={[
+            theme.title,
+            secondary ? theme.secondaryTitle : theme.primaryTitle,
+          ]}
+        >
+          {title}
+        </Text>
       )}
     </TouchableOpacity>
   );
