@@ -1,4 +1,10 @@
-import { TiperiteVersion, TiperiteConfig, HexString, UUID } from '.';
+import {
+  TiperiteVersion,
+  TiperiteConfig,
+  CredentialID,
+  HexString,
+  UUID,
+} from '.';
 
 export type WorkspaceID = UUID;
 
@@ -8,6 +14,7 @@ export type WorkspaceID = UUID;
  * @see StorageFileData.workspaces
  */
 export interface StorageFileWorkspace {
+  credentialId: CredentialID;
   lastViewedAt: number;
   config: TiperiteConfig;
   /**
@@ -15,10 +22,6 @@ export interface StorageFileWorkspace {
    */
   repo: string;
   name: string;
-  auth: {
-    user: string;
-    pass: string;
-  };
   /**
    * The final plaintext passkey for the workspace. This is the output from
    *  `KeyDeriver.deriveKey()` using the user-supplied password and the
