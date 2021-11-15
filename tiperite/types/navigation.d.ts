@@ -4,6 +4,7 @@ import type { StackScreenProps } from '@react-navigation/stack';
  * The screens within `StackNavigator` and the params they expect to receive
  */
 export type StackNavigatorParams = {
+  CredentialManagerScreen: undefined;
   EnterPasscodeScreen: undefined;
   AddWorkspaceScreen: undefined;
   SetPasscodeScreen: undefined;

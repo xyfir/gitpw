@@ -1,3 +1,4 @@
+import { CredentialManagerScreen } from '../screens/CredentialManagerScreen';
 import { StackNavigatorParams } from '../types';
 import { EnterPasscodeScreen } from '../screens/EnterPasscodeScreen';
 import { AddWorkspaceScreen } from '../screens/AddWorkspaceScreen';
@@ -17,6 +18,10 @@ const { Navigator, Screen } = createStackNavigator<StackNavigatorParams>();
 
 export const StackNavigator = (): JSX.Element => (
   <Navigator initialRouteName="EntryScreen" screenOptions={options}>
+    <Screen
+      component={CredentialManagerScreen}
+      name="CredentialManagerScreen"
+    />
     <Screen component={EnterPasscodeScreen} name="EnterPasscodeScreen" />
     <Screen component={AddWorkspaceScreen} name="AddWorkspaceScreen" />
     <Screen component={SetPasscodeScreen} name="SetPasscodeScreen" />
