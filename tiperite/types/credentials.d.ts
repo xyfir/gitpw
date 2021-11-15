@@ -2,9 +2,12 @@ import { UUID } from '.';
 
 export type CredentialID = UUID;
 
+export type CredentialType = 'Bitbucket' | 'GitHub' | 'GitLab' | 'Custom';
+
 export interface Credential {
   username: string;
   password: string;
+  type: CredentialType;
   id: CredentialID;
 }
 
