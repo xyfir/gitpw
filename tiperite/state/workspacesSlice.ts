@@ -1,8 +1,10 @@
 import { RootState, StorageFileWorkspace, WorkspacesState } from '../types';
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
+type State = WorkspacesState | null;
+
 export const workspacesSlice = createSlice({
-  initialState: null as WorkspacesState | null,
+  initialState: null as State,
   reducers: {
     initialize(
       _,
@@ -20,6 +22,7 @@ export const workspacesSlice = createSlice({
   name: 'workspaces',
 });
 
-export const selectWorkspaces = (
-  s: RootState,
-): ReturnType<typeof workspacesSlice.reducer> => s.workspaces;
+export const selectWorkspaces = (s: RootState): State => s.workspaces;
+
+export const selectNonNullableWorkspaces = (s: RootState): NonNullable<State> =>
+  s.workspaces as NonNullable<State>;
