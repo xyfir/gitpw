@@ -1,8 +1,10 @@
 import { CredentialsState, Credential, RootState } from '../types';
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
+type State = CredentialsState | null;
+
 export const credentialsSlice = createSlice({
-  initialState: null as CredentialsState | null,
+  initialState: null as State,
   reducers: {
     initialize(_, action: PayloadAction<Credential[]>): CredentialsState {
       return {
@@ -17,6 +19,8 @@ export const credentialsSlice = createSlice({
   name: 'credentials',
 });
 
-export const selectCredentials = (
+export const selectCredentials = (s: RootState): State => s.credentials;
+
+export const selectNonNullableCredentials = (
   s: RootState,
-): ReturnType<typeof credentialsSlice.reducer> => s.credentials;
+): NonNullable<State> => s.credentials as NonNullable<State>;
