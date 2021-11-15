@@ -1,3 +1,4 @@
+import { CredentialManagerScreenStyles } from './screens/CredentialManagerScreenStyles';
 import { EnterPasscodeScreenStyles } from './screens/EnterPasscodeScreenStyles';
 import { AddWorkspaceScreenStyles } from './screens/AddWorkspaceScreenStyles';
 import { SetPasscodeScreenStyles } from './screens/SetPasscodeScreenStyles';
@@ -8,6 +9,7 @@ import { TrButtonStyles } from './components/TrButtonStyles';
 
 export const styles = {
   ...AddWorkspaceScreenStyles,
+  ...CredentialManagerScreenStyles,
   ...EnterPasscodeScreenStyles,
   ...HomeScreenStyles,
   ...NavigationRootStyles,
