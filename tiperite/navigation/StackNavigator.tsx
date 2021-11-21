@@ -12,6 +12,10 @@ import {
 } from '@react-navigation/stack';
 
 const options: StackNavigationOptions = {
+  animationEnabled: true,
+  headerShown: true,
+};
+const noHeaderOptions: StackNavigationOptions = {
   headerShown: false,
 };
 const { Navigator, Screen } = createStackNavigator<StackNavigatorParams>();
@@ -20,12 +24,33 @@ export const StackNavigator = (): JSX.Element => (
   <Navigator initialRouteName="EntryScreen" screenOptions={options}>
     <Screen
       component={CredentialManagerScreen}
+      options={{ headerTitle: 'Credentials' }}
       name="CredentialManagerScreen"
     />
-    <Screen component={EnterPasscodeScreen} name="EnterPasscodeScreen" />
-    <Screen component={AddWorkspaceScreen} name="AddWorkspaceScreen" />
-    <Screen component={SetPasscodeScreen} name="SetPasscodeScreen" />
-    <Screen component={EntryScreen} name="EntryScreen" />
-    <Screen component={HomeScreen} name="HomeScreen" />
+    <Screen
+      component={EnterPasscodeScreen}
+      options={noHeaderOptions}
+      name="EnterPasscodeScreen"
+    />
+    <Screen
+      component={AddWorkspaceScreen}
+      options={{ headerTitle: 'Add workspace' }}
+      name="AddWorkspaceScreen"
+    />
+    <Screen
+      component={SetPasscodeScreen}
+      options={noHeaderOptions}
+      name="SetPasscodeScreen"
+    />
+    <Screen
+      component={EntryScreen}
+      options={noHeaderOptions}
+      name="EntryScreen"
+    />
+    <Screen
+      component={HomeScreen}
+      options={noHeaderOptions}
+      name="HomeScreen"
+    />
   </Navigator>
 );
