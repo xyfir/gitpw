@@ -6,6 +6,7 @@ import { NavigationRootStyles } from './navigation/NavigationRootStyles';
 import { TrTextInputStyles } from './components/TrTextInputStyles';
 import { HomeScreenStyles } from './screens/HomeScreenStyles';
 import { TrButtonStyles } from './components/TrButtonStyles';
+import { TrTexStyles } from './components/TrTexStyles';
 
 export const styles = {
   ...AddWorkspaceScreenStyles,
@@ -15,6 +16,7 @@ export const styles = {
   ...NavigationRootStyles,
   ...SetPasscodeScreenStyles,
   ...TrButtonStyles,
+  ...TrTexStyles,
   ...TrTextInputStyles,
 };
 
