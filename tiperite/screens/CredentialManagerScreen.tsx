@@ -1,11 +1,13 @@
-import { TouchableOpacity, ScrollView, Alert, Text, View } from 'react-native';
-import { CredentialID, StackNavigatorScreenProps } from '../types';
+import { TouchableOpacity, ScrollView, Alert, View } from 'react-native';
 import { selectNonNullableWorkspaces } from '../state/workspacesSlice';
+import { CredentialID } from '../types';
 import { TrTextInput } from '../components/TrTextInput';
 import { useSelector } from '../hooks/useSelector';
 import { useDispatch } from '../hooks/useDispatch';
 import { TrButton } from '../components/TrButton';
 import { useTheme } from '../hooks/useTheme';
+import { TrAlert } from '../utils/TrAlert';
+import { TrText } from '../components/TrText';
 import React from 'react';
 import {
   selectNonNullableCredentials,
@@ -15,9 +17,7 @@ import {
 /**
  * Allows the user to manage their git credentials
  */
-export function CredentialManagerScreen({
-  navigation,
-}: StackNavigatorScreenProps<'CredentialManagerScreen'>): JSX.Element {
+export function CredentialManagerScreen(): JSX.Element {
   const [username, setUsername] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [selected, setSelected] = React.useState(-1);
@@ -30,7 +30,12 @@ export function CredentialManagerScreen({
   /**
    * Attempt to delete a credential
    */
-  function onDelete(credentialId: CredentialID): void {
+  async function onDelete(credentialId: CredentialID): Promise<void> {
+    const y = await TrAlert.confirm(
+      'Are you sure you want to delete this credential?',
+    );
+    if (!y) return;
+
     // Check if the credential is currently linked to any workspaces
     for (const workspaceId of workspaces.allIds) {
       if (workspaces.byId[workspaceId].credentialId == credentialId) {
@@ -42,10 +47,7 @@ export function CredentialManagerScreen({
     }
 
     // Update state
-    setUsername('');
-    setPassword('');
-    setSelected(-1);
-    setEditing(-1);
+    reset();
     dispatch(credentialsSlice.actions.delete(credentialId));
   }
 
@@ -73,6 +75,8 @@ export function CredentialManagerScreen({
         }),
       );
     }
+
+    reset();
   }
 
   /**
@@ -84,28 +88,50 @@ export function CredentialManagerScreen({
     setEditing(index);
   }
 
+  /**
+   * Reset the local state
+   */
+  function reset(): void {
+    setUsername('');
+    setPassword('');
+    setSelected(-1);
+    setEditing(-1);
+  }
+
   return (
-    <ScrollView style={theme.root}>
+    <ScrollView
+      contentContainerStyle={theme.contentContainer}
+      style={theme.root}
+    >
       {credentials.allIds.map((credentialId, index) =>
         editing == index ? null : (
           <TouchableOpacity
             onPress={() => setSelected(index)}
+            style={theme.credential}
             key={credentialId}
           >
-            <Text>{credentials.byId[credentialId].type}</Text>
-            <Text>{credentials.byId[credentialId].username}</Text>
-            <Text>{credentials.byId[credentialId].password}</Text>
+            <View style={theme.credentialText}>
+              <TrText weight="700">
+                {credentials.byId[credentialId].type} Credential
+              </TrText>
+              <TrText>{credentials.byId[credentialId].username}</TrText>
+              <TrText opacity={0.8}>
+                {'*'.repeat(credentials.byId[credentialId].password.length)}
+              </TrText>
+            </View>
 
             {selected == index ? (
-              <View>
+              <View style={theme.credentialButtons}>
                 <TrButton
                   onPress={() => onEdit(credentialId, index)}
                   title="Edit"
+                  small
                 />
                 <TrButton
                   secondary
                   onPress={() => onDelete(credentialId)}
                   title="Delete"
+                  small
                 />
               </View>
             ) : null}
@@ -118,6 +144,7 @@ export function CredentialManagerScreen({
           returnKeyType="next"
           onChangeText={setUsername}
           placeholder="Username"
+          style={theme.TrTextInput}
           label="Username"
           value={username}
         />
@@ -128,6 +155,7 @@ export function CredentialManagerScreen({
           returnKeyType="done"
           onChangeText={setPassword}
           placeholder="Password"
+          style={theme.TrTextInput}
           label="Password"
           value={password}
         />
