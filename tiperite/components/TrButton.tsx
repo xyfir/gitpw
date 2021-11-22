@@ -10,6 +10,7 @@ import {
 export interface TrButtonProps
   extends Omit<TouchableOpacityProps, 'activeOpacity'> {
   secondary?: boolean;
+  small?: boolean;
   title?: string;
   busy?: boolean;
 }
@@ -20,6 +21,7 @@ export function TrButton({
   onPress,
   style,
   title,
+  small,
   busy,
   ...props
 }: TrButtonProps): JSX.Element {
@@ -33,6 +35,7 @@ export function TrButton({
       style={[
         theme.root,
         secondary ? theme.secondaryRoot : theme.primaryRoot,
+        small ? theme.smallRoot : null,
         { opacity: disabled ? 0.5 : 1 },
         style,
       ]}
@@ -46,6 +49,7 @@ export function TrButton({
           style={[
             theme.title,
             secondary ? theme.secondaryTitle : theme.primaryTitle,
+            small ? theme.smallTitle : null,
           ]}
         >
           {title}
