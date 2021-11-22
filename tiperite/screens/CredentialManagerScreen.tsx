@@ -4,6 +4,7 @@ import { CredentialID } from '../types';
 import { TrTextInput } from '../components/TrTextInput';
 import { useSelector } from '../hooks/useSelector';
 import { useDispatch } from '../hooks/useDispatch';
+import { TrDivider } from '../components/TrDivider';
 import { TrButton } from '../components/TrButton';
 import { useTheme } from '../hooks/useTheme';
 import { TrAlert } from '../utils/TrAlert';
@@ -103,43 +104,7 @@ export function CredentialManagerScreen(): JSX.Element {
       contentContainerStyle={theme.contentContainer}
       style={theme.root}
     >
-      {credentials.allIds.map((credentialId, index) =>
-        editing == index ? null : (
-          <TouchableOpacity
-            onPress={() => setSelected(index)}
-            style={theme.credential}
-            key={credentialId}
-          >
-            <View style={theme.credentialText}>
-              <TrText weight="700">
-                {credentials.byId[credentialId].type} Credential
-              </TrText>
-              <TrText>{credentials.byId[credentialId].username}</TrText>
-              <TrText opacity={0.8}>
-                {'*'.repeat(credentials.byId[credentialId].password.length)}
-              </TrText>
-            </View>
-
-            {selected == index ? (
-              <View style={theme.credentialButtons}>
-                <TrButton
-                  onPress={() => onEdit(credentialId, index)}
-                  title="Edit"
-                  small
-                />
-                <TrButton
-                  secondary
-                  onPress={() => onDelete(credentialId)}
-                  title="Delete"
-                  small
-                />
-              </View>
-            ) : null}
-          </TouchableOpacity>
-        ),
-      )}
-
-      <View>
+      <View style={theme.form}>
         <TrTextInput
           returnKeyType="next"
           onChangeText={setUsername}
@@ -162,6 +127,46 @@ export function CredentialManagerScreen(): JSX.Element {
 
         <TrButton onPress={onSave} title="Save" />
       </View>
+
+      {credentials.allIds.length ? <TrDivider /> : null}
+
+      {credentials.allIds.map((credentialId, index) =>
+        editing == index ? null : (
+          <TouchableOpacity
+            onPress={() => setSelected(index)}
+            style={theme.credential}
+            key={credentialId}
+          >
+            <View style={theme.credentialText}>
+              <TrText weight="700">
+                {credentials.byId[credentialId].type} Credential
+              </TrText>
+              <TrText numberOfLines={1}>
+                {credentials.byId[credentialId].username}
+              </TrText>
+              <TrText numberOfLines={1} opacity={0.8}>
+                {'*'.repeat(credentials.byId[credentialId].password.length)}
+              </TrText>
+            </View>
+
+            {selected == index ? (
+              <View style={theme.credentialButtons}>
+                <TrButton
+                  onPress={() => onEdit(credentialId, index)}
+                  title="Edit"
+                  small
+                />
+                <TrButton
+                  secondary
+                  onPress={() => onDelete(credentialId)}
+                  title="Delete"
+                  small
+                />
+              </View>
+            ) : null}
+          </TouchableOpacity>
+        ),
+      )}
     </ScrollView>
   );
 }
