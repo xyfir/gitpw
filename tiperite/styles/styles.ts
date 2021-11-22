@@ -5,6 +5,7 @@ import { SetPasscodeScreenStyles } from './screens/SetPasscodeScreenStyles';
 import { NavigationRootStyles } from './navigation/NavigationRootStyles';
 import { TrTextInputStyles } from './components/TrTextInputStyles';
 import { HomeScreenStyles } from './screens/HomeScreenStyles';
+import { TrDividerStyles } from './components/TrDividerStyles';
 import { TrButtonStyles } from './components/TrButtonStyles';
 import { TrTexStyles } from './components/TrTexStyles';
 
@@ -16,6 +17,7 @@ export const styles = {
   ...NavigationRootStyles,
   ...SetPasscodeScreenStyles,
   ...TrButtonStyles,
+  ...TrDividerStyles,
   ...TrTexStyles,
   ...TrTextInputStyles,
 };
