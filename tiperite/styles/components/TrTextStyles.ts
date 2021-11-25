@@ -1,7 +1,7 @@
 import { StyleProp, TextStyle } from 'react-native';
 import { SansSerifFont } from '../../constants/fonts';
 
-export const TrTexStyles: {
+export const TrTextStyles: {
   TrText: {
     root_dark: StyleProp<TextStyle>;
     root: StyleProp<TextStyle>;
