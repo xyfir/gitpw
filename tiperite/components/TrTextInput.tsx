@@ -2,9 +2,9 @@ import { useTheme } from '../hooks/useTheme';
 import { TrText } from './TrText';
 import React from 'react';
 import {
-  PressableProps,
+  TouchableOpacityProps,
+  TouchableOpacity,
   TextInputProps,
-  Pressable,
   TextInput,
   ViewProps,
   View,
@@ -14,7 +14,7 @@ export interface TrTextInputProps extends Omit<TextInputProps, 'style'> {
   startAdornment?: JSX.Element;
   endAdornment?: JSX.Element;
   inputStyle?: TextInputProps['style'];
-  onPress?: PressableProps['onPress'];
+  onPress?: TouchableOpacityProps['onPress'];
   style?: ViewProps['style'];
   label?: string;
 }
@@ -32,7 +32,11 @@ export function TrTextInput({
   const theme = useTheme('TrTextInput');
 
   return (
-    <Pressable onPress={onPress} style={[theme.root, style]}>
+    <TouchableOpacity
+      activeOpacity={onPress ? 0.5 : 1}
+      onPress={onPress}
+      style={[theme.root, style]}
+    >
       {label ? (
         <TrText weight="700" style={theme.label} size={14}>
           {label}
@@ -45,12 +49,13 @@ export function TrTextInput({
         <TextInput
           {...inputProps}
           placeholderTextColor={theme.placeholderText.color}
+          editable={!onPress}
           style={[theme.input, inputStyle]}
           value={value}
         />
 
         {endAdornment}
       </View>
-    </Pressable>
+    </TouchableOpacity>
   );
 }
