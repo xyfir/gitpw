@@ -1,14 +1,9 @@
+import { TouchableOpacity, StyleProp, ViewStyle, FlatList } from 'react-native';
+import { TrTextInput } from './TrTextInput';
 import { useTheme } from '../hooks/useTheme';
+import { TrModal } from './TrModal';
 import { TrText } from './TrText';
 import React from 'react';
-import {
-  TouchableOpacity,
-  StyleProp,
-  ViewStyle,
-  FlatList,
-  Modal,
-  View,
-} from 'react-native';
 
 interface Option {
   subtext?: string;
@@ -53,33 +48,42 @@ export function TrPicker({
   }
 
   return (
-    <View style={[theme.root, style]}>
-      <TrText weight="700" style={theme.label} size={14}>
-        {label}
-      </TrText>
+    <>
+      <TrTextInput
+        endAdornment={
+          <TrText weight="700" style={theme.dropdownIcon} size={20}>
+            {'^'}
+          </TrText>
+        }
+        onPress={onOpenSelector}
+        value={selected.title}
+        style={style}
+        label={label}
+      />
 
-      <TouchableOpacity onPress={onOpenSelector}>
-        <TrText>{selected.title}</TrText>
-      </TouchableOpacity>
-
-      <Modal
-        onRequestClose={onClose}
-        animationType="fade"
-        transparent
-        onDismiss={onClose}
-        visible={selecting}
-      >
+      <TrModal onClose={onClose} visible={selecting}>
         <FlatList
+          contentContainerStyle={theme.listContent}
           keyExtractor={(option) => option.value}
           renderItem={({ item: option }) => (
-            <TouchableOpacity onPress={() => onPressItem(option)}>
-              <TrText weight="700">{option.title}</TrText>
-              {option.subtext ? <TrText>{option.subtext}</TrText> : null}
+            <TouchableOpacity
+              onPress={() => onPressItem(option)}
+              style={[
+                theme.option,
+                option.value == value ? theme.selectedOption : undefined,
+              ]}
+            >
+              <TrText numberOfLines={1} weight="700" size={14}>
+                {option.title}
+              </TrText>
+              {option.subtext ? (
+                <TrText numberOfLines={1}>{option.subtext}</TrText>
+              ) : null}
             </TouchableOpacity>
           )}
           data={options}
         />
-      </Modal>
-    </View>
+      </TrModal>
+    </>
   );
 }

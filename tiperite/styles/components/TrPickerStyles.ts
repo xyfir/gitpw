@@ -1,17 +1,41 @@
 import { StyleProp, TextStyle, ViewStyle } from 'react-native';
-import { SansSerifFont } from '../../constants/fonts';
 
 export const TrPickerStyles: {
   TrPicker: {
-    label: StyleProp<TextStyle>;
-    root: StyleProp<ViewStyle>;
+    selectedOption_dark: StyleProp<ViewStyle>;
+    selectedOption: StyleProp<ViewStyle>;
+    dropdownIcon: StyleProp<TextStyle>;
+    listContent: StyleProp<ViewStyle>;
+    option_dark: StyleProp<ViewStyle>;
+    option: StyleProp<ViewStyle>;
   };
 } = {
   TrPicker: {
-    label: {
-      marginBottom: 7,
-      fontFamily: SansSerifFont,
+    selectedOption_dark: {
+      borderColor: '#FFF',
     },
-    root: {},
+    selectedOption: {
+      borderColor: '#000',
+      borderWidth: 2,
+    },
+    dropdownIcon: {
+      marginHorizontal: 10,
+      fontFamily: 'monospace',
+      transform: [{ rotate: '180deg' }],
+    },
+    listContent: {
+      justifyContent: 'center',
+      flex: 1,
+    },
+    option_dark: {
+      backgroundColor: '#777',
+    },
+    option: {
+      backgroundColor: '#EEE',
+      marginVertical: 10,
+      borderRadius: 8,
+      padding: 10,
+      width: 280,
+    },
   },
 };
