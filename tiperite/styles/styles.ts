@@ -8,6 +8,7 @@ import { HomeScreenStyles } from './screens/HomeScreenStyles';
 import { TrDividerStyles } from './components/TrDividerStyles';
 import { TrPickerStyles } from './components/TrPickerStyles';
 import { TrButtonStyles } from './components/TrButtonStyles';
+import { TrModalStyles } from './components/TrModal';
 import { TrTextStyles } from './components/TrTextStyles';
 
 export const styles = {
@@ -19,6 +20,7 @@ export const styles = {
   ...SetPasscodeScreenStyles,
   ...TrButtonStyles,
   ...TrDividerStyles,
+  ...TrModalStyles,
   ...TrPickerStyles,
   ...TrTextStyles,
   ...TrTextInputStyles,
