@@ -1,12 +1,20 @@
-import { TextInputProps, TextInput, ViewProps, View } from 'react-native';
 import { useTheme } from '../hooks/useTheme';
 import { TrText } from './TrText';
 import React from 'react';
+import {
+  PressableProps,
+  TextInputProps,
+  Pressable,
+  TextInput,
+  ViewProps,
+  View,
+} from 'react-native';
 
 export interface TrTextInputProps extends Omit<TextInputProps, 'style'> {
   startAdornment?: JSX.Element;
   endAdornment?: JSX.Element;
   inputStyle?: TextInputProps['style'];
+  onPress?: PressableProps['onPress'];
   style?: ViewProps['style'];
   label?: string;
 }
@@ -15,6 +23,7 @@ export function TrTextInput({
   startAdornment,
   endAdornment,
   inputStyle,
+  onPress,
   style,
   value,
   label,
@@ -23,7 +32,7 @@ export function TrTextInput({
   const theme = useTheme('TrTextInput');
 
   return (
-    <View style={[theme.root, style]}>
+    <Pressable onPress={onPress} style={[theme.root, style]}>
       {label ? (
         <TrText weight="700" style={theme.label} size={14}>
           {label}
@@ -42,6 +51,6 @@ export function TrTextInput({
 
         {endAdornment}
       </View>
-    </View>
+    </Pressable>
   );
 }
