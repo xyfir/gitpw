@@ -1,5 +1,6 @@
-import { TextInputProps, TextInput, ViewProps, View, Text } from 'react-native';
+import { TextInputProps, TextInput, ViewProps, View } from 'react-native';
 import { useTheme } from '../hooks/useTheme';
+import { TrText } from './TrText';
 import React from 'react';
 
 export interface TrTextInputProps extends Omit<TextInputProps, 'style'> {
@@ -23,7 +24,11 @@ export function TrTextInput({
 
   return (
     <View style={[theme.root, style]}>
-      {label ? <Text style={theme.label}>{label}</Text> : null}
+      {label ? (
+        <TrText weight="700" style={theme.label} size={14}>
+          {label}
+        </TrText>
+      ) : null}
 
       <View style={theme.inputWrap}>
         {startAdornment}
