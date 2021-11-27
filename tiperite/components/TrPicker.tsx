@@ -1,6 +1,7 @@
 import { TouchableOpacity, StyleProp, ViewStyle, FlatList } from 'react-native';
 import { TrTextInput } from './TrTextInput';
 import { useTheme } from '../hooks/useTheme';
+import { TrButton } from './TrButton';
 import { TrModal } from './TrModal';
 import { TrText } from './TrText';
 import React from 'react';
@@ -15,24 +16,31 @@ interface Option {
  * A modal that allows the user to select an option
  */
 export function TrPicker({
+  onAddNew,
   options,
   onPick,
   style,
   value,
   label,
 }: {
+  onAddNew: () => void;
   options: Option[];
   onPick(value: Option['value']): void;
   style?: StyleProp<ViewStyle>;
-  value: Option['value'];
+  value?: Option['value'];
   label: string;
 }): JSX.Element {
   const [selecting, setSelecting] = React.useState(false);
   const selected = React.useMemo(
-    () => options.find((o) => o.value == value) as Option,
+    () => options.find((o) => o.value == value),
     [value],
   );
   const theme = useTheme('TrPicker');
+
+  function onAddNewFromModal(): void {
+    onAddNew();
+    setSelecting(false);
+  }
 
   function onOpenSelector(): void {
     setSelecting(true);
@@ -55,8 +63,8 @@ export function TrPicker({
             {'^'}
           </TrText>
         }
-        onPress={onOpenSelector}
-        value={selected.title}
+        onPress={options.length ? onOpenSelector : onAddNew}
+        value={selected ? selected.title : ''}
         style={style}
         label={label}
       />
@@ -64,6 +72,9 @@ export function TrPicker({
       <TrModal onClose={onClose} visible={selecting}>
         <FlatList
           contentContainerStyle={theme.listContent}
+          ListFooterComponent={
+            <TrButton onPress={onAddNewFromModal} title="Add new" />
+          }
           keyExtractor={(option) => option.value}
           renderItem={({ item: option }) => (
             <TouchableOpacity
