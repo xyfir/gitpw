@@ -1,5 +1,5 @@
-import { TouchableOpacity, StyleProp, ViewStyle, FlatList } from 'react-native';
-import { TrTextInput } from './TrTextInput';
+import { TrTextInputProps, TrTextInput } from './TrTextInput';
+import { TouchableOpacity, FlatList } from 'react-native';
 import { useTheme } from '../hooks/useTheme';
 import { TrButton } from './TrButton';
 import { TrModal } from './TrModal';
@@ -19,14 +19,16 @@ export function TrPicker({
   onAddNew,
   options,
   onPick,
+  inForm,
   style,
   value,
   label,
 }: {
   onAddNew: () => void;
   options: Option[];
-  onPick(value: Option['value']): void;
-  style?: StyleProp<ViewStyle>;
+  inForm?: TrTextInputProps['inForm'];
+  onPick: (value: Option['value']) => void;
+  style?: TrTextInputProps['style'];
   value?: Option['value'];
   label: string;
 }): JSX.Element {
@@ -64,6 +66,7 @@ export function TrPicker({
           </TrText>
         }
         onPress={options.length ? onOpenSelector : onAddNew}
+        inForm={inForm}
         value={selected ? selected.title : ''}
         style={style}
         label={label}
