@@ -35,4 +35,11 @@ export class FS {
   public static unlink(path: string): Promise<void> {
     return this.fs.promises.unlink(path);
   }
+
+  /**
+   * Delete a directory
+   */
+  public static rmdir(path: string): Promise<void> {
+    return this.fs.promises.rmdir(path);
+  }
 }
