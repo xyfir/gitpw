@@ -15,6 +15,7 @@ export interface TrTextInputProps extends Omit<TextInputProps, 'style'> {
   endAdornment?: JSX.Element;
   inputStyle?: TextInputProps['style'];
   onPress?: TouchableOpacityProps['onPress'];
+  inForm?: boolean;
   style?: ViewProps['style'];
   label?: string;
 }
@@ -24,6 +25,7 @@ export function TrTextInput({
   endAdornment,
   inputStyle,
   onPress,
+  inForm,
   style,
   value,
   label,
@@ -35,7 +37,7 @@ export function TrTextInput({
     <TouchableOpacity
       activeOpacity={onPress ? 0.5 : 1}
       onPress={onPress}
-      style={[theme.root, style]}
+      style={[theme.root, inForm ? theme.rootInForm : undefined, style]}
     >
       {label ? (
         <TrText weight="700" style={theme.label} size={14}>

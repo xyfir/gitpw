@@ -7,6 +7,7 @@ export const TrTextInputStyles: {
     placeholderText: Pick<TextStyle, 'color'>;
     inputWrap_dark: StyleProp<ViewStyle>;
     input_dark: StyleProp<TextStyle>;
+    rootInForm: StyleProp<ViewStyle>;
     inputWrap: StyleProp<ViewStyle>;
     input: StyleProp<TextStyle>;
     label: StyleProp<TextStyle>;
@@ -25,6 +26,10 @@ export const TrTextInputStyles: {
     },
     input_dark: {
       color: '#FFF',
+    },
+    rootInForm: {
+      marginBottom: 20,
+      maxWidth: 325,
     },
     inputWrap: {
       backgroundColor: '#EEE',
@@ -49,7 +54,6 @@ export const TrTextInputStyles: {
       fontFamily: SansSerifFont,
     },
     root: {
-      paddingHorizontal: 10,
       width: '100%',
     },
   },
