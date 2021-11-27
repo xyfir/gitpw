@@ -104,29 +104,27 @@ export function CredentialManagerScreen(): JSX.Element {
       contentContainerStyle={theme.contentContainer}
       style={theme.root}
     >
-      <View style={theme.form}>
-        <TrTextInput
-          returnKeyType="next"
-          onChangeText={setUsername}
-          placeholder="Username"
-          style={theme.TrTextInput}
-          label="Username"
-          value={username}
-        />
+      <TrTextInput
+        returnKeyType="next"
+        onChangeText={setUsername}
+        placeholder="Username"
+        inForm
+        label="Username"
+        value={username}
+      />
 
-        <TrTextInput
-          onSubmitEditing={onSave}
-          textContentType="password"
-          returnKeyType="done"
-          onChangeText={setPassword}
-          placeholder="Password"
-          style={theme.TrTextInput}
-          label="Password"
-          value={password}
-        />
+      <TrTextInput
+        onSubmitEditing={onSave}
+        textContentType="password"
+        returnKeyType="done"
+        onChangeText={setPassword}
+        placeholder="Password"
+        inForm
+        label="Password"
+        value={password}
+      />
 
-        <TrButton onPress={onSave} title="Save" />
-      </View>
+      <TrButton onPress={onSave} title="Save" />
 
       {credentials.allIds.length ? <TrDivider /> : null}
 

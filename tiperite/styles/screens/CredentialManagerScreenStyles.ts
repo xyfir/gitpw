@@ -6,9 +6,7 @@ export const CredentialManagerScreenStyles: {
     contentContainer: StyleProp<ViewStyle>;
     credential_dark: StyleProp<ViewStyle>;
     credentialText: StyleProp<ViewStyle>;
-    TrTextInput: StyleProp<ViewStyle>;
     credential: StyleProp<ViewStyle>;
-    form: StyleProp<ViewStyle>;
     root: StyleProp<ViewStyle>;
   };
 } = {
@@ -20,6 +18,7 @@ export const CredentialManagerScreenStyles: {
     },
     contentContainer: {
       justifyContent: 'center',
+      alignItems: 'center',
       flexGrow: 1,
     },
     credential_dark: {
@@ -29,9 +28,6 @@ export const CredentialManagerScreenStyles: {
       marginRight: 10,
       flex: 1,
     },
-    TrTextInput: {
-      marginBottom: 20,
-    },
     credential: {
       marginHorizontal: 30,
       backgroundColor: 'rgba(0, 0, 0, 0.1)',
@@ -40,9 +36,7 @@ export const CredentialManagerScreenStyles: {
       borderRadius: 8,
       alignItems: 'center',
       padding: 10,
-    },
-    form: {
-      marginHorizontal: 30,
+      width: 325,
     },
     root: {
       marginTop: 10,
