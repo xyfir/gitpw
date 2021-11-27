@@ -16,11 +16,11 @@ export type WorkspaceID = UUID;
 export interface StorageFileWorkspace {
   credentialId: CredentialID;
   lastViewedAt: number;
-  config: TiperiteConfig;
   /**
    * @example "https://github.com/example/workspace.git"
    */
-  repo: string;
+  repoUrl: string;
+  config: TiperiteConfig;
   name: string;
   /**
    * The final plaintext passkey for the workspace. This is the output from
