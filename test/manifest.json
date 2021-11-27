@@ -1,0 +1,8 @@
+{
+  "password": {
+    "ciphertext": "5d596ec4f8c86d88b0e9b265bKDjRq765bvFnkMPoJypPNpQq4QuXg==",
+    "iterations": 123456,
+    "salt": "abc123"
+  },
+  "version": 1
+}
