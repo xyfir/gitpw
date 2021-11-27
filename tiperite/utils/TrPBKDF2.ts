@@ -1,9 +1,9 @@
 import { HexString } from '../types';
 
 /**
- * Derive key from a user-supplied password
+ * Derive key from a user-supplied password using PBKDF2
  */
-export class KeyDeriver {
+export class TrPBKDF2 {
   /**
    * Randomly generate iterations count for PBKDF2
    *

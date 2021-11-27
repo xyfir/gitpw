@@ -4,7 +4,7 @@ import { EncryptedString, HexString } from '../types';
 /**
  * AES-256 GCM utility based on web crypto
  */
-export class AES {
+export class TrAES {
   /**
    * Encrypts plaintext using AES-256 GCM
    */

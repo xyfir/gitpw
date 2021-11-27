@@ -1,7 +1,7 @@
-import { KeyDeriver } from './KeyDeriver';
+import { TrPBKDF2 } from './TrPBKDF2';
 import { BootFile } from './BootFile';
 import Constants from 'expo-constants';
-import { AES } from './AES';
+import { TrAES } from './TrAES';
 import { FS } from './FS';
 import {
   TiperiteVersion,
@@ -41,7 +41,7 @@ export class StorageFile {
     const bootPasskey = await BootFile.getPasskey();
     const bootData = await BootFile.getData();
 
-    return await KeyDeriver.deriveKey(
+    return await TrPBKDF2.deriveKey(
       `${bootPasskey}-${passcode}`,
       bootData.salt,
       bootData.iterations,
@@ -77,7 +77,7 @@ export class StorageFile {
 
     this.data = Object.freeze({ ...data }) as StorageFileData;
     const passkey = await this.getPasskey(this.passcode as string);
-    const ciphertext = await AES.encrypt(JSON.stringify(this.data), passkey);
+    const ciphertext = await TrAES.encrypt(JSON.stringify(this.data), passkey);
     await FS.writeFile(this.PATH, ciphertext);
   }
 
@@ -95,12 +95,15 @@ export class StorageFile {
     if (ciphertext === null) {
       this.data = this.getDefaultData();
       this.passcode = passcode;
-      const ciphertext_ = await AES.encrypt(JSON.stringify(this.data), passkey);
+      const ciphertext_ = await TrAES.encrypt(
+        JSON.stringify(this.data),
+        passkey,
+      );
       await FS.writeFile(this.PATH, ciphertext_);
     }
     // Decrypt with passkey (if passcode is valid)
     else {
-      const plaintext = await AES.decrypt(ciphertext, passkey);
+      const plaintext = await TrAES.decrypt(ciphertext, passkey);
       this.passcode = passcode;
       this.data = Object.freeze(JSON.parse(plaintext)) as StorageFileData;
     }

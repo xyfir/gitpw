@@ -1,7 +1,7 @@
-import { KeyDeriver } from '../utils/KeyDeriver';
+import { TrPBKDF2 } from './TrPBKDF2';
 import { Random } from '../utils/Random';
 import Constants from 'expo-constants';
-import { AES } from './AES';
+import { TrAES } from './TrAES';
 import { FS } from './FS';
 import {
   TiperiteVersion,
@@ -39,9 +39,9 @@ export class BootFile {
     if (this.passkey) return this.passkey;
 
     // Generate a passkey
-    const salt = KeyDeriver.generateSalt();
+    const salt = TrPBKDF2.generateSalt();
     const itr = await Random.integer(50000, 100000);
-    this.passkey = await KeyDeriver.deriveKey(Random.uuid(), salt, itr);
+    this.passkey = await TrPBKDF2.deriveKey(Random.uuid(), salt, itr);
 
     // Save and return passkey
     localStorage.setItem(this.SECURESTORE_KEY, this.passkey);
@@ -53,7 +53,7 @@ export class BootFile {
    */
   private static async getDefaultData(): Promise<BootFileData> {
     const iterations = await Random.integer(50000, 100000);
-    const salt = await KeyDeriver.generateSalt();
+    const salt = await TrPBKDF2.generateSalt();
 
     return {
       hasDevicePassword: false,
@@ -77,13 +77,13 @@ export class BootFile {
     // Initialize file with default data
     if (ciphertext === null) {
       const data = this.getDefaultData();
-      const ciphertext_ = await AES.encrypt(JSON.stringify(data), passkey);
+      const ciphertext_ = await TrAES.encrypt(JSON.stringify(data), passkey);
       await FS.writeFile(this.PATH, ciphertext_);
       return data;
     }
     // Decrypt and return existing data
     else {
-      const plaintext = await AES.decrypt(ciphertext, passkey);
+      const plaintext = await TrAES.decrypt(ciphertext, passkey);
       return JSON.parse(plaintext) as BootFileData;
     }
   }
@@ -93,7 +93,7 @@ export class BootFile {
    */
   public static async setData(data: BootFileData): Promise<void> {
     const passkey = await this.getPasskey();
-    const ciphertext = await AES.encrypt(JSON.stringify(data), passkey);
+    const ciphertext = await TrAES.encrypt(JSON.stringify(data), passkey);
     await FS.writeFile(this.PATH, ciphertext);
   }
 }
