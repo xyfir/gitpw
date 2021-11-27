@@ -1,3 +1,4 @@
+import { PromiseFsClient } from 'isomorphic-git';
 import LightningFS from '@isomorphic-git/lightning-fs';
 
 /**
@@ -7,7 +8,7 @@ import LightningFS from '@isomorphic-git/lightning-fs';
  * @see https://nodejs.org/api/fs.html
  */
 export class FS {
-  public static fs = new LightningFS('git');
+  public static fs = new LightningFS('git') as PromiseFsClient;
 
   /**
    * Write a file as a string
@@ -20,10 +21,12 @@ export class FS {
    * Read a file as a string or return `null` if the file doesn't exist
    */
   public static readFile<T extends string>(path: string): Promise<T | null> {
-    return this.fs.promises.readFile<T>(path, 'utf8').catch((e) => {
-      if (e.code == 'ENOENT') return null;
-      throw e;
-    });
+    return this.fs.promises
+      .readFile(path, 'utf8')
+      .catch((e: { code: string }) => {
+        if (e.code == 'ENOENT') return null;
+        throw e;
+      });
   }
 
   /**
