@@ -1,4 +1,10 @@
-import { TiperiteConfig, CredentialID, HexString, UUID } from '.';
+import {
+  EncryptedString,
+  TiperiteConfig,
+  CredentialID,
+  HexString,
+  UUID,
+} from '.';
 
 export type WorkspaceID = UUID;
 
@@ -45,10 +51,19 @@ export type WorkspaceManifestVersion = number;
  */
 export interface WorkspaceManifestFileData {
   password: {
+    /**
+     * A random string encrypted with the final key output from PBKDF2 that can
+     *  be used to easily verify a password supplied to PBKDF2 in the future
+     */
+    ciphertext: EncryptedString;
+    /**
+     * Iterations to use for PBKDF2 on the user's supplied password
+     */
     iterations: number;
-    hash: 'SHA-512';
+    /**
+     * Salt to use for PBKDF2 on the user's supplied password
+     */
     salt: string;
   };
   version: WorkspaceManifestVersion;
-  id: WorkspaceID;
 }
