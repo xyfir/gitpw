@@ -1,10 +1,4 @@
-import {
-  TiperiteVersion,
-  TiperiteConfig,
-  CredentialID,
-  HexString,
-  UUID,
-} from '.';
+import { TiperiteConfig, CredentialID, HexString, UUID } from '.';
 
 export type WorkspaceID = UUID;
 
@@ -42,6 +36,11 @@ export interface WorkspacesState {
 }
 
 /**
+ * A workspace's manifest file version
+ */
+export type WorkspaceManifestVersion = number;
+
+/**
  * The `manifest.json` file in a workspace's repo
  */
 export interface WorkspaceManifestFileData {
@@ -50,6 +49,6 @@ export interface WorkspaceManifestFileData {
     hash: 'SHA-512';
     salt: string;
   };
-  version: TiperiteVersion;
+  version: WorkspaceManifestVersion;
   id: WorkspaceID;
 }
