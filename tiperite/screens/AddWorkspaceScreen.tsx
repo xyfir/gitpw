@@ -2,9 +2,9 @@ import { StackNavigatorScreenProps, WorkspaceManifestFileData } from '../types';
 import { LatestWorkspaceManifestVersion } from '../constants/versions';
 import { selectNonNullableCredentials } from '../state/credentialsSlice';
 import { workspacesSlice } from '../state/workspacesSlice';
+import { useTrDispatch } from '../hooks/useTrDispatch';
+import { useTrSelector } from '../hooks/useTrSelector';
 import { TrTextInput } from '../components/TrTextInput';
-import { useSelector } from '../hooks/useSelector';
-import { useDispatch } from '../hooks/useDispatch';
 import { TrPicker } from '../components/TrPicker';
 import { TrButton } from '../components/TrButton';
 import { TrPBKDF2 } from '../utils/TrPBKDF2';
@@ -24,14 +24,14 @@ import http from 'isomorphic-git/http/web';
 export function AddWorkspaceScreen({
   navigation,
 }: StackNavigatorScreenProps<'AddWorkspaceScreen'>): JSX.Element {
-  const credentials = useSelector(selectNonNullableCredentials);
+  const credentials = useTrSelector(selectNonNullableCredentials);
 
   const [credentialId, setCredentialId] = React.useState(credentials.allIds[0]);
   const [password, setPassword] = React.useState('');
   const [repoUrl, setRepoUrl] = React.useState('');
   const [busy, setBusy] = React.useState(false);
   const [name, setName] = React.useState('');
-  const dispatch = useDispatch();
+  const dispatch = useTrDispatch();
   const theme = useTheme('AddWorkspaceScreen');
 
   async function onSubmit(): Promise<void> {

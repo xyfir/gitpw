@@ -1,7 +1,7 @@
 import { selectCredentials } from '../state/credentialsSlice';
 import { selectWorkspaces } from '../state/workspacesSlice';
+import { useTrSelector } from '../hooks/useTrSelector';
 import { selectConfig } from '../state/configSlice';
-import { useSelector } from '../hooks/useSelector';
 import { StorageFile } from '../utils/StorageFile';
 import React from 'react';
 
@@ -9,10 +9,10 @@ import React from 'react';
  * Listen for state change to write to storage. Throttle to 1 write per 250ms.
  */
 export function StorageFileWriter(): null {
-  const credentials = useSelector(selectCredentials);
-  const workspaces = useSelector(selectWorkspaces);
+  const credentials = useTrSelector(selectCredentials);
+  const workspaces = useTrSelector(selectWorkspaces);
   const timeout = React.useRef<NodeJS.Timeout>();
-  const config = useSelector(selectConfig);
+  const config = useTrSelector(selectConfig);
 
   React.useEffect(() => {
     if (!credentials || !workspaces) return;

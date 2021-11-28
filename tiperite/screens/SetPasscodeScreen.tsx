@@ -1,9 +1,9 @@
 import { selectNonNullableBootFileData } from '../state/bootFileDataSlice';
 import { StackNavigatorScreenProps } from '../types';
 import { loadAuthedState } from '../utils/loadAuthedState';
+import { useTrSelector } from '../hooks/useTrSelector';
 import { BootFileData } from '../types';
 import { TrTextInput } from '../components/TrTextInput';
-import { useSelector } from '../hooks/useSelector';
 import { StorageFile } from '../utils/StorageFile';
 import { Text, View } from 'react-native';
 import { TrButton } from '../components/TrButton';
@@ -23,7 +23,7 @@ export function SetPasscodeScreen({
 }: StackNavigatorScreenProps<'SetPasscodeScreen'>): JSX.Element {
   const [configuring, setConfiguring] = React.useState(false);
   const [passcode, setPasscode] = React.useState('');
-  const bootFileData = useSelector(selectNonNullableBootFileData);
+  const bootFileData = useTrSelector(selectNonNullableBootFileData);
   const theme = useTheme('SetPasscodeScreen');
 
   function onSkip(): void {

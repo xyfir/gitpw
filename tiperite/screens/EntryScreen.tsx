@@ -1,7 +1,7 @@
 import { StackNavigatorScreenProps } from '../types';
 import { bootFileDataSlice } from '../state/bootFileDataSlice';
 import { loadAuthedState } from '../utils/loadAuthedState';
-import { useDispatch } from '../hooks/useDispatch';
+import { useTrDispatch } from '../hooks/useTrDispatch';
 import { StorageFile } from '../utils/StorageFile';
 import { BootFile } from '../utils/BootFile';
 import React from 'react';
@@ -13,7 +13,7 @@ import React from 'react';
 export function EntryScreen({
   navigation,
 }: StackNavigatorScreenProps<'EntryScreen'>): null {
-  const dispatch = useDispatch();
+  const dispatch = useTrDispatch();
 
   React.useEffect(() => {
     BootFile.getData()

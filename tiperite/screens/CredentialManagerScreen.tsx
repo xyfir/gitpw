@@ -1,9 +1,9 @@
 import { TouchableOpacity, ScrollView, Alert, View } from 'react-native';
 import { selectNonNullableWorkspaces } from '../state/workspacesSlice';
+import { useTrSelector } from '../hooks/useTrSelector';
+import { useTrDispatch } from '../hooks/useTrDispatch';
 import { CredentialID } from '../types';
 import { TrTextInput } from '../components/TrTextInput';
-import { useSelector } from '../hooks/useSelector';
-import { useDispatch } from '../hooks/useDispatch';
 import { TrDivider } from '../components/TrDivider';
 import { TrButton } from '../components/TrButton';
 import { useTheme } from '../hooks/useTheme';
@@ -23,9 +23,9 @@ export function CredentialManagerScreen(): JSX.Element {
   const [password, setPassword] = React.useState('');
   const [selected, setSelected] = React.useState(-1);
   const [editing, setEditing] = React.useState(-1);
-  const credentials = useSelector(selectNonNullableCredentials);
-  const workspaces = useSelector(selectNonNullableWorkspaces);
-  const dispatch = useDispatch();
+  const credentials = useTrSelector(selectNonNullableCredentials);
+  const workspaces = useTrSelector(selectNonNullableWorkspaces);
+  const dispatch = useTrDispatch();
   const theme = useTheme('CredentialManagerScreen');
 
   /**
