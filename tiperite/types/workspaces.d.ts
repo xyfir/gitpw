@@ -2,6 +2,7 @@ import {
   EncryptedString,
   TiperiteConfig,
   CredentialID,
+  DateString,
   HexString,
   UUID,
 } from '.';
@@ -15,19 +16,19 @@ export type WorkspaceID = UUID;
  */
 export interface StorageFileWorkspace {
   credentialId: CredentialID;
-  lastViewedAt: number;
+  lastViewedAt: DateString;
   /**
    * @example "https://github.com/example/workspace.git"
    */
   repoUrl: string;
-  config: TiperiteConfig;
-  name: string;
   /**
    * The final plaintext passkey for the workspace. This is the output from
    *  `KeyDeriver.deriveKey()` using the user-supplied password and the
    *  requirements from the workspace's manifest.
    */
-  key: HexString;
+  passkey: HexString;
+  config: TiperiteConfig;
+  name: string;
   id: WorkspaceID;
 }
 
