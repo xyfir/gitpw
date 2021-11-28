@@ -29,6 +29,7 @@ export function AddWorkspaceScreen({
   const [credentialId, setCredentialId] = React.useState(credentials.allIds[0]);
   const [password, setPassword] = React.useState('');
   const [repoUrl, setRepoUrl] = React.useState('');
+  const [busy, setBusy] = React.useState(false);
   const [name, setName] = React.useState('');
   const dispatch = useDispatch();
   const theme = useTheme('AddWorkspaceScreen');
@@ -36,6 +37,7 @@ export function AddWorkspaceScreen({
   async function onSubmit(): Promise<void> {
     const id = Random.uuid();
     const dir = `/workspaces/${id}`;
+    setBusy(true);
 
     try {
       if (!repoUrl || !name) throw 'Name and repo are required';
@@ -106,6 +108,8 @@ export function AddWorkspaceScreen({
       TrAlert.alert(`Error: ${String(err)}`);
       /** @todo file cleanup */
     }
+
+    setBusy(false);
   }
 
   return (
@@ -152,7 +156,7 @@ export function AddWorkspaceScreen({
         label="Git Credential"
       />
 
-      <TrButton onPress={onSubmit} title="Add" />
+      <TrButton onPress={onSubmit} title="Add" busy={busy} />
     </View>
   );
 }
