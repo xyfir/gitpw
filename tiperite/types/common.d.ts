@@ -20,6 +20,13 @@ export type EncryptedString = string;
 export type Base64String = string;
 
 /**
+ * An ISO date string
+ *
+ * @example "2021-11-27T23:55:30.126Z"
+ */
+export type DateString = string;
+
+/**
  * A hexadecimal string
  *
  * @example "48656c6c6f20576f726c64203a29"
