@@ -39,3 +39,10 @@ export type HexString = string;
  * @example "4ee12672-c5f7-4968-85c7-15c57bedbe85"
  */
 export type UUID = string;
+
+/**
+ * A unique human-readable tag for categorization
+ *
+ * **Format:** Lowercase characters; no spaces
+ */
+export type Tag = string;
