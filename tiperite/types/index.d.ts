@@ -34,6 +34,7 @@ declare global {
 export * from './common';
 export * from './config';
 export * from './credentials';
+export * from './docs';
 export * from './storage';
 export * from './lightning-fs';
 export * from './navigation';
