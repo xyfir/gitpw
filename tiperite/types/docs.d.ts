@@ -12,7 +12,7 @@ export interface Doc {
    */
   createdAt: DateString;
   /**
-   * The ddocument's true last modified timestamp
+   * The document's true last modified timestamp
    */
   updatedAt: DateString;
   /**
@@ -22,7 +22,8 @@ export interface Doc {
    */
   header: EncryptedString;
   /**
-   * The body of the document broken up into encrypted 'blocks'
+   * The body of the document broken up into encrypted 'blocks', which are
+   *  related substrings within the document's full body string
    */
   body: EncryptedString[];
   id: DocID;
