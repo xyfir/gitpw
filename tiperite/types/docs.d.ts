@@ -81,3 +81,13 @@ export interface DocHeader {
    */
   x: Record<string, string>;
 }
+
+/**
+ * The `docs` Redux state object
+ *
+ * @see RootState.docs
+ */
+export interface DocsState {
+  allIds: DocID[];
+  byId: Record<DocID, Doc>;
+}
