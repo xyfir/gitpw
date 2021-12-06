@@ -30,6 +30,13 @@ export class FS {
   }
 
   /**
+   * List the files in a directory (unsorted)
+   */
+  public static readdir(path: string): Promise<string[]> {
+    return this.fs.promises.readdir(path);
+  }
+
+  /**
    * Delete a file
    */
   public static unlink(path: string): Promise<void> {
