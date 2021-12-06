@@ -2,7 +2,7 @@ import { TextStyle, TextProps, Text } from 'react-native';
 import { useTheme } from '../hooks/useTheme';
 import React from 'react';
 
-interface TrTextProps extends TextProps {
+export interface TrTextProps extends TextProps {
   opacity?: TextStyle['opacity'];
   weight?: TextStyle['fontWeight'];
   size?: TextStyle['fontSize'];
