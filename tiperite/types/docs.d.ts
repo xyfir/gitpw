@@ -1,12 +1,15 @@
 import { EncryptedString, TiperiteConfig, DateString, UUID, Tag } from '.';
 
-export type DocID = UUID;
-
 /**
  * A 'Doc' is Tiperite's custom document format, equivalent to a 'file', 'note',
  *  'page', etc in other applications.
  */
-export interface Doc {
+export type DocID = UUID;
+
+/**
+ * The raw encrypted `Doc` that is saved to the disk/repo
+ */
+export interface EncryptedDoc {
   /**
    * The document's true creation timestamp
    */
@@ -83,11 +86,20 @@ export interface DocHeader {
 }
 
 /**
+ * A Doc's system- and user-supplied metadata, decrypted and parsed, excluding
+ *  the body
+ */
+export interface DecryptedDocMeta
+  extends Omit<EncryptedDoc, 'header' | 'body'> {
+  header: DocHeader;
+}
+
+/**
  * The `docs` Redux state object
  *
  * @see RootState.docs
  */
 export interface DocsState {
   allIds: DocID[];
-  byId: Record<DocID, Doc>;
+  byId: Record<DocID, DecryptedDocMeta>;
 }
