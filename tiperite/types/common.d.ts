@@ -20,6 +20,11 @@ export type EncryptedString = string;
 export type Base64String = string;
 
 /**
+ * A string from `JSON.stringify()`
+ */
+export type JSONString = string;
+
+/**
  * An ISO date string
  *
  * @example "2021-11-27T23:55:30.126Z"
