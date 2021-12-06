@@ -1,11 +1,12 @@
+import { TouchableOpacity, FlatList, View } from 'react-native';
 import { selectNonNullableWorkspaces } from '../state/workspacesSlice';
+import { selectDocs, docsSlice } from '../state/docsSlice';
 import { useTrSelector } from '../hooks/useTrSelector';
-import { docsSlice } from '../state/docsSlice';
 import { TrButton } from '../components/TrButton';
 import { useTheme } from '../hooks/useTheme';
+import { TrText } from '../components/TrText';
 import { TrAES } from '../utils/TrAES';
 import { store } from '../state/store';
-import { View } from 'react-native';
 import { FS } from '../utils/FS';
 import React from 'react';
 import {
@@ -21,9 +22,10 @@ import {
  */
 export function HomeScreen({
   navigation,
-}: StackNavigatorScreenProps<'HomeScreen'>): JSX.Element {
+}: StackNavigatorScreenProps<'HomeScreen'>): JSX.Element | null {
   const workspaces = useTrSelector(selectNonNullableWorkspaces);
   const theme = useTheme('HomeScreen');
+  const docs = useTrSelector(selectDocs);
 
   function onAddWorkspace(): void {
     navigation.navigate('AddWorkspaceScreen');
@@ -69,9 +71,30 @@ export function HomeScreen({
       .catch(console.error);
   }, []);
 
-  return (
-    <View style={theme.root}>
-      <TrButton onPress={onAddWorkspace} title="Add Workspace" />
-    </View>
-  );
+  return docs ? (
+    <FlatList
+      ListFooterComponent={
+        <TrButton
+          onPress={onAddWorkspace}
+          title="Add Workspace"
+          style={theme.button}
+        />
+      }
+      renderItem={({ item: docId }) => (
+        <TouchableOpacity style={theme.doc}>
+          <TrText weight="600" style={theme.title} size={16}>
+            {docs.byId[docId].header.title || 'Untitled'}
+          </TrText>
+          <TrText opacity={0.5}>
+            {docs.byId[docId].header.updated || docs.byId[docId].updatedAt}
+          </TrText>
+          <TrText opacity={0.5}>
+            {docs.byId[docId].header.tags || docs.byId[docId].header.folder}
+          </TrText>
+        </TouchableOpacity>
+      )}
+      style={theme.root}
+      data={docs.allIds}
+    />
+  ) : null;
 }
