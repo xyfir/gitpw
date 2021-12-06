@@ -11,7 +11,13 @@ export const docsSlice = createSlice({
     load(state, action: PayloadAction<DecryptedDocMeta[]>): DocsState {
       return {
         allIds: (state ? state.allIds : []).concat(
-          action.payload.map((doc) => doc.id),
+          action.payload
+            .sort((a, b) => {
+              if (a.updatedAt > b.updatedAt) return -1;
+              if (a.updatedAt < b.updatedAt) return 1;
+              return 0;
+            })
+            .map((doc) => doc.id),
         ),
         byId: {
           ...(state ? state.byId : {}),
