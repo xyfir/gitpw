@@ -1,6 +1,7 @@
-import { TouchableOpacity, FlatList, View } from 'react-native';
 import { selectNonNullableWorkspaces } from '../state/workspacesSlice';
+import { TouchableOpacity, FlatList } from 'react-native';
 import { selectDocs, docsSlice } from '../state/docsSlice';
+import { TrTextTimestamp } from '../components/TrTextTimestamp';
 import { useTrSelector } from '../hooks/useTrSelector';
 import { TrButton } from '../components/TrButton';
 import { useTheme } from '../hooks/useTheme';
@@ -85,10 +86,14 @@ export function HomeScreen({
           <TrText weight="600" style={theme.title} size={16}>
             {docs.byId[docId].header.title || 'Untitled'}
           </TrText>
-          <TrText opacity={0.5}>
-            {docs.byId[docId].header.updated || docs.byId[docId].updatedAt}
-          </TrText>
-          <TrText opacity={0.5}>
+
+          <TrTextTimestamp
+            numberOfLines={1}
+            opacity={0.5}
+            ts={docs.byId[docId].header.updated || docs.byId[docId].updatedAt}
+          />
+
+          <TrText numberOfLines={1} opacity={0.5}>
             {docs.byId[docId].header.tags || docs.byId[docId].header.folder}
           </TrText>
         </TouchableOpacity>
