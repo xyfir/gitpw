@@ -41,11 +41,13 @@ export function HomeScreen({
       .then((files) => {
         // Read each file
         return Promise.all(
-          files.map((file) => {
-            return FS.readFile(`${dir}/${file}`).then((data) =>
-              JSON.parse(data as JSONString),
-            );
-          }),
+          files
+            .filter((file) => file.endsWith('.meta.json'))
+            .map((file) => {
+              return FS.readFile(`${dir}/${file}`).then((data) =>
+                JSON.parse(data as JSONString),
+              );
+            }),
         );
       })
       .then((docs) => {

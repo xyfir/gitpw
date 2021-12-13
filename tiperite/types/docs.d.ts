@@ -7,9 +7,9 @@ import { EncryptedString, TiperiteConfig, DateString, UUID, Tag } from '.';
 export type DocID = UUID;
 
 /**
- * The raw encrypted `Doc` that is saved to the disk/repo
+ * The raw encrypted Doc metadata that is saved to the disk/repo
  */
-export interface EncryptedDoc {
+export interface EncryptedDocMeta {
   /**
    * The document's true creation timestamp
    */
@@ -24,12 +24,15 @@ export interface EncryptedDoc {
    * @see DocHeaders
    */
   headers: EncryptedString;
-  /**
-   * The body of the document broken up into encrypted 'blocks', which are
-   *  related substrings within the document's full body string
-   */
-  body: EncryptedString[];
   id: DocID;
+}
+
+/**
+ * The body of the document broken up into encrypted 'blocks', which are
+ *  related substrings within the document's full body string
+ */
+export interface EncryptedDocBody {
+  blocks: EncryptedString[];
 }
 
 /**
@@ -86,12 +89,17 @@ export interface DocHeaders {
 }
 
 /**
- * A Doc's system- and user-supplied metadata, decrypted and parsed, excluding
- *  the body
+ * A Doc's system- and user-supplied metadata, decrypted and parsed
  */
-export interface DecryptedDocMeta
-  extends Omit<EncryptedDoc, 'headers' | 'body'> {
+export interface DecryptedDocMeta extends Omit<EncryptedDocMeta, 'headers'> {
   headers: DocHeaders;
+}
+
+/**
+ * A Doc's content, decrypted and parsed
+ */
+export interface DecryptedDocBody extends Omit<EncryptedDocBody, 'body'> {
+  blocks: string[];
 }
 
 /**
