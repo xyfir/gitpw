@@ -19,11 +19,11 @@ export interface EncryptedDoc {
    */
   updatedAt: DateString;
   /**
-   * The header hash map JSON-stringified and encrypted
+   * The headers hash map JSON-stringified and encrypted
    *
-   * @see DocHeader
+   * @see DocHeaders
    */
-  header: EncryptedString;
+  headers: EncryptedString;
   /**
    * The body of the document broken up into encrypted 'blocks', which are
    *  related substrings within the document's full body string
@@ -35,7 +35,7 @@ export interface EncryptedDoc {
 /**
  * A document's user-specified metadata
  */
-export interface DocHeader {
+export interface DocHeaders {
   /**
    * Override (in display and sorting) the document's creation timestamp
    */
@@ -90,8 +90,8 @@ export interface DocHeader {
  *  the body
  */
 export interface DecryptedDocMeta
-  extends Omit<EncryptedDoc, 'header' | 'body'> {
-  header: DocHeader;
+  extends Omit<EncryptedDoc, 'headers' | 'body'> {
+  headers: DocHeaders;
 }
 
 /**

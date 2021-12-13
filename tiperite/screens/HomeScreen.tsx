@@ -52,12 +52,12 @@ export function HomeScreen({
         // Build DecryptedDocMeta to load into state
         return Promise.all(
           docs.map((doc) => {
-            return TrAES.decrypt(doc.header, workspace.passkey).then(
-              (header) => {
+            return TrAES.decrypt(doc.headers, workspace.passkey).then(
+              (headers) => {
                 const meta: DecryptedDocMeta = {
                   createdAt: doc.createdAt,
                   updatedAt: doc.updatedAt,
-                  header: JSON.parse(header as JSONString),
+                  headers: JSON.parse(headers as JSONString),
                   id: doc.id,
                 };
                 return meta;
@@ -84,17 +84,17 @@ export function HomeScreen({
       renderItem={({ item: docId }) => (
         <TouchableOpacity style={theme.doc}>
           <TrText weight="600" style={theme.title} size={16}>
-            {docs.byId[docId].header.title || 'Untitled'}
+            {docs.byId[docId].headers.title || 'Untitled'}
           </TrText>
 
           <TrTextTimestamp
             numberOfLines={1}
             opacity={0.5}
-            ts={docs.byId[docId].header.updated || docs.byId[docId].updatedAt}
+            ts={docs.byId[docId].headers.updated || docs.byId[docId].updatedAt}
           />
 
           <TrText numberOfLines={1} opacity={0.5}>
-            {docs.byId[docId].header.tags || docs.byId[docId].header.folder}
+            {docs.byId[docId].headers.tags || docs.byId[docId].headers.folder}
           </TrText>
         </TouchableOpacity>
       )}
