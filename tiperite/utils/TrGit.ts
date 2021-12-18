@@ -38,8 +38,23 @@ export class TrGit {
     };
   }
 
+  /**
+   * Return all files with unstaged changes
+   *
+   * @see https://isomorphic-git.org/docs/en/statusMatrix#q-what-files-have-unstaged-changes
+   */
+  public getUnstagedChanges(): Promise<string[]> {
+    return this.statusMatrix().then((rows) => {
+      return rows.filter((row) => row[2] != row[3]).map((row) => row[0]);
+    });
+  }
+
   public getRemoteInfo(): Promise<git.GetRemoteInfoResult> {
     return git.getRemoteInfo(this.commonOptions);
+  }
+
+  public statusMatrix(): Promise<git.StatusRow[]> {
+    return git.statusMatrix(this.commonOptions);
   }
 
   public fastForward(): Promise<void> {
