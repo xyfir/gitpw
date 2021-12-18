@@ -14,7 +14,9 @@ interface CommonOptions {
 }
 
 /**
- * A workspace-scoped wrapper around the isomorphic-git library
+ * A workspace-scoped wrapper around the `isomorphic-git` library
+ *
+ * @see https://isomorphic-git.org/docs/en/alphabetic
  */
 export class TrGit {
   private commonOptions: CommonOptions;
@@ -49,14 +51,23 @@ export class TrGit {
     });
   }
 
+  /**
+   * @see https://isomorphic-git.org/docs/en/getRemoteInfo
+   */
   public getRemoteInfo(): Promise<git.GetRemoteInfoResult> {
     return git.getRemoteInfo(this.commonOptions);
   }
 
+  /**
+   * @see https://isomorphic-git.org/docs/en/statusMatrix
+   */
   public statusMatrix(): Promise<git.StatusRow[]> {
     return git.statusMatrix(this.commonOptions);
   }
 
+  /**
+   * @see https://isomorphic-git.org/docs/en/fastForward
+   */
   public fastForward(): Promise<void> {
     return git.fastForward(this.commonOptions);
   }
@@ -68,10 +79,23 @@ export class TrGit {
     return Promise.all(filepaths.map(this.add));
   }
 
+  /**
+   * @see https://isomorphic-git.org/docs/en/commit
+   */
+  public commit(message: string): ReturnType<typeof git.commit> {
+    return git.commit({ ...this.commonOptions, message });
+  }
+
+  /**
+   * @see https://isomorphic-git.org/docs/en/clone
+   */
   public clone(): Promise<void> {
     return git.clone(this.commonOptions);
   }
 
+  /**
+   * @see https://isomorphic-git.org/docs/en/add
+   */
   public add(filepath: string): Promise<void> {
     return git.add({ ...this.commonOptions, filepath });
   }
