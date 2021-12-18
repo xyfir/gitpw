@@ -12,11 +12,10 @@ import { useTheme } from '../hooks/useTheme';
 import { TrAlert } from '../utils/TrAlert';
 import { Random } from '../utils/Random';
 import { TrAES } from '../utils/TrAES';
-import * as git from 'isomorphic-git';
+import { TrGit } from '../utils/TrGit';
 import { View } from 'react-native';
 import { FS } from '../utils/FS';
 import React from 'react';
-import http from 'isomorphic-git/http/web';
 
 /**
  * Allow the user to add a new workspace
@@ -45,29 +44,10 @@ export function AddWorkspaceScreen({
       const credential = credentials.byId[credentialId];
       if (!credential) throw 'No credential selected';
 
-      // Validate that we can access the repo
-      await git.getRemoteInfo({
-        corsProxy: 'https://cors.isomorphic-git.org',
-        onAuth: () => ({
-          username: credential.username,
-          password: credential.password,
-        }),
-        http,
-        url: repoUrl,
-      });
-
-      // Clone the repo
-      await git.clone({
-        corsProxy: 'https://cors.isomorphic-git.org',
-        onAuth: () => ({
-          username: credential.username,
-          password: credential.password,
-        }),
-        http,
-        url: repoUrl,
-        dir,
-        fs: FS.fs,
-      });
+      // Validate that we can access the repo before clone
+      const git = new TrGit(id);
+      await git.getRemoteInfo();
+      await git.clone();
 
       // Load workspace manifest
       const manifestString = await FS.readFile(`${dir}/manifest.json`);
