@@ -10,7 +10,7 @@ interface CommonOptions {
   http: git.HttpClient;
   url: string;
   dir: string;
-  fs: typeof FS.fs;
+  fs: git.PromiseFsClient;
 }
 
 /**
@@ -40,6 +40,10 @@ export class TrGit {
 
   public getRemoteInfo(): Promise<git.GetRemoteInfoResult> {
     return git.getRemoteInfo(this.commonOptions);
+  }
+
+  public fastForward(): Promise<void> {
+    return git.fastForward(this.commonOptions);
   }
 
   public clone(): Promise<void> {
