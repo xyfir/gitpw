@@ -61,7 +61,18 @@ export class TrGit {
     return git.fastForward(this.commonOptions);
   }
 
+  /**
+   * Add multiple files
+   */
+  public addAll(filepaths: string[]): Promise<void[]> {
+    return Promise.all(filepaths.map(this.add));
+  }
+
   public clone(): Promise<void> {
     return git.clone(this.commonOptions);
+  }
+
+  public add(filepath: string): Promise<void> {
+    return git.add({ ...this.commonOptions, filepath });
   }
 }
