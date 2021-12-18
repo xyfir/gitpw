@@ -94,6 +94,15 @@ export class TrGit {
   }
 
   /**
+   * Pushes `main` branch to `origin`
+   *
+   * @see https://isomorphic-git.org/docs/en/push
+   */
+  public push(): Promise<git.PushResult> {
+    return git.push({ ...this.commonOptions, remote: 'origin', ref: 'main' });
+  }
+
+  /**
    * @see https://isomorphic-git.org/docs/en/add
    */
   public add(filepath: string): Promise<void> {
