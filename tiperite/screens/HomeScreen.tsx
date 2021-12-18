@@ -6,6 +6,7 @@ import { useTrSelector } from '../hooks/useTrSelector';
 import { TrButton } from '../components/TrButton';
 import { useTheme } from '../hooks/useTheme';
 import { TrText } from '../components/TrText';
+import { TrGit } from '../utils/TrGit';
 import { TrAES } from '../utils/TrAES';
 import { store } from '../state/store';
 import { FS } from '../utils/FS';
@@ -30,6 +31,22 @@ export function HomeScreen({
 
   function onAddWorkspace(): void {
     navigation.navigate('AddWorkspaceScreen');
+  }
+
+  async function onPush(): Promise<void> {
+    const workspace = workspaces.byId[workspaces.allIds[0]];
+    const git = new TrGit(workspace.id);
+
+    const files = await git.getUnstagedChanges();
+    await git.addAll(files);
+    await git.commit('Update');
+    await git.push();
+  }
+
+  function onPull(): void {
+    const workspace = workspaces.byId[workspaces.allIds[0]];
+    const git = new TrGit(workspace.id);
+    git.fastForward().catch(console.error);
   }
 
   React.useEffect(() => {
@@ -77,11 +94,17 @@ export function HomeScreen({
   return docs ? (
     <FlatList
       ListFooterComponent={
-        <TrButton
-          onPress={onAddWorkspace}
-          title="Add Workspace"
-          style={theme.button}
-        />
+        <>
+          <TrButton
+            onPress={onAddWorkspace}
+            title="Add Workspace"
+            style={theme.button}
+          />
+
+          <TrButton onPress={onPush} style={theme.button} title="Push" />
+
+          <TrButton onPress={onPull} style={theme.button} title="Pull" />
+        </>
       }
       renderItem={({ item: docId }) => (
         <TouchableOpacity style={theme.doc}>
