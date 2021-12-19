@@ -52,6 +52,17 @@ export class TrGit {
   }
 
   /**
+   * Check if the remote branch has changes that the local does not
+   */
+  public hasRemoteChanges(): Promise<boolean> {
+    return Promise.all([this.log({ depth: 1 }), this.fetch()]).then(
+      ([log, fetch]) => {
+        return log[0].oid != fetch.fetchHead;
+      },
+    );
+  }
+
+  /**
    * @see https://isomorphic-git.org/docs/en/getRemoteInfo
    */
   public getRemoteInfo(): Promise<git.GetRemoteInfoResult> {
