@@ -19,6 +19,8 @@ import {
  * Allows the user to manage their git credentials
  */
 export function CredentialManagerScreen(): JSX.Element {
+  const [authorEmail, setAuthorEmail] = React.useState('');
+  const [authorName, setAuthorName] = React.useState('');
   const [username, setUsername] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [selected, setSelected] = React.useState(-1);
@@ -60,6 +62,8 @@ export function CredentialManagerScreen(): JSX.Element {
     if (editing == -1) {
       dispatch(
         credentialsSlice.actions.add({
+          authorEmail,
+          authorName,
           username,
           password,
           type: 'Custom',
@@ -71,6 +75,8 @@ export function CredentialManagerScreen(): JSX.Element {
       dispatch(
         credentialsSlice.actions.update({
           ...credentials.byId[credentials.allIds[editing]],
+          authorEmail,
+          authorName,
           username,
           password,
         }),
@@ -84,6 +90,8 @@ export function CredentialManagerScreen(): JSX.Element {
    * Select the credential for editing
    */
   function onEdit(credentialId: CredentialID, index: number): void {
+    setAuthorEmail(credentials.byId[credentialId].authorEmail);
+    setAuthorName(credentials.byId[credentialId].authorName);
     setUsername(credentials.byId[credentialId].username);
     setPassword(credentials.byId[credentialId].password);
     setEditing(index);
@@ -93,6 +101,8 @@ export function CredentialManagerScreen(): JSX.Element {
    * Reset the local state
    */
   function reset(): void {
+    setAuthorEmail('');
+    setAuthorName('');
     setUsername('');
     setPassword('');
     setSelected(-1);
@@ -114,14 +124,32 @@ export function CredentialManagerScreen(): JSX.Element {
       />
 
       <TrTextInput
-        onSubmitEditing={onSave}
         textContentType="password"
-        returnKeyType="done"
+        returnKeyType="next"
         onChangeText={setPassword}
         placeholder="Password"
         inForm
         label="Password"
         value={password}
+      />
+
+      <TrTextInput
+        returnKeyType="next"
+        onChangeText={setAuthorEmail}
+        placeholder="hello@example.com"
+        inForm
+        label="Author Email"
+        value={authorEmail}
+      />
+
+      <TrTextInput
+        onSubmitEditing={onSave}
+        returnKeyType="done"
+        onChangeText={setAuthorName}
+        placeholder="Author Name"
+        inForm
+        label="Author Name"
+        value={authorName}
       />
 
       <TrButton onPress={onSave} title="Save" />

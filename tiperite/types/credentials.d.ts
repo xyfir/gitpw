@@ -5,6 +5,8 @@ export type CredentialID = UUID;
 export type CredentialType = 'Bitbucket' | 'GitHub' | 'GitLab' | 'Custom';
 
 export interface Credential {
+  authorEmail: string;
+  authorName: string;
   username: string;
   password: string;
   type: CredentialType;
