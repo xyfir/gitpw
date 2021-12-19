@@ -2,6 +2,7 @@ import { StyleProp, ViewStyle, TextStyle } from 'react-native';
 
 export const HomeScreenStyles: {
   HomeScreen: {
+    footer: StyleProp<ViewStyle>;
     button: StyleProp<TextStyle>;
     title: StyleProp<TextStyle>;
     root: StyleProp<ViewStyle>;
@@ -9,6 +10,10 @@ export const HomeScreenStyles: {
   };
 } = {
   HomeScreen: {
+    footer: {
+      justifyContent: 'space-between',
+      flexDirection: 'row',
+    },
     button: {
       marginTop: 20,
     },

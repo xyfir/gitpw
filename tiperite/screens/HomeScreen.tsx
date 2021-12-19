@@ -1,10 +1,11 @@
+import { TouchableOpacity, FlatList, View } from 'react-native';
 import { selectNonNullableWorkspaces } from '../state/workspacesSlice';
-import { TouchableOpacity, FlatList } from 'react-native';
 import { selectDocs, docsSlice } from '../state/docsSlice';
 import { TrTextTimestamp } from '../components/TrTextTimestamp';
 import { useTrSelector } from '../hooks/useTrSelector';
 import { TrButton } from '../components/TrButton';
 import { useTheme } from '../hooks/useTheme';
+import { TrAlert } from '../utils/TrAlert';
 import { TrText } from '../components/TrText';
 import { TrGit } from '../utils/TrGit';
 import { TrAES } from '../utils/TrAES';
@@ -37,6 +38,12 @@ export function HomeScreen({
     const workspace = workspaces.byId[workspaces.allIds[0]];
     const git = new TrGit(workspace.id);
 
+    const hasRemoteChanges = await git.hasRemoteChanges();
+    if (hasRemoteChanges) {
+      TrAlert.alert('There are remote changes. Pull first.');
+      return;
+    }
+
     const files = await git.getUnstagedChanges();
     await git.addAll(files);
     await git.commit('Update');
@@ -46,7 +53,7 @@ export function HomeScreen({
   function onPull(): void {
     const workspace = workspaces.byId[workspaces.allIds[0]];
     const git = new TrGit(workspace.id);
-    git.fastForward().catch(console.error);
+    git.fastForward();
   }
 
   React.useEffect(() => {
@@ -94,7 +101,7 @@ export function HomeScreen({
   return docs ? (
     <FlatList
       ListFooterComponent={
-        <>
+        <View style={theme.footer}>
           <TrButton
             onPress={onAddWorkspace}
             title="Add Workspace"
@@ -104,7 +111,7 @@ export function HomeScreen({
           <TrButton onPress={onPush} style={theme.button} title="Push" />
 
           <TrButton onPress={onPull} style={theme.button} title="Pull" />
-        </>
+        </View>
       }
       renderItem={({ item: docId }) => (
         <TouchableOpacity style={theme.doc}>
