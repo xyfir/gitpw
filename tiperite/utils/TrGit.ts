@@ -7,6 +7,10 @@ import http from 'isomorphic-git/http/web';
 interface CommonOptions {
   corsProxy: string;
   onAuth: git.AuthCallback;
+  author: {
+    email: string;
+    name: string;
+  };
   http: git.HttpClient;
   url: string;
   dir: string;
@@ -33,6 +37,10 @@ export class TrGit {
         username: credential.username,
         password: credential.password,
       }),
+      author: {
+        email: credential.authorEmail,
+        name: credential.authorName,
+      },
       http,
       dir: `/workspaces/${workspace.id}`,
       url: workspace.repoUrl,
@@ -87,7 +95,7 @@ export class TrGit {
    * Add multiple files
    */
   public addAll(filepaths: string[]): Promise<void[]> {
-    return Promise.all(filepaths.map(this.add));
+    return Promise.all(filepaths.map((file) => this.add(file)));
   }
 
   /**
