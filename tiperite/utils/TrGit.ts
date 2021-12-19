@@ -94,6 +94,13 @@ export class TrGit {
   }
 
   /**
+   * @see https://isomorphic-git.org/docs/en/fetch
+   */
+  public fetch(): Promise<git.FetchResult> {
+    return git.fetch(this.commonOptions);
+  }
+
+  /**
    * Pushes `main` branch to `origin`
    *
    * @see https://isomorphic-git.org/docs/en/push
@@ -107,5 +114,12 @@ export class TrGit {
    */
   public add(filepath: string): Promise<void> {
     return git.add({ ...this.commonOptions, filepath });
+  }
+
+  /**
+   * @see https://isomorphic-git.org/docs/en/log
+   */
+  public log({ depth }: { depth?: number }): Promise<git.ReadCommitResult[]> {
+    return git.log({ ...this.commonOptions, depth });
   }
 }
