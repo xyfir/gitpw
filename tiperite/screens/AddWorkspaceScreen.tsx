@@ -65,7 +65,7 @@ export function AddWorkspaceScreen({
       );
 
       // Validate the password
-      await TrAES.decrypt(manifest.password.ciphertext, passkey).catch(() => {
+      await TrAES.decrypt(manifest.keys[0].passkey, passkey).catch(() => {
         throw 'Invalid workspace password (git credentials are valid)';
       });
 

@@ -51,12 +51,10 @@ export type WorkspaceManifestVersion = number;
  * The `manifest.json` file in a workspace's repo
  */
 export interface WorkspaceManifestFileData {
+  /**
+   * Data needed to convert the user's password to a passkey via PBKDF2
+   */
   password: {
-    /**
-     * A random string encrypted with the final key output from PBKDF2 that can
-     *  be used to easily verify a password supplied to PBKDF2 in the future
-     */
-    ciphertext: EncryptedString;
     /**
      * Iterations to use for PBKDF2 on the user's supplied password
      */
@@ -67,4 +65,17 @@ export interface WorkspaceManifestFileData {
     salt: string;
   };
   version: WorkspaceManifestVersion;
+  /**
+   * Past and current encryption keys for the workspace, ordered newest to
+   *  oldest, and encrypted using the current key.
+   *
+   * This allows us to decrypt old commits prior to a key change.
+   *
+   * It also allows us to verify that a provided password correctly generated
+   *  the current key by attempting to decrypt one of the keys.
+   */
+  keys: {
+    createdAt: DateString;
+    passkey: EncryptedString;
+  }[];
 }
