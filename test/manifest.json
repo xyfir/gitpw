@@ -1,8 +1,13 @@
 {
   "password": {
-    "ciphertext": "5d596ec4f8c86d88b0e9b265bKDjRq765bvFnkMPoJypPNpQq4QuXg==",
     "iterations": 123456,
     "salt": "abc123"
   },
-  "version": 1
+  "version": 1,
+  "keys": [
+    {
+      "createdAt": "2021-12-21T03:21:08.705Z",
+      "passkey": "a4e1c31046eecfad6185aae79VxgzPKgF5MeouZGZl9ARc1w3aMVl7INUI3tVD+x/6q1WnIMIuvGYg+pkGlHqZ1bhBlmln4A6k8uqufMIjJJCmI6VTd/RmpglMlgRfFBIG4="
+    }
+  ]
 }
