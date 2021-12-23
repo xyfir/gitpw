@@ -1,13 +1,18 @@
 {
+  "encryption": [
+    {
+      "createdAt": "2021-12-21T03:21:08.705Z",
+      "keys": [
+        {
+          "passkey": "a4e1c31046eecfad6185aae79VxgzPKgF5MeouZGZl9ARc1w3aMVl7INUI3tVD+x/6q1WnIMIuvGYg+pkGlHqZ1bhBlmln4A6k8uqufMIjJJCmI6VTd/RmpglMlgRfFBIG4=",
+          "type": "AES-256-GCM"
+        }
+      ]
+    }
+  ],
   "password": {
     "iterations": 123456,
     "salt": "abc123"
   },
-  "version": 1,
-  "keys": [
-    {
-      "createdAt": "2021-12-21T03:21:08.705Z",
-      "passkey": "a4e1c31046eecfad6185aae79VxgzPKgF5MeouZGZl9ARc1w3aMVl7INUI3tVD+x/6q1WnIMIuvGYg+pkGlHqZ1bhBlmln4A6k8uqufMIjJJCmI6VTd/RmpglMlgRfFBIG4="
-    }
-  ]
+  "version": 1
 }
