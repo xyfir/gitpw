@@ -13,6 +13,19 @@ export type TiperiteVersion = string;
 export type EncryptedString = string;
 
 /**
+ * Unique identifier for a specific mode of encryption supported by Tiperite
+ */
+export type EncryptionType = 'AES-256-GCM';
+
+/**
+ * A high-level data structure for storing encryption keys in Tiperite
+ */
+export type EncryptionKey = {
+  passkey: HexString;
+  type: EncryptionType;
+};
+
+/**
  * A base64 string
  *
  * @example "SGVsbG8gV29ybGQ="
