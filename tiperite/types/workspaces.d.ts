@@ -1,6 +1,7 @@
 import {
   EncryptedString,
   TiperiteConfig,
+  EncryptionType,
   CredentialID,
   DateString,
   HexString,
@@ -21,14 +22,17 @@ export interface StorageFileWorkspace {
    * @example "https://github.com/example/workspace.git"
    */
   repoUrl: string;
-  /**
-   * The final plaintext passkey for the workspace. This is the output from
-   *  `KeyDeriver.deriveKey()` using the user-supplied password and the
-   *  requirements from the workspace's manifest.
-   */
-  passkey: HexString;
   config: TiperiteConfig;
   name: string;
+  /**
+   * The final hex string passkeys for the workspace. This is the output from
+   *  `KeyDeriver.deriveKey()` using the user-supplied passwords and the
+   *  requirements from the workspace's manifest.
+   */
+  keys: {
+    passkey: HexString;
+    type: EncryptionType;
+  }[];
   id: WorkspaceID;
 }
 
@@ -52,6 +56,25 @@ export type WorkspaceManifestVersion = number;
  */
 export interface WorkspaceManifestFileData {
   /**
+   * Past and current encryption keys for the workspace, ordered newest to
+   *  oldest, and encrypted using the current key.
+   *
+   * This allows us to decrypt old commits prior to a key change.
+   *
+   * It also allows us to verify that a provided password correctly generated
+   *  the current key by attempting to decrypt one of the keys.
+   */
+  encryption: {
+    createdAt: DateString;
+    /**
+     * An array of keys to use for encryption/decryption, in order
+     */
+    keys: {
+      passkey: EncryptedString; // HexString as EncryptedString
+      type: EncryptionType;
+    }[];
+  }[];
+  /**
    * Data needed to convert the user's password to a passkey via PBKDF2
    */
   password: {
@@ -65,17 +88,4 @@ export interface WorkspaceManifestFileData {
     salt: string;
   };
   version: WorkspaceManifestVersion;
-  /**
-   * Past and current encryption keys for the workspace, ordered newest to
-   *  oldest, and encrypted using the current key.
-   *
-   * This allows us to decrypt old commits prior to a key change.
-   *
-   * It also allows us to verify that a provided password correctly generated
-   *  the current key by attempting to decrypt one of the keys.
-   */
-  keys: {
-    createdAt: DateString;
-    passkey: EncryptedString;
-  }[];
 }

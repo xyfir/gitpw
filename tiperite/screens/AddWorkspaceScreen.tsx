@@ -1,4 +1,3 @@
-import { StackNavigatorScreenProps, WorkspaceManifestFileData } from '../types';
 import { LatestWorkspaceManifestVersion } from '../constants/versions';
 import { selectNonNullableCredentials } from '../state/credentialsSlice';
 import { workspacesSlice } from '../state/workspacesSlice';
@@ -8,14 +7,19 @@ import { TrTextInput } from '../components/TrTextInput';
 import { TrPicker } from '../components/TrPicker';
 import { TrButton } from '../components/TrButton';
 import { TrPBKDF2 } from '../utils/TrPBKDF2';
+import { TrCrypto } from '../utils/TrCrypto';
 import { useTheme } from '../hooks/useTheme';
 import { TrAlert } from '../utils/TrAlert';
 import { Random } from '../utils/Random';
-import { TrAES } from '../utils/TrAES';
 import { TrGit } from '../utils/TrGit';
 import { View } from 'react-native';
 import { FS } from '../utils/FS';
 import React from 'react';
+import {
+  StackNavigatorScreenProps,
+  WorkspaceManifestFileData,
+  EncryptionKey,
+} from '../types';
 
 /**
  * Allow the user to add a new workspace
@@ -26,7 +30,7 @@ export function AddWorkspaceScreen({
   const credentials = useTrSelector(selectNonNullableCredentials);
 
   const [credentialId, setCredentialId] = React.useState(credentials.allIds[0]);
-  const [password, setPassword] = React.useState('');
+  const [passwords, setPasswords] = React.useState(['']);
   const [repoUrl, setRepoUrl] = React.useState('');
   const [busy, setBusy] = React.useState(false);
   const [name, setName] = React.useState('');
@@ -45,7 +49,7 @@ export function AddWorkspaceScreen({
       if (!credential) throw 'No credential selected';
 
       // Validate that we can access the repo before clone
-      const git = new TrGit(id);
+      const git = new TrGit({ credentialId, repoUrl, id });
       await git.getRemoteInfo();
       await git.clone();
 
@@ -57,16 +61,27 @@ export function AddWorkspaceScreen({
         throw `Workspace manifest version ${manifest.version} is not supported`;
       }
 
-      // Generate key from password and manifest data
-      const passkey = await TrPBKDF2.deriveKey(
-        password,
-        manifest.password.salt,
-        manifest.password.iterations,
+      // Generate keys from password and manifest data
+      const passkeys = await Promise.all(
+        passwords.map((password) =>
+          TrPBKDF2.deriveKey(
+            password,
+            manifest.password.salt,
+            manifest.password.iterations,
+          ),
+        ),
       );
+      const keys: EncryptionKey[] = passkeys.map((passkey) => ({
+        passkey,
+        type: 'AES-256-GCM',
+      }));
 
       // Validate the password
-      await TrAES.decrypt(manifest.keys[0].passkey, passkey).catch(() => {
-        throw 'Invalid workspace password (git credentials are valid)';
+      await TrCrypto.decrypt(
+        manifest.encryption[0].keys[0].passkey,
+        keys,
+      ).catch(() => {
+        throw 'Invalid workspace password(s) with valid git credentials';
       });
 
       // Add the workspace
@@ -75,8 +90,8 @@ export function AddWorkspaceScreen({
           lastViewedAt: new Date().toISOString(),
           credentialId,
           repoUrl,
-          passkey,
           config: {},
+          keys,
           name,
           id,
         }),
@@ -105,11 +120,11 @@ export function AddWorkspaceScreen({
 
       <TrTextInput
         textContentType="password"
-        onChangeText={setPassword}
+        onChangeText={(p) => setPasswords([p])}
         placeholder="Password"
         inForm
         label="Workspace Pass"
-        value={password}
+        value={passwords[0]}
       />
 
       <TrTextInput

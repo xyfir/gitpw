@@ -5,10 +5,10 @@ import { TrTextTimestamp } from '../components/TrTextTimestamp';
 import { useTrSelector } from '../hooks/useTrSelector';
 import { TrButton } from '../components/TrButton';
 import { useTheme } from '../hooks/useTheme';
+import { TrCrypto } from '../utils/TrCrypto';
 import { TrAlert } from '../utils/TrAlert';
 import { TrText } from '../components/TrText';
 import { TrGit } from '../utils/TrGit';
-import { TrAES } from '../utils/TrAES';
 import { store } from '../state/store';
 import { FS } from '../utils/FS';
 import React from 'react';
@@ -57,6 +57,7 @@ export function HomeScreen({
   }
 
   React.useEffect(() => {
+    if (!workspaces.allIds.length) return;
     const workspace = workspaces.byId[workspaces.allIds[0]];
 
     // Get documents in workspace
@@ -78,7 +79,7 @@ export function HomeScreen({
         // Build DecryptedDocMeta to load into state
         return Promise.all(
           docs.map((doc) => {
-            return TrAES.decrypt(doc.headers, workspace.passkey).then(
+            return TrCrypto.decrypt(doc.headers, workspace.keys).then(
               (headers) => {
                 const meta: DecryptedDocMeta = {
                   createdAt: doc.createdAt,
@@ -98,7 +99,7 @@ export function HomeScreen({
       .catch(console.error);
   }, []);
 
-  return docs ? (
+  return (
     <FlatList
       ListFooterComponent={
         <View style={theme.footer}>
@@ -113,25 +114,33 @@ export function HomeScreen({
           <TrButton onPress={onPull} style={theme.button} title="Pull" />
         </View>
       }
-      renderItem={({ item: docId }) => (
-        <TouchableOpacity style={theme.doc}>
-          <TrText weight="600" style={theme.title} size={16}>
-            {docs.byId[docId].headers.title || 'Untitled'}
-          </TrText>
+      renderItem={
+        docs
+          ? ({ item: docId }) => (
+              <TouchableOpacity style={theme.doc}>
+                <TrText weight="600" style={theme.title} size={16}>
+                  {docs.byId[docId].headers.title || 'Untitled'}
+                </TrText>
 
-          <TrTextTimestamp
-            numberOfLines={1}
-            opacity={0.5}
-            ts={docs.byId[docId].headers.updated || docs.byId[docId].updatedAt}
-          />
+                <TrTextTimestamp
+                  numberOfLines={1}
+                  opacity={0.5}
+                  ts={
+                    docs.byId[docId].headers.updated ||
+                    docs.byId[docId].updatedAt
+                  }
+                />
 
-          <TrText numberOfLines={1} opacity={0.5}>
-            {docs.byId[docId].headers.tags || docs.byId[docId].headers.folder}
-          </TrText>
-        </TouchableOpacity>
-      )}
+                <TrText numberOfLines={1} opacity={0.5}>
+                  {docs.byId[docId].headers.tags ||
+                    docs.byId[docId].headers.folder}
+                </TrText>
+              </TouchableOpacity>
+            )
+          : () => null
+      }
       style={theme.root}
-      data={docs.allIds}
+      data={docs ? docs.allIds : []}
     />
-  ) : null;
+  );
 }
