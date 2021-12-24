@@ -1,4 +1,4 @@
-import { WorkspaceID } from '../types';
+import { StorageFileWorkspace, WorkspaceID } from '../types';
 import { store } from '../state/store';
 import * as git from 'isomorphic-git';
 import { FS } from '../utils/FS';
@@ -25,11 +25,15 @@ interface CommonOptions {
 export class TrGit {
   private commonOptions: CommonOptions;
 
-  constructor(workspaceId: WorkspaceID) {
+  constructor(
+    ws:
+      | WorkspaceID
+      | Pick<StorageFileWorkspace, 'credentialId' | 'repoUrl' | 'id'>,
+  ) {
     const { credentials, workspaces } = store.getState();
     if (!credentials || !workspaces) throw Error('Null credentials/workspaces');
 
-    const workspace = workspaces.byId[workspaceId];
+    const workspace = typeof ws == 'object' ? ws : workspaces.byId[ws];
     const credential = credentials.byId[workspace.credentialId];
     this.commonOptions = {
       corsProxy: 'https://cors.isomorphic-git.org',
