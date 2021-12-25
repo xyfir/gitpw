@@ -28,10 +28,16 @@ export interface EncryptedDocMeta {
 }
 
 /**
- * The body of the document broken up into encrypted 'blocks', which are
- *  related substrings within the document's full body string
+ * The body of the doc
  */
 export interface EncryptedDocBody {
+  /**
+   * @see EncryptedDocMeta.updatedAt
+   */
+  updatedAt: DateString;
+  /**
+   * The doc's content broken up into encrypted substrings
+   */
   blocks: EncryptedString[];
 }
 
