@@ -56,12 +56,19 @@ export function EditorScreen({
 
     // Save doc's changes
     return () => {
+      const decryptedBlocks = contentRef.current.split('\n\n');
+      const blocksChanged = decryptedBlocks.some(
+        (block, i) => originalDecryptedBlocks[i] != block,
+      );
+
+      if (!blocksChanged) return;
+
       const updatedAt = new Date().toISOString();
       store.dispatch(docsSlice.actions.update({ ...doc, updatedAt }));
 
-      // Encrypt changed blocks
+      // Encrypt new/changed blocks
       Promise.all(
-        contentRef.current.split('\n\n').map((block, i) => {
+        decryptedBlocks.map((block, i) => {
           return originalDecryptedBlocks[i] == block
             ? originalEncryptedBlocks[i]
             : TrCrypto.encrypt(block, workspace.keys);
