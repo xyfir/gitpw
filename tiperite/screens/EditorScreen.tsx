@@ -34,11 +34,14 @@ export function EditorScreen({
   React.useEffect(() => {
     const metaPath = `/workspaces/${workspace.id}/docs/${doc.id}.meta.json`;
     const bodyPath = `/workspaces/${workspace.id}/docs/${doc.id}.body.json`;
+    let originalDecryptedBlocks: string[];
+    let originalEncryptedBlocks: string[];
 
     FS.readFile(bodyPath)
       .then((data) => {
         if (!data) throw Error('Missing file');
         const body = JSON.parse(data) as EncryptedDocBody;
+        originalEncryptedBlocks = body.blocks;
         return Promise.all(
           body.blocks.map((block) => {
             return TrCrypto.decrypt(block, workspace.keys);
@@ -46,6 +49,7 @@ export function EditorScreen({
         );
       })
       .then((blocks) => {
+        originalDecryptedBlocks = blocks;
         setContent(blocks.join('\n\n'));
       })
       .catch(console.error);
@@ -55,18 +59,24 @@ export function EditorScreen({
       const updatedAt = new Date().toISOString();
       store.dispatch(docsSlice.actions.update({ ...doc, updatedAt }));
 
+      // Encrypt changed blocks
       Promise.all(
-        contentRef.current.split('\n\n').map((block) => {
-          return TrCrypto.encrypt(block, workspace.keys);
+        contentRef.current.split('\n\n').map((block, i) => {
+          return originalDecryptedBlocks[i] == block
+            ? originalEncryptedBlocks[i]
+            : TrCrypto.encrypt(block, workspace.keys);
         }),
       )
+        // Write body file
         .then((blocks) => {
           const body: EncryptedDocBody = { updatedAt, blocks };
           return FS.writeFile(bodyPath, JSON.stringify(body, null, 2));
         })
+        // Encrypt header
         .then(() => {
           return TrCrypto.encrypt(JSON.stringify(doc.headers), workspace.keys);
         })
+        // Write header file
         .then((headers) => {
           const encryptedMeta: EncryptedDocMeta = {
             createdAt: doc.createdAt,
