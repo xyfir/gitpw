@@ -16,6 +16,7 @@ import {
   StackNavigatorScreenProps,
   DecryptedDocMeta,
   JSONString,
+  DocID,
 } from '../types';
 
 /**
@@ -30,12 +31,18 @@ export function HomeScreen({
   const theme = useTheme('HomeScreen');
   const docs = useTrSelector(selectDocs);
 
+  const workspaceId = workspaces.allIds[0];
+
   function onAddWorkspace(): void {
     navigation.navigate('AddWorkspaceScreen');
   }
 
+  function onOpenDoc(docId: DocID): void {
+    navigation.navigate('EditorScreen', { workspaceId, docId });
+  }
+
   async function onPush(): Promise<void> {
-    const workspace = workspaces.byId[workspaces.allIds[0]];
+    const workspace = workspaces.byId[workspaceId];
     const git = new TrGit(workspace.id);
 
     const hasRemoteChanges = await git.hasRemoteChanges();
@@ -51,17 +58,17 @@ export function HomeScreen({
   }
 
   function onPull(): void {
-    const workspace = workspaces.byId[workspaces.allIds[0]];
+    const workspace = workspaces.byId[workspaceId];
     const git = new TrGit(workspace.id);
     git.fastForward();
   }
 
   React.useEffect(() => {
     if (!workspaces.allIds.length) return;
-    const workspace = workspaces.byId[workspaces.allIds[0]];
+    const workspace = workspaces.byId[workspaceId];
 
     // Get documents in workspace
-    const dir = `/workspaces/${workspaces.allIds[0]}/docs`;
+    const dir = `/workspaces/${workspaceId}/docs`;
     FS.readdir(dir)
       .then((files) => {
         // Read each file
@@ -117,7 +124,10 @@ export function HomeScreen({
       renderItem={
         docs
           ? ({ item: docId }) => (
-              <TouchableOpacity style={theme.doc}>
+              <TouchableOpacity
+                onPress={() => onOpenDoc(docId)}
+                style={theme.doc}
+              >
                 <TrText weight="600" style={theme.title} size={16}>
                   {docs.byId[docId].headers.title || 'Untitled'}
                 </TrText>

@@ -3,6 +3,7 @@ import { StackNavigatorParams } from '../types';
 import { EnterPasscodeScreen } from '../screens/EnterPasscodeScreen';
 import { AddWorkspaceScreen } from '../screens/AddWorkspaceScreen';
 import { SetPasscodeScreen } from '../screens/SetPasscodeScreen';
+import { EditorScreen } from '../screens/EditorScreen';
 import { EntryScreen } from '../screens/EntryScreen';
 import { HomeScreen } from '../screens/HomeScreen';
 import * as React from 'react';
@@ -36,6 +37,11 @@ export const StackNavigator = (): JSX.Element => (
       component={AddWorkspaceScreen}
       options={{ headerTitle: 'Add workspace' }}
       name="AddWorkspaceScreen"
+    />
+    <Screen
+      component={EditorScreen}
+      options={{ headerTitle: 'Editor' }}
+      name="EditorScreen"
     />
     <Screen
       component={SetPasscodeScreen}
