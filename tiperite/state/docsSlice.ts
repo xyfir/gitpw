@@ -1,6 +1,12 @@
-import { RootState, DecryptedDocMeta, DocsState, DocID } from '../types';
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { Random } from '../utils/Random';
+import {
+  DecryptedDocMeta,
+  WorkspaceID,
+  RootState,
+  DocsState,
+  DocID,
+} from '../types';
 
 const nullError = Error('docsSlice null');
 
@@ -33,15 +39,18 @@ export const docsSlice = createSlice({
     /**
      * Add a new, empty doc
      */
-    add(state): void {
+    add(state, action: PayloadAction<WorkspaceID>): void {
       if (!state) throw nullError;
 
+      const id = Random.uuid();
       const now = new Date().toISOString();
       const doc: DecryptedDocMeta = {
         createdAt: now,
         updatedAt: now,
+        metaPath: `/workspaces/${action.payload}/docs/${id}.meta.json`,
+        bodyPath: `/workspaces/${action.payload}/docs/${id}.body.json`,
         headers: { x: {} },
-        id: Random.uuid(),
+        id,
       };
 
       state.allIds.push(doc.id);

@@ -45,14 +45,12 @@ export function HomeScreen({
   }
 
   function onAddDoc(): void {
-    store.dispatch(docsSlice.actions.add());
+    store.dispatch(docsSlice.actions.add(workspaceId));
 
     const docs = store.getState().docs as DocsState;
     const docId = docs.allIds[docs.allIds.length - 1];
     const doc = docs.byId[docId];
 
-    const metaPath = `/workspaces/${workspaceId}/docs/${doc.id}.meta.json`;
-    const bodyPath = `/workspaces/${workspaceId}/docs/${doc.id}.body.json`;
     const meta: EncryptedDocMeta = {
       createdAt: doc.createdAt,
       updatedAt: doc.updatedAt,
@@ -65,8 +63,8 @@ export function HomeScreen({
     };
 
     Promise.all([
-      FS.writeFile(metaPath, JSON.stringify(meta, null, 2)),
-      FS.writeFile(bodyPath, JSON.stringify(body, null, 2)),
+      FS.writeFile(doc.metaPath, JSON.stringify(meta, null, 2)),
+      FS.writeFile(doc.bodyPath, JSON.stringify(body, null, 2)),
     ])
       .then(() => {
         navigation.navigate('EditorScreen', { workspaceId, docId });
@@ -127,6 +125,8 @@ export function HomeScreen({
                 const meta: DecryptedDocMeta = {
                   createdAt: doc.createdAt,
                   updatedAt: doc.updatedAt,
+                  bodyPath: `/workspaces/${workspaceId}/docs/${doc.id}.body.json`,
+                  metaPath: `/workspaces/${workspaceId}/docs/${doc.id}.meta.json`,
                   headers: JSON.parse(headers as JSONString),
                   id: doc.id,
                 };

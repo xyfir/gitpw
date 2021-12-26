@@ -98,6 +98,8 @@ export interface DocHeaders {
  * A Doc's system- and user-supplied metadata, decrypted and parsed
  */
 export interface DecryptedDocMeta extends Omit<EncryptedDocMeta, 'headers'> {
+  metaPath: string;
+  bodyPath: string;
   headers: DocHeaders;
 }
 

@@ -33,8 +33,6 @@ export function EditorScreen({
 
   // Load doc's content
   React.useEffect(() => {
-    const metaPath = `/workspaces/${workspace.id}/docs/${doc.id}.meta.json`;
-    const bodyPath = `/workspaces/${workspace.id}/docs/${doc.id}.body.json`;
     let originalDecryptedBlocks: string[];
     let originalEncryptedBlocks: string[];
     let originalEncryptedHeaderBlock: string;
@@ -46,12 +44,12 @@ export function EditorScreen({
       .map(([k, v]) => `${k} ${Array.isArray(v) ? v.join(' ') : v}`)
       .join('\n');
 
-    FS.readFile(metaPath)
+    FS.readFile(doc.metaPath)
       .then((data) => {
         if (!data) return;
         const meta = JSON.parse(data) as EncryptedDocMeta;
         originalEncryptedHeaderBlock = meta.headers;
-        return FS.readFile(bodyPath);
+        return FS.readFile(doc.bodyPath);
       })
       .then((data) => {
         if (!data) throw Error('Missing file');
@@ -141,7 +139,7 @@ export function EditorScreen({
         // Write body file
         .then((blocks) => {
           const body: EncryptedDocBody = { updatedAt, blocks };
-          return FS.writeFile(bodyPath, JSON.stringify(body, null, 2));
+          return FS.writeFile(doc.bodyPath, JSON.stringify(body, null, 2));
         })
         // Encrypt header
         .then(() => {
@@ -157,7 +155,10 @@ export function EditorScreen({
             headers,
             id: doc.id,
           };
-          return FS.writeFile(metaPath, JSON.stringify(encryptedMeta, null, 2));
+          return FS.writeFile(
+            doc.metaPath,
+            JSON.stringify(encryptedMeta, null, 2),
+          );
         })
         .catch((err) => {
           console.error(err);
