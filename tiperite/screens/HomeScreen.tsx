@@ -63,8 +63,8 @@ export function HomeScreen({
     };
 
     Promise.all([
-      FS.writeFile(doc.metaPath, JSON.stringify(meta, null, 2)),
-      FS.writeFile(doc.bodyPath, JSON.stringify(body, null, 2)),
+      FS.writeJSON(doc.metaPath, meta),
+      FS.writeJSON(doc.bodyPath, body),
     ])
       .then(() => {
         navigation.navigate('EditorScreen', { workspaceId, docId });
@@ -110,9 +110,9 @@ export function HomeScreen({
           files
             .filter((file) => file.endsWith('.meta.json'))
             .map((file) => {
-              return FS.readFile(`${dir}/${file}`).then(
-                (data) => JSON.parse(data as JSONString) as EncryptedDocMeta,
-              );
+              return FS.readJSON<EncryptedDocMeta>(
+                `${dir}/${file}`,
+              ) as Promise<EncryptedDocMeta>;
             }),
         );
       })

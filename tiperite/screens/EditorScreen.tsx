@@ -44,16 +44,14 @@ export function EditorScreen({
       .map(([k, v]) => `${k} ${Array.isArray(v) ? v.join(' ') : v}`)
       .join('\n');
 
-    FS.readFile(doc.metaPath)
-      .then((data) => {
-        if (!data) return;
-        const meta = JSON.parse(data) as EncryptedDocMeta;
+    FS.readJSON<EncryptedDocMeta>(doc.metaPath)
+      .then((meta) => {
+        if (!meta) return;
         originalEncryptedHeaderBlock = meta.headers;
-        return FS.readFile(doc.bodyPath);
+        return FS.readJSON<EncryptedDocBody>(doc.bodyPath);
       })
-      .then((data) => {
-        if (!data) throw Error('Missing file');
-        const body = JSON.parse(data) as EncryptedDocBody;
+      .then((body) => {
+        if (!body) throw Error('Missing file');
         originalEncryptedBlocks = body.blocks;
         return Promise.all(
           body.blocks.map((block) => {
@@ -139,7 +137,7 @@ export function EditorScreen({
         // Write body file
         .then((blocks) => {
           const body: EncryptedDocBody = { updatedAt, blocks };
-          return FS.writeFile(doc.bodyPath, JSON.stringify(body, null, 2));
+          return FS.writeJSON<EncryptedDocBody>(doc.bodyPath, body);
         })
         // Encrypt header
         .then(() => {
@@ -155,10 +153,7 @@ export function EditorScreen({
             headers,
             id: doc.id,
           };
-          return FS.writeFile(
-            doc.metaPath,
-            JSON.stringify(encryptedMeta, null, 2),
-          );
+          return FS.writeJSON<EncryptedDocMeta>(doc.metaPath, encryptedMeta);
         })
         .catch((err) => {
           console.error(err);
