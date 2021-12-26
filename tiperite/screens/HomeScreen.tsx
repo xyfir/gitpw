@@ -14,10 +14,10 @@ import { FS } from '../utils/FS';
 import React from 'react';
 import {
   StackNavigatorScreenProps,
-  DecryptedDocMeta,
   EncryptedDocMeta,
   EncryptedDocBody,
   JSONString,
+  DocHeaders,
   DocsState,
   DocID,
 } from '../types';
@@ -110,8 +110,8 @@ export function HomeScreen({
           files
             .filter((file) => file.endsWith('.meta.json'))
             .map((file) => {
-              return FS.readFile(`${dir}/${file}`).then((data) =>
-                JSON.parse(data as JSONString),
+              return FS.readFile(`${dir}/${file}`).then(
+                (data) => JSON.parse(data as JSONString) as EncryptedDocMeta,
               );
             }),
         );
@@ -121,23 +121,16 @@ export function HomeScreen({
         return Promise.all(
           docs.map((doc) => {
             return TrCrypto.decrypt(doc.headers, workspace.keys).then(
-              (headers) => {
-                const meta: DecryptedDocMeta = {
-                  createdAt: doc.createdAt,
-                  updatedAt: doc.updatedAt,
-                  bodyPath: `/workspaces/${workspaceId}/docs/${doc.id}.body.json`,
-                  metaPath: `/workspaces/${workspaceId}/docs/${doc.id}.meta.json`,
-                  headers: JSON.parse(headers as JSONString),
-                  id: doc.id,
-                };
-                return meta;
-              },
+              (headers): [EncryptedDocMeta, DocHeaders] => [
+                doc,
+                JSON.parse(headers as JSONString) as DocHeaders,
+              ],
             );
           }),
         );
       })
       .then((docs) => {
-        store.dispatch(docsSlice.actions.load(docs));
+        store.dispatch(docsSlice.actions.load({ workspaceId, docs }));
       })
       .catch(console.error);
   }, []);
