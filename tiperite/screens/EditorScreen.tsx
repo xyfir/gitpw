@@ -12,6 +12,7 @@ import {
   StackNavigatorScreenProps,
   EncryptedDocBody,
   EncryptedDocMeta,
+  DocHeaders,
 } from '../types';
 
 /**
@@ -36,8 +37,22 @@ export function EditorScreen({
     const bodyPath = `/workspaces/${workspace.id}/docs/${doc.id}.body.json`;
     let originalDecryptedBlocks: string[];
     let originalEncryptedBlocks: string[];
+    let originalEncryptedHeaderBlock: string;
+    const originalDecryptedHeaderBlock = [
+      ...Object.entries(doc.headers),
+      ...Object.entries(doc.headers.x),
+    ]
+      .filter(([k]) => k != 'x')
+      .map(([k, v]) => `${k} ${Array.isArray(v) ? v.join(' ') : v}`)
+      .join('\n');
 
-    FS.readFile(bodyPath)
+    FS.readFile(metaPath)
+      .then((data) => {
+        if (!data) return;
+        const meta = JSON.parse(data) as EncryptedDocMeta;
+        originalEncryptedHeaderBlock = meta.headers;
+        return FS.readFile(bodyPath);
+      })
       .then((data) => {
         if (!data) throw Error('Missing file');
         const body = JSON.parse(data) as EncryptedDocBody;
@@ -50,18 +65,67 @@ export function EditorScreen({
       })
       .then((blocks) => {
         originalDecryptedBlocks = blocks;
-        setContent(blocks.join('\n\n'));
+        setContent(`${originalDecryptedHeaderBlock}\n\n${blocks.join('\n\n')}`);
       })
       .catch(console.error);
 
     // Save doc's changes
     return () => {
+      // Split the text input's content into header and body blocks
       const decryptedBlocks = contentRef.current.split('\n\n');
+      const decryptedHeaderBlock = decryptedBlocks.shift();
+      if (!decryptedHeaderBlock) return;
+
+      // Parse the header text block into an object
+      const headers: DocHeaders = { x: {} };
+      decryptedHeaderBlock.split('\n').forEach((headerLine) => {
+        const parts = headerLine.trim().split(' ');
+        let key = parts.shift();
+
+        if (!key) return;
+        key = key.toLowerCase();
+
+        switch (key as keyof DocHeaders) {
+          case 'updated':
+            headers.updated = parts.join(' ');
+            break;
+          case 'created':
+            headers.created = parts.join(' ');
+            break;
+          case 'config': {
+            const configKey = parts.shift();
+            if (configKey) {
+              headers.config = {
+                ...headers.config,
+                [configKey.toLowerCase()]: parts.join(' '),
+              };
+            }
+            break;
+          }
+          case 'title':
+            headers.title = parts.join(' ');
+            break;
+          case 'folder':
+            headers.folder = parts.join(' ');
+            break;
+          case 'slug':
+            headers.slug = parts.join(' ');
+            break;
+          case 'tags':
+            headers.tags = parts;
+            break;
+          default:
+            if (key.startsWith('x-')) headers.x[key] = parts.join(' ');
+            else throw Error(`Unknown header: ${key}`);
+        }
+      });
+
       const blocksChanged = decryptedBlocks.some(
         (block, i) => originalDecryptedBlocks[i] != block,
       );
-
-      if (!blocksChanged) return;
+      const headerChanged =
+        originalDecryptedHeaderBlock != decryptedHeaderBlock;
+      if (!blocksChanged && !headerChanged) return;
 
       const updatedAt = new Date().toISOString();
       store.dispatch(docsSlice.actions.update({ ...doc, updatedAt }));
@@ -81,7 +145,9 @@ export function EditorScreen({
         })
         // Encrypt header
         .then(() => {
-          return TrCrypto.encrypt(JSON.stringify(doc.headers), workspace.keys);
+          return headerChanged
+            ? TrCrypto.encrypt(JSON.stringify(headers), workspace.keys)
+            : originalEncryptedHeaderBlock;
         })
         // Write header file
         .then((headers) => {
