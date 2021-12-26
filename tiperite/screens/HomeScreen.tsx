@@ -15,7 +15,10 @@ import React from 'react';
 import {
   StackNavigatorScreenProps,
   DecryptedDocMeta,
+  EncryptedDocMeta,
+  EncryptedDocBody,
   JSONString,
+  DocsState,
   DocID,
 } from '../types';
 
@@ -39,6 +42,39 @@ export function HomeScreen({
 
   function onOpenDoc(docId: DocID): void {
     navigation.navigate('EditorScreen', { workspaceId, docId });
+  }
+
+  function onAddDoc(): void {
+    store.dispatch(docsSlice.actions.add());
+
+    const docs = store.getState().docs as DocsState;
+    const docId = docs.allIds[docs.allIds.length - 1];
+    const doc = docs.byId[docId];
+
+    const metaPath = `/workspaces/${workspaceId}/docs/${doc.id}.meta.json`;
+    const bodyPath = `/workspaces/${workspaceId}/docs/${doc.id}.body.json`;
+    const meta: EncryptedDocMeta = {
+      createdAt: doc.createdAt,
+      updatedAt: doc.updatedAt,
+      headers: '',
+      id: docId,
+    };
+    const body: EncryptedDocBody = {
+      updatedAt: doc.updatedAt,
+      blocks: [],
+    };
+
+    Promise.all([
+      FS.writeFile(metaPath, JSON.stringify(meta, null, 2)),
+      FS.writeFile(bodyPath, JSON.stringify(body, null, 2)),
+    ])
+      .then(() => {
+        navigation.navigate('EditorScreen', { workspaceId, docId });
+      })
+      .catch((err) => {
+        console.error(err);
+        TrAlert.alert('Could not save new doc');
+      });
   }
 
   async function onPush(): Promise<void> {
@@ -115,6 +151,8 @@ export function HomeScreen({
             title="Add Workspace"
             style={theme.button}
           />
+
+          <TrButton onPress={onAddDoc} title="Add Doc" style={theme.button} />
 
           <TrButton onPress={onPush} style={theme.button} title="Push" />
 
