@@ -40,6 +40,22 @@ export function HomeScreen({
     navigation.navigate('AddWorkspaceScreen');
   }
 
+  function onDeleteDoc(docId: DocID): void {
+    TrAlert.confirm('Delete doc?').then((yes) => {
+      if (!docs || !yes) return;
+
+      const doc = docs.byId[docId];
+      Promise.all([FS.unlink(doc.metaPath), FS.unlink(doc.bodyPath)])
+        .then(() => {
+          store.dispatch(docsSlice.actions.delete(docId));
+        })
+        .catch((err) => {
+          console.error(err);
+          TrAlert.alert('Could not delete doc');
+        });
+    });
+  }
+
   function onOpenDoc(docId: DocID): void {
     navigation.navigate('EditorScreen', { workspaceId, docId });
   }
@@ -159,9 +175,17 @@ export function HomeScreen({
                 onPress={() => onOpenDoc(docId)}
                 style={theme.doc}
               >
-                <TrText weight="600" style={theme.title} size={16}>
-                  {docs.byId[docId].headers.title || 'Untitled'}
-                </TrText>
+                <View style={theme.docMain}>
+                  <TrText weight="600" style={theme.title} size={16}>
+                    {docs.byId[docId].headers.title || 'Untitled'}
+                  </TrText>
+
+                  <TouchableOpacity onPress={() => onDeleteDoc(docId)}>
+                    <TrText weight="900" size={16}>
+                      [x]
+                    </TrText>
+                  </TouchableOpacity>
+                </View>
 
                 <TrTextTimestamp
                   numberOfLines={1}
