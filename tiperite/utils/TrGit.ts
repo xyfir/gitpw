@@ -4,6 +4,11 @@ import * as git from 'isomorphic-git';
 import { FS } from '../utils/FS';
 import http from 'isomorphic-git/http/web';
 
+type UnstagedChange = {
+  filepath: string;
+  remove: boolean;
+};
+
 interface CommonOptions {
   corsProxy: string;
   onAuth: git.AuthCallback;
@@ -57,9 +62,11 @@ export class TrGit {
    *
    * @see https://isomorphic-git.org/docs/en/statusMatrix#q-what-files-have-unstaged-changes
    */
-  public getUnstagedChanges(): Promise<string[]> {
+  public getUnstagedChanges(): Promise<UnstagedChange[]> {
     return this.statusMatrix().then((rows) => {
-      return rows.filter((row) => row[2] != row[3]).map((row) => row[0]);
+      return rows
+        .filter((row) => row[2] != row[3])
+        .map((row) => ({ filepath: row[0], remove: row[2] == 0 }));
     });
   }
 
@@ -96,6 +103,13 @@ export class TrGit {
   }
 
   /**
+   * Remove multiple files
+   */
+  public removeAll(filepaths: string[]): Promise<void[]> {
+    return Promise.all(filepaths.map((file) => this.remove(file)));
+  }
+
+  /**
    * Add multiple files
    */
   public addAll(filepaths: string[]): Promise<void[]> {
@@ -107,6 +121,13 @@ export class TrGit {
    */
   public commit(message: string): ReturnType<typeof git.commit> {
     return git.commit({ ...this.commonOptions, message });
+  }
+
+  /**
+   * @see https://isomorphic-git.org/docs/en/remove
+   */
+  public remove(filepath: string): Promise<void> {
+    return git.remove({ ...this.commonOptions, filepath });
   }
 
   /**
