@@ -1,6 +1,6 @@
 import { PromiseFsClient } from 'isomorphic-git';
-import LightningFS from '@isomorphic-git/lightning-fs';
 import { JSONString } from '../types';
+import LightningFS from '@isomorphic-git/lightning-fs';
 
 /**
  * Wrapper for the IndexedDB-based filesystem, LightningFS, based on Node's `fs`
@@ -59,6 +59,13 @@ export class FS {
    */
   public static unlink(path: string): Promise<void> {
     return this.fs.promises.unlink(path);
+  }
+
+  /**
+   * Make a directory
+   */
+  public static mkdir(path: string): Promise<void> {
+    return this.fs.promises.mkdir(path);
   }
 
   /**
