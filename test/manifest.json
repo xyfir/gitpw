@@ -4,7 +4,7 @@
       "createdAt": "2021-12-21T03:21:08.705Z",
       "keys": [
         {
-          "passkey": "a4e1c31046eecfad6185aae79VxgzPKgF5MeouZGZl9ARc1w3aMVl7INUI3tVD+x/6q1WnIMIuvGYg+pkGlHqZ1bhBlmln4A6k8uqufMIjJJCmI6VTd/RmpglMlgRfFBIG4=",
+          "passkey": "6541458ad7cefb8a66b59a7elGDiJLKAY4U3NWWtC1KDJ/+65UD1tDzcMrJ9FMoTE8O2UXLr280PEFUYHTgIHFCDhgaUdWZ1Yf6aWdr8rWO7Uo4jtEZUPMsOctg68SQSj4g=",
           "type": "AES-256-GCM"
         }
       ]
@@ -12,7 +12,7 @@
   ],
   "password": {
     "iterations": 123456,
-    "salt": "abc123"
+    "salt": "2f5e4085fc00985259450eb987f9be43"
   },
   "version": 1
 }
