@@ -85,7 +85,7 @@ export interface WorkspaceManifestFileData {
     /**
      * Salt to use for PBKDF2 on the user's supplied password
      */
-    salt: string;
+    salt: HexString;
   };
   version: WorkspaceManifestVersion;
 }

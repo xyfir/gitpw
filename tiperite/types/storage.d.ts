@@ -3,6 +3,7 @@ import {
   TiperiteVersion,
   TiperiteConfig,
   Credential,
+  HexString,
 } from '.';
 
 /**
@@ -49,5 +50,5 @@ export interface BootFileData {
   /**
    * The salt to use to generate the passkey for `/storage.json`
    */
-  salt: string;
+  salt: HexString;
 }

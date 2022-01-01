@@ -1,3 +1,4 @@
+import { convertBufferToArrayBuffer } from './convertBufferToArrayBuffer';
 import { HexString } from '../types';
 
 /**
@@ -15,14 +16,11 @@ export class TrPBKDF2 {
   }
 
   /**
-   * Generate a random 16-byte salt and convert to string
+   * Generate a random 16-byte salt as a hexstring
    */
-  public static generateSalt(): string {
-    let salt = '';
-    crypto.getRandomValues(new Uint8Array(16)).forEach((byte) => {
-      salt += String.fromCharCode(byte);
-    });
-    return salt;
+  public static generateSalt(): HexString {
+    const salt = crypto.getRandomValues(new Uint8Array(16));
+    return Buffer.from(salt).toString('hex');
   }
 
   /**
@@ -30,11 +28,11 @@ export class TrPBKDF2 {
    */
   public static async deriveKey(
     pass: string,
-    salt: string,
+    salt: HexString,
     itr: number,
   ): Promise<HexString> {
+    const saltBuffer = convertBufferToArrayBuffer(Buffer.from(salt, 'hex'));
     const passBuffer = new TextEncoder().encode(pass);
-    const saltBuffer = new TextEncoder().encode(salt);
 
     const key = await crypto.subtle.importKey(
       'raw',
