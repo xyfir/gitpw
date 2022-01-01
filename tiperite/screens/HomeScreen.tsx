@@ -102,7 +102,8 @@ export function HomeScreen({
     }
 
     const files = await git.getUnstagedChanges();
-    await git.addAll(files);
+    await git.addAll(files.filter((f) => !f.remove).map((f) => f.filepath));
+    await git.removeAll(files.filter((f) => f.remove).map((f) => f.filepath));
     await git.commit('Update');
     await git.push();
   }
