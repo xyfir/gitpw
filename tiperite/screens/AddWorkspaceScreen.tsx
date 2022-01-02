@@ -1,10 +1,10 @@
 import { LatestWorkspaceManifestVersion } from '../constants/versions';
 import { selectNonNullableCredentials } from '../state/credentialsSlice';
+import { TrTextInputPicker } from '../components/TrTextInputPicker';
 import { workspacesSlice } from '../state/workspacesSlice';
 import { useTrDispatch } from '../hooks/useTrDispatch';
 import { useTrSelector } from '../hooks/useTrSelector';
 import { TrTextInput } from '../components/TrTextInput';
-import { TrPicker } from '../components/TrPicker';
 import { TrButton } from '../components/TrButton';
 import { TrPBKDF2 } from '../utils/TrPBKDF2';
 import { TrCrypto } from '../utils/TrCrypto';
@@ -138,7 +138,7 @@ export function AddWorkspaceScreen({
         value={repoUrl}
       />
 
-      <TrPicker
+      <TrTextInputPicker
         onAddNew={() => navigation.push('CredentialManagerScreen')}
         options={credentials.allIds.map((id) => ({
           subtext: credentials.byId[id].type,

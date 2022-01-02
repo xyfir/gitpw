@@ -1,11 +1,11 @@
 import { StyleProp, TextStyle } from 'react-native';
 
-export const TrPickerStyles: {
-  TrPicker: {
+export const TrTextInputPickerStyles: {
+  TrTextInputPicker: {
     dropdownIcon: StyleProp<TextStyle>;
   };
 } = {
-  TrPicker: {
+  TrTextInputPicker: {
     dropdownIcon: {
       marginHorizontal: 10,
       fontFamily: 'monospace',

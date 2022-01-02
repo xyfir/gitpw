@@ -9,9 +9,9 @@ import {
 } from './TrPickerModal';
 
 /**
- * A modal that allows the user to select an option
+ * A `TrTextInput` component that when pressed opens a picker modal
  */
-export function TrPicker({
+export function TrTextInputPicker({
   onAddNew,
   options,
   onPick,
@@ -29,7 +29,7 @@ export function TrPicker({
     () => options.find((o) => o.value == value),
     [value],
   );
-  const theme = useTheme('TrPicker');
+  const theme = useTheme('TrTextInputPicker');
 
   function onOpenSelector(): void {
     setSelecting(true);
