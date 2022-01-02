@@ -4,24 +4,20 @@ import {
   TiperiteConfig,
   Credential,
   HexString,
+  DocID,
 } from '.';
 
 /**
- * `/storage.json`
- *
- * The main file that persists the app's state on the device. Loaded after
- *  `/boot.json`.
+ * `/storage.json`: the main file that persists the app's state on the device.
+ *  Loaded after `/boot.json`.
  */
 export interface StorageFileData {
-  // /** Track any extensions installed on the local device */
-  // extensions: {
-  //   manifest: unknown;
-  //   /** @example "https://github.com/example/extension.git" */
-  //   repo: string;
-  //   id: UUID;
-  // }[];
   credentials: Credential[];
   workspaces: StorageFileWorkspace[];
+  /**
+   * IDs of the 15 most recently updated docs in descending order of `updatedAt`
+   */
+  recentDocs: DocID[];
   /**
    * The version of Tiperite that last saved this file
    */
@@ -30,9 +26,7 @@ export interface StorageFileData {
 }
 
 /**
- * `/boot.json`
- *
- * The first file the app loads.
+ * `/boot.json`: the first file the app loads.
  */
 export interface BootFileData {
   hasDevicePassword: boolean;

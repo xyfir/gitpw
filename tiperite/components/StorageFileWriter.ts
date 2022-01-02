@@ -3,6 +3,7 @@ import { selectWorkspaces } from '../state/workspacesSlice';
 import { useTrSelector } from '../hooks/useTrSelector';
 import { selectConfig } from '../state/configSlice';
 import { StorageFile } from '../utils/StorageFile';
+import { selectDocs } from '../state/docsSlice';
 import React from 'react';
 
 /**
@@ -14,6 +15,7 @@ export function StorageFileWriter(): null {
   const credentials = useTrSelector(selectCredentials);
   const workspaces = useTrSelector(selectWorkspaces);
   const config = useTrSelector(selectConfig);
+  const docs = useTrSelector(selectDocs);
 
   React.useEffect(() => {
     if (!credentials || !workspaces) return;
@@ -25,12 +27,22 @@ export function StorageFileWriter(): null {
         ...data,
         credentials: Object.values(credentials.byId),
         workspaces: Object.values(workspaces.byId),
+        recentDocs: docs
+          ? docs.allIds
+              .slice()
+              .sort((a, b) => {
+                if (docs.byId[a].updatedAt > docs.byId[b].updatedAt) return -1;
+                if (docs.byId[a].updatedAt < docs.byId[b].updatedAt) return 1;
+                return 0;
+              })
+              .slice(0, 15)
+          : data.recentDocs,
         config,
       });
     }, 250);
 
     return () => clearTimeout(timeout);
-  }, [credentials, workspaces, config]);
+  }, [credentials, workspaces, config, docs]);
 
   return null;
 }

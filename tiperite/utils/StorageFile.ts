@@ -55,6 +55,7 @@ export class StorageFile {
     const data: StorageFileData = {
       credentials: [],
       workspaces: [],
+      recentDocs: [],
       version: Constants.nativeAppVersion as TiperiteVersion,
       config: {},
     };
