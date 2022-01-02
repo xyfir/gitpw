@@ -16,7 +16,7 @@ export interface StorageFileData {
   credentials: Credential[];
   workspaces: StorageFileWorkspace[];
   /**
-   * IDs of the 15 most recently updated docs in descending order of `updatedAt`
+   * IDs of the most recently updated docs in descending order of `updatedAt`
    */
   recentDocs: {
     workspaceId: WorkspaceID;

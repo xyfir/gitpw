@@ -39,7 +39,7 @@ export function StorageFileWriter(): null {
                 workspaceId: docs.byId[id].workspaceId,
                 docId: id,
               }))
-              .slice(0, 15)
+              .slice(0, 25)
           : data.recentDocs,
         config,
       });
