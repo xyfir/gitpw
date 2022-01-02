@@ -11,7 +11,7 @@ export interface TrPickerOption {
   value: string;
 }
 
-export interface TrPickerModalProps {
+export interface TrPickerProps {
   onAddNew: () => void;
   onClose: () => void;
   options: TrPickerOption[];
@@ -23,15 +23,15 @@ export interface TrPickerModalProps {
 /**
  * A modal that allows the user to select an option
  */
-export function TrPickerModal({
+export function TrPicker({
   onAddNew,
   onClose,
   options,
   onPick,
   value,
   open,
-}: TrPickerModalProps): JSX.Element {
-  const theme = useTheme('TrPickerModal');
+}: TrPickerProps): JSX.Element {
+  const theme = useTheme('TrPicker');
 
   function onAddNewFromModal(): void {
     onAddNew();

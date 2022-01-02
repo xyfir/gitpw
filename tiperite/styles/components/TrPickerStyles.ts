@@ -1,7 +1,7 @@
 import { StyleProp, ViewStyle } from 'react-native';
 
-export const TrPickerModalStyles: {
-  TrPickerModal: {
+export const TrPickerStyles: {
+  TrPicker: {
     selectedOption_dark: StyleProp<ViewStyle>;
     selectedOption: StyleProp<ViewStyle>;
     listContent: StyleProp<ViewStyle>;
@@ -9,7 +9,7 @@ export const TrPickerModalStyles: {
     option: StyleProp<ViewStyle>;
   };
 } = {
-  TrPickerModal: {
+  TrPicker: {
     selectedOption_dark: {
       borderColor: '#FFF',
     },

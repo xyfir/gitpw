@@ -1,12 +1,8 @@
+import { TrPickerOption, TrPickerProps, TrPicker } from './TrPicker';
 import { TrTextInputProps, TrTextInput } from './TrTextInput';
 import { useTheme } from '../hooks/useTheme';
 import { TrText } from './TrText';
 import React from 'react';
-import {
-  TrPickerModalProps,
-  TrPickerOption,
-  TrPickerModal,
-} from './TrPickerModal';
 
 /**
  * A `TrTextInput` component that when pressed opens a picker modal
@@ -19,7 +15,7 @@ export function TrTextInputPicker({
   style,
   value,
   label,
-}: Pick<TrPickerModalProps, 'onAddNew' | 'options' | 'onPick' | 'value'> & {
+}: Pick<TrPickerProps, 'onAddNew' | 'options' | 'onPick' | 'value'> & {
   inForm?: TrTextInputProps['inForm'];
   style?: TrTextInputProps['style'];
   label: string;
@@ -55,7 +51,7 @@ export function TrTextInputPicker({
         label={label}
       />
 
-      <TrPickerModal
+      <TrPicker
         onAddNew={onAddNew}
         onClose={() => setSelecting(false)}
         options={options}
