@@ -1,4 +1,11 @@
-import { EncryptedString, TiperiteConfig, DateString, UUID, Tag } from '.';
+import {
+  EncryptedString,
+  TiperiteConfig,
+  WorkspaceID,
+  DateString,
+  UUID,
+  Tag,
+} from '.';
 
 /**
  * A 'Doc' is Tiperite's custom document format, equivalent to a 'file', 'note',
@@ -98,6 +105,7 @@ export interface DocHeaders {
  * A Doc's system- and user-supplied metadata, decrypted and parsed
  */
 export interface DecryptedDocMeta extends Omit<EncryptedDocMeta, 'headers'> {
+  workspaceId: WorkspaceID;
   metaPath: string;
   bodyPath: string;
   headers: DocHeaders;

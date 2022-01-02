@@ -39,6 +39,7 @@ export const docsSlice = createSlice({
           ...(state ? state.byId : {}),
           ...action.payload.docs.reduce((byId, doc) => {
             const meta: DecryptedDocMeta = {
+              workspaceId,
               createdAt: doc[0].createdAt,
               updatedAt: doc[0].updatedAt,
               bodyPath: `/workspaces/${workspaceId}/docs/${doc[0].id}.body.json`,
@@ -60,13 +61,16 @@ export const docsSlice = createSlice({
     add(state, action: PayloadAction<WorkspaceID>): void {
       if (!state) throw nullError;
 
-      const id = Random.uuid();
+      const workspaceId = action.payload;
       const now = new Date().toISOString();
+      const id = Random.uuid();
+
       const doc: DecryptedDocMeta = {
+        workspaceId,
         createdAt: now,
         updatedAt: now,
-        metaPath: `/workspaces/${action.payload}/docs/${id}.meta.json`,
-        bodyPath: `/workspaces/${action.payload}/docs/${id}.body.json`,
+        metaPath: `/workspaces/${workspaceId}/docs/${id}.meta.json`,
+        bodyPath: `/workspaces/${workspaceId}/docs/${id}.body.json`,
         headers: { x: {} },
         id,
       };
