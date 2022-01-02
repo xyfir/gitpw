@@ -2,6 +2,7 @@ import { TouchableOpacity, FlatList, View } from 'react-native';
 import { selectNonNullableWorkspaces } from '../state/workspacesSlice';
 import { selectDocs, docsSlice } from '../state/docsSlice';
 import { TrTextTimestamp } from '../components/TrTextTimestamp';
+import { TrButtonPicker } from '../components/TrButtonPicker';
 import { useTrSelector } from '../hooks/useTrSelector';
 import { TrButton } from '../components/TrButton';
 import { useTheme } from '../hooks/useTheme';
@@ -16,6 +17,7 @@ import {
   StackNavigatorScreenProps,
   EncryptedDocMeta,
   EncryptedDocBody,
+  WorkspaceID,
   JSONString,
   DocHeaders,
   DocsState,
@@ -97,9 +99,8 @@ export function HomeScreen({
     navigation.navigate('EditorScreen', { docId });
   }
 
-  function onAddDoc(): void {
-    /** @todo let user choose workspace */
-    store.dispatch(docsSlice.actions.add(workspaces.allIds[0]));
+  function onAddDoc(workspaceId: WorkspaceID): void {
+    store.dispatch(docsSlice.actions.add(workspaceId));
 
     const docs = store.getState().docs as DocsState;
     const docId = docs.allIds[docs.allIds.length - 1];
@@ -169,7 +170,16 @@ export function HomeScreen({
             style={theme.button}
           />
 
-          <TrButton onPress={onAddDoc} title="Add Doc" style={theme.button} />
+          <TrButtonPicker
+            onAddNew={() => navigation.push('AddWorkspaceScreen')}
+            options={workspaces.allIds.map((id) => ({
+              title: workspaces.byId[id].name,
+              value: id,
+            }))}
+            onPick={onAddDoc}
+            style={theme.button}
+            title="Add Doc"
+          />
 
           <TrButton onPress={onPush} style={theme.button} title="Push" />
 
