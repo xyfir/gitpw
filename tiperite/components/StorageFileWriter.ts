@@ -35,6 +35,10 @@ export function StorageFileWriter(): null {
                 if (docs.byId[a].updatedAt < docs.byId[b].updatedAt) return 1;
                 return 0;
               })
+              .map((id) => ({
+                workspaceId: docs.byId[id].workspaceId,
+                docId: id,
+              }))
               .slice(0, 15)
           : data.recentDocs,
         config,

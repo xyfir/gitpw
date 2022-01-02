@@ -2,6 +2,7 @@ import {
   StorageFileWorkspace,
   TiperiteVersion,
   TiperiteConfig,
+  WorkspaceID,
   Credential,
   HexString,
   DocID,
@@ -17,7 +18,10 @@ export interface StorageFileData {
   /**
    * IDs of the 15 most recently updated docs in descending order of `updatedAt`
    */
-  recentDocs: DocID[];
+  recentDocs: {
+    workspaceId: WorkspaceID;
+    docId: DocID;
+  }[];
   /**
    * The version of Tiperite that last saved this file
    */
