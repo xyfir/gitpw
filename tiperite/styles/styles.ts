@@ -3,6 +3,7 @@ import { EnterPasscodeScreenStyles } from './screens/EnterPasscodeScreenStyles';
 import { AddWorkspaceScreenStyles } from './screens/AddWorkspaceScreenStyles';
 import { SetPasscodeScreenStyles } from './screens/SetPasscodeScreenStyles';
 import { NavigationRootStyles } from './navigation/NavigationRootStyles';
+import { TrPickerModalStyles } from './components/TrPickerModalStyles';
 import { EditorScreenStyles } from './screens/EditorScreenStyles';
 import { TrTextInputStyles } from './components/TrTextInputStyles';
 import { HomeScreenStyles } from './screens/HomeScreenStyles';
@@ -23,6 +24,7 @@ export const styles = {
   ...TrButtonStyles,
   ...TrDividerStyles,
   ...TrModalStyles,
+  ...TrPickerModalStyles,
   ...TrPickerStyles,
   ...TrTextStyles,
   ...TrTextInputStyles,

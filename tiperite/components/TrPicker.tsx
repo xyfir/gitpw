@@ -1,16 +1,12 @@
 import { TrTextInputProps, TrTextInput } from './TrTextInput';
-import { TouchableOpacity, FlatList } from 'react-native';
 import { useTheme } from '../hooks/useTheme';
-import { TrButton } from './TrButton';
-import { TrModal } from './TrModal';
 import { TrText } from './TrText';
 import React from 'react';
-
-interface Option {
-  subtext?: string;
-  title: string;
-  value: string;
-}
+import {
+  TrPickerModalProps,
+  TrPickerOption,
+  TrPickerModal,
+} from './TrPickerModal';
 
 /**
  * A modal that allows the user to select an option
@@ -23,13 +19,9 @@ export function TrPicker({
   style,
   value,
   label,
-}: {
-  onAddNew: () => void;
-  options: Option[];
+}: Pick<TrPickerModalProps, 'onAddNew' | 'options' | 'onPick' | 'value'> & {
   inForm?: TrTextInputProps['inForm'];
-  onPick: (value: Option['value']) => void;
   style?: TrTextInputProps['style'];
-  value?: Option['value'];
   label: string;
 }): JSX.Element {
   const [selecting, setSelecting] = React.useState(false);
@@ -39,22 +31,13 @@ export function TrPicker({
   );
   const theme = useTheme('TrPicker');
 
-  function onAddNewFromModal(): void {
-    onAddNew();
-    setSelecting(false);
-  }
-
   function onOpenSelector(): void {
     setSelecting(true);
   }
 
-  function onPressItem(item: Option): void {
+  function onPickItem(value: TrPickerOption['value']): void {
     setSelecting(false);
-    onPick(item.value);
-  }
-
-  function onClose(): void {
-    setSelecting(false);
+    onPick(value);
   }
 
   return (
@@ -72,32 +55,14 @@ export function TrPicker({
         label={label}
       />
 
-      <TrModal onClose={onClose} visible={selecting}>
-        <FlatList
-          contentContainerStyle={theme.listContent}
-          ListFooterComponent={
-            <TrButton onPress={onAddNewFromModal} title="Add new" />
-          }
-          keyExtractor={(option) => option.value}
-          renderItem={({ item: option }) => (
-            <TouchableOpacity
-              onPress={() => onPressItem(option)}
-              style={[
-                theme.option,
-                option.value == value ? theme.selectedOption : undefined,
-              ]}
-            >
-              <TrText numberOfLines={1} weight="700" size={14}>
-                {option.title}
-              </TrText>
-              {option.subtext ? (
-                <TrText numberOfLines={1}>{option.subtext}</TrText>
-              ) : null}
-            </TouchableOpacity>
-          )}
-          data={options}
-        />
-      </TrModal>
+      <TrPickerModal
+        onAddNew={onAddNew}
+        onClose={() => setSelecting(false)}
+        options={options}
+        onPick={onPickItem}
+        value={value}
+        open={selecting}
+      />
     </>
   );
 }
