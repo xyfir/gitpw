@@ -1,5 +1,5 @@
 import type { StackScreenProps } from '@react-navigation/stack';
-import { WorkspaceID, DocID } from '.';
+import { DocID } from '.';
 
 /**
  * The screens within `StackNavigator` and the params they expect to receive
@@ -10,7 +10,6 @@ export type StackNavigatorParams = {
   AddWorkspaceScreen: undefined;
   SetPasscodeScreen: undefined;
   EditorScreen: {
-    workspaceId: WorkspaceID;
     docId: DocID;
   };
   EntryScreen: undefined;

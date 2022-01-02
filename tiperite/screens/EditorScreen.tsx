@@ -23,11 +23,11 @@ export function EditorScreen({
 }: StackNavigatorScreenProps<'EditorScreen'>): JSX.Element | null {
   const [content, setContent] = React.useState('');
   const workspaces = useTrSelector(selectNonNullableWorkspaces);
-  const workspace = workspaces.byId[route.params.workspaceId];
   const theme = useTheme('EditorScreen');
   const docs = useTrSelector(selectNonNullableDocs);
   const doc = docs.byId[route.params.docId];
 
+  const workspace = workspaces.byId[doc.workspaceId];
   const contentRef = React.useRef(content);
   contentRef.current = content;
 
