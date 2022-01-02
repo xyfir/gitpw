@@ -14,41 +14,43 @@ const nullError = Error('docsSlice null');
 
 type State = DocsState | null;
 
+type LoadPayloadAction = {
+  workspaceId: WorkspaceID;
+  headers: DocHeaders;
+  meta: EncryptedDocMeta;
+}[];
+
 export const docsSlice = createSlice({
   initialState: null as State,
   reducers: {
-    load(
-      state,
-      action: PayloadAction<{
-        workspaceId: WorkspaceID;
-        docs: [EncryptedDocMeta, DocHeaders][];
-      }>,
-    ): DocsState {
-      const { workspaceId } = action.payload;
+    /**
+     * Load new docs into the store
+     */
+    load(state, action: PayloadAction<LoadPayloadAction>): DocsState {
       return {
         allIds: (state ? state.allIds : []).concat(
-          action.payload.docs
+          action.payload
             .sort((a, b) => {
-              if (a[0].updatedAt > b[0].updatedAt) return -1;
-              if (a[0].updatedAt < b[0].updatedAt) return 1;
+              if (a.meta.updatedAt > b.meta.updatedAt) return -1;
+              if (a.meta.updatedAt < b.meta.updatedAt) return 1;
               return 0;
             })
-            .map((doc) => doc[0].id),
+            .map((doc) => doc.meta.id),
         ),
         byId: {
           ...(state ? state.byId : {}),
-          ...action.payload.docs.reduce((byId, doc) => {
+          ...action.payload.reduce((byId, doc) => {
             const meta: DecryptedDocMeta = {
-              workspaceId,
-              createdAt: doc[0].createdAt,
-              updatedAt: doc[0].updatedAt,
-              bodyPath: `/workspaces/${workspaceId}/docs/${doc[0].id}.body.json`,
-              metaPath: `/workspaces/${workspaceId}/docs/${doc[0].id}.meta.json`,
-              headers: doc[1],
-              id: doc[0].id,
+              workspaceId: doc.workspaceId,
+              createdAt: doc.meta.createdAt,
+              updatedAt: doc.meta.updatedAt,
+              bodyPath: `/workspaces/${doc.workspaceId}/docs/${doc.meta.id}.body.json`,
+              metaPath: `/workspaces/${doc.workspaceId}/docs/${doc.meta.id}.meta.json`,
+              headers: doc.headers,
+              id: doc.meta.id,
             };
 
-            byId[doc[0].id] = meta;
+            byId[doc.meta.id] = meta;
             return byId;
           }, {} as DocsState['byId']),
         },

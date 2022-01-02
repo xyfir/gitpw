@@ -69,7 +69,11 @@ export function HomeScreen({
           );
         })
         .then((docs) => {
-          store.dispatch(docsSlice.actions.load({ workspaceId, docs }));
+          store.dispatch(
+            docsSlice.actions.load(
+              docs.map(([meta, headers]) => ({ workspaceId, headers, meta })),
+            ),
+          );
         })
         .catch(console.error);
     }
