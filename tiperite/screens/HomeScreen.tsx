@@ -4,6 +4,7 @@ import { selectDocs, docsSlice } from '../state/docsSlice';
 import { TrTextTimestamp } from '../components/TrTextTimestamp';
 import { TrButtonPicker } from '../components/TrButtonPicker';
 import { useTrSelector } from '../hooks/useTrSelector';
+import { StorageFile } from '../utils/StorageFile';
 import { TrButton } from '../components/TrButton';
 import { useTheme } from '../hooks/useTheme';
 import { TrCrypto } from '../utils/TrCrypto';
@@ -32,11 +33,51 @@ import {
 export function HomeScreen({
   navigation,
 }: StackNavigatorScreenProps<'HomeScreen'>): JSX.Element | null {
+  const allDocsLoaded = React.useRef(false);
   const workspaces = useTrSelector(selectNonNullableWorkspaces);
   const theme = useTheme('HomeScreen');
   const docs = useTrSelector(selectDocs);
 
-  async function loadDocs(): Promise<void> {
+  async function loadRecentDocs(): Promise<void> {
+    const { recentDocs } = StorageFile.getData();
+
+    Promise.all(
+      recentDocs.map(({ workspaceId, docId }) => {
+        return FS.readJSON<EncryptedDocMeta>(
+          `/workspaces/${workspaceId}/docs/${docId}.meta.json`,
+        ).then((doc) => {
+          return { workspaceId, meta: doc as EncryptedDocMeta };
+        });
+      }),
+    )
+      .then((docs) => {
+        // Build DecryptedDocMeta to load into state
+        return Promise.all(
+          docs.map(({ workspaceId, meta }) => {
+            const workspace = workspaces.byId[workspaceId];
+
+            return TrCrypto.decrypt(meta.headers, workspace.keys).then(
+              (headers) => {
+                return {
+                  workspaceId,
+                  headers: JSON.parse(headers as JSONString) as DocHeaders,
+                  meta,
+                };
+              },
+            );
+          }),
+        );
+      })
+      .then((docs) => {
+        store.dispatch(docsSlice.actions.load(docs));
+      })
+      .catch(console.error);
+  }
+
+  async function loadAllDocs(): Promise<void> {
+    if (allDocsLoaded.current) return;
+    allDocsLoaded.current = true;
+
     for (const workspaceId of workspaces.allIds) {
       const workspace = workspaces.byId[workspaceId];
 
@@ -44,10 +85,14 @@ export function HomeScreen({
       const dir = `/workspaces/${workspaceId}/docs`;
       await FS.readdir(dir)
         .then((files) => {
-          // Read each file
+          // Read each file not already in state
           return Promise.all(
             files
               .filter((file) => file.endsWith('.meta.json'))
+              .filter((file) => {
+                const docId = file.split('.')[0];
+                return docs ? !docs.byId[docId] : true;
+              })
               .map((file) => {
                 return FS.readJSON<EncryptedDocMeta>(
                   `${dir}/${file}`,
@@ -161,7 +206,7 @@ export function HomeScreen({
   }
 
   React.useEffect(() => {
-    loadDocs();
+    loadRecentDocs();
   }, []);
 
   return (
@@ -190,6 +235,7 @@ export function HomeScreen({
           <TrButton onPress={onPull} style={theme.button} title="Pull" />
         </View>
       }
+      onEndReached={loadAllDocs}
       renderItem={
         docs
           ? ({ item: docId }) => (
