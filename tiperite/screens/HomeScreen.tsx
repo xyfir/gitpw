@@ -34,7 +34,44 @@ export function HomeScreen({
   const theme = useTheme('HomeScreen');
   const docs = useTrSelector(selectDocs);
 
-  const workspaceId = workspaces.allIds[0];
+  async function loadDocs(): Promise<void> {
+    for (const workspaceId of workspaces.allIds) {
+      const workspace = workspaces.byId[workspaceId];
+
+      // Get documents in workspace
+      const dir = `/workspaces/${workspaceId}/docs`;
+      await FS.readdir(dir)
+        .then((files) => {
+          // Read each file
+          return Promise.all(
+            files
+              .filter((file) => file.endsWith('.meta.json'))
+              .map((file) => {
+                return FS.readJSON<EncryptedDocMeta>(
+                  `${dir}/${file}`,
+                ) as Promise<EncryptedDocMeta>;
+              }),
+          );
+        })
+        .then((docs) => {
+          // Build DecryptedDocMeta to load into state
+          return Promise.all(
+            docs.map((doc) => {
+              return TrCrypto.decrypt(doc.headers, workspace.keys).then(
+                (headers): [EncryptedDocMeta, DocHeaders] => [
+                  doc,
+                  JSON.parse(headers as JSONString) as DocHeaders,
+                ],
+              );
+            }),
+          );
+        })
+        .then((docs) => {
+          store.dispatch(docsSlice.actions.load({ workspaceId, docs }));
+        })
+        .catch(console.error);
+    }
+  }
 
   function onAddWorkspace(): void {
     navigation.navigate('AddWorkspaceScreen');
@@ -57,11 +94,12 @@ export function HomeScreen({
   }
 
   function onOpenDoc(docId: DocID): void {
-    navigation.navigate('EditorScreen', { workspaceId, docId });
+    navigation.navigate('EditorScreen', { docId });
   }
 
   function onAddDoc(): void {
-    store.dispatch(docsSlice.actions.add(workspaceId));
+    /** @todo let user choose workspace */
+    store.dispatch(docsSlice.actions.add(workspaces.allIds[0]));
 
     const docs = store.getState().docs as DocsState;
     const docId = docs.allIds[docs.allIds.length - 1];
@@ -83,7 +121,7 @@ export function HomeScreen({
       FS.writeJSON(doc.bodyPath, body),
     ])
       .then(() => {
-        navigation.navigate('EditorScreen', { workspaceId, docId });
+        navigation.navigate('EditorScreen', { docId });
       })
       .catch((err) => {
         console.error(err);
@@ -92,64 +130,33 @@ export function HomeScreen({
   }
 
   async function onPush(): Promise<void> {
-    const workspace = workspaces.byId[workspaceId];
-    const git = new TrGit(workspace.id);
+    for (const workspaceId of workspaces.allIds) {
+      const workspace = workspaces.byId[workspaceId];
+      const git = new TrGit(workspace.id);
 
-    const hasRemoteChanges = await git.hasRemoteChanges();
-    if (hasRemoteChanges) {
-      TrAlert.alert('There are remote changes. Pull first.');
-      return;
+      const hasRemoteChanges = await git.hasRemoteChanges();
+      if (hasRemoteChanges) {
+        TrAlert.alert('There are remote changes. Pull first.');
+        return;
+      }
+
+      const files = await git.getUnstagedChanges();
+      await git.addAll(files.filter((f) => !f.remove).map((f) => f.filepath));
+      await git.removeAll(files.filter((f) => f.remove).map((f) => f.filepath));
+      await git.commit('Update');
+      await git.push();
     }
-
-    const files = await git.getUnstagedChanges();
-    await git.addAll(files.filter((f) => !f.remove).map((f) => f.filepath));
-    await git.removeAll(files.filter((f) => f.remove).map((f) => f.filepath));
-    await git.commit('Update');
-    await git.push();
   }
 
   function onPull(): void {
-    const workspace = workspaces.byId[workspaceId];
-    const git = new TrGit(workspace.id);
-    git.fastForward();
+    for (const workspaceId of workspaces.allIds) {
+      const git = new TrGit(workspaceId);
+      git.fastForward();
+    }
   }
 
   React.useEffect(() => {
-    if (!workspaces.allIds.length) return;
-    const workspace = workspaces.byId[workspaceId];
-
-    // Get documents in workspace
-    const dir = `/workspaces/${workspaceId}/docs`;
-    FS.readdir(dir)
-      .then((files) => {
-        // Read each file
-        return Promise.all(
-          files
-            .filter((file) => file.endsWith('.meta.json'))
-            .map((file) => {
-              return FS.readJSON<EncryptedDocMeta>(
-                `${dir}/${file}`,
-              ) as Promise<EncryptedDocMeta>;
-            }),
-        );
-      })
-      .then((docs) => {
-        // Build DecryptedDocMeta to load into state
-        return Promise.all(
-          docs.map((doc) => {
-            return TrCrypto.decrypt(doc.headers, workspace.keys).then(
-              (headers): [EncryptedDocMeta, DocHeaders] => [
-                doc,
-                JSON.parse(headers as JSONString) as DocHeaders,
-              ],
-            );
-          }),
-        );
-      })
-      .then((docs) => {
-        store.dispatch(docsSlice.actions.load({ workspaceId, docs }));
-      })
-      .catch(console.error);
+    loadDocs();
   }, []);
 
   return (
