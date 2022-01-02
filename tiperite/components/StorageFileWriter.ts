@@ -6,19 +6,19 @@ import { StorageFile } from '../utils/StorageFile';
 import React from 'react';
 
 /**
- * Listen for state change to write to storage. Throttle to 1 write per 250ms.
+ * Listen for state changes to write to `/storage.json`.
+ *
+ * Throttle to 1 write per 250ms.
  */
 export function StorageFileWriter(): null {
   const credentials = useTrSelector(selectCredentials);
   const workspaces = useTrSelector(selectWorkspaces);
-  const timeout = React.useRef<NodeJS.Timeout>();
   const config = useTrSelector(selectConfig);
 
   React.useEffect(() => {
     if (!credentials || !workspaces) return;
-    clearTimeout(timeout.current as NodeJS.Timeout);
 
-    timeout.current = setTimeout(() => {
+    const timeout = setTimeout(() => {
       const data = StorageFile.getData();
 
       StorageFile.setData({
@@ -28,6 +28,8 @@ export function StorageFileWriter(): null {
         config,
       });
     }, 250);
+
+    return () => clearTimeout(timeout);
   }, [credentials, workspaces, config]);
 
   return null;
