@@ -1,0 +1,18 @@
+{
+  "encryption": [
+    {
+      "createdAt": "2022-01-03T00:23:35.826Z",
+      "keys": [
+        {
+          "passkey": "ea5e29e4ef0512c3d184fccatjqvjrrhpfZxgn29Jf2st+Vb0fVpQdpfPGLpwyW3GLG6qgdb1qyjs3NHl4BMi6+HzKKDqF62FL7IFRwCLBnwvqkHJty0MBU7LUD6rGBX8RA=",
+          "type": "AES-256-GCM"
+        }
+      ]
+    }
+  ],
+  "password": {
+    "iterations": 1035048,
+    "salt": "02c0999753fdbd87cac375a158696703"
+  },
+  "version": 1
+}
