@@ -82,6 +82,13 @@ export class TrGit {
   }
 
   /**
+   * @see https://isomorphic-git.org/docs/en/listBranches
+   */
+  public listBranches(): Promise<string[]> {
+    return git.listBranches(this.commonOptions);
+  }
+
+  /**
    * @see https://isomorphic-git.org/docs/en/getRemoteInfo
    */
   public getRemoteInfo(): Promise<git.GetRemoteInfoResult> {
@@ -93,6 +100,13 @@ export class TrGit {
    */
   public statusMatrix(): Promise<git.StatusRow[]> {
     return git.statusMatrix(this.commonOptions);
+  }
+
+  /**
+   * @see https://isomorphic-git.org/docs/en/listRemotes
+   */
+  public listRemotes(): ReturnType<typeof git.listRemotes> {
+    return git.listRemotes(this.commonOptions);
   }
 
   /**
@@ -164,6 +178,6 @@ export class TrGit {
    * @see https://isomorphic-git.org/docs/en/log
    */
   public log({ depth }: { depth?: number }): Promise<git.ReadCommitResult[]> {
-    return git.log({ ...this.commonOptions, depth });
+    return git.log({ ...this.commonOptions, depth, ref: 'main' });
   }
 }
