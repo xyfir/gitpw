@@ -22,7 +22,9 @@ import {
 } from '../types';
 
 /**
- * Allow the user to add a new workspace
+ * Allow the user to add a new workspace from a remote git repository. If the
+ *  repo exists but doesn't contain a Tiperite workspace, one will be
+ *  initialized in the local clone of the repo.
  */
 export function AddWorkspaceScreen({
   navigation,
@@ -37,13 +39,16 @@ export function AddWorkspaceScreen({
   const dispatch = useTrDispatch();
   const theme = useTheme('AddWorkspaceScreen');
 
+  /**
+   * Attempt to add new workspace to the local filesystem and state
+   */
   async function onSubmit(): Promise<void> {
     const id = Random.uuid();
     const dir = `/workspaces/${id}`;
     setBusy(true);
 
     try {
-      if (!repoUrl || !name) throw 'Name and repo are required';
+      if (!repoUrl || !name) throw 'Name and repo URL are required';
 
       const credential = credentials.byId[credentialId];
       if (!credential) throw 'No credential selected';
@@ -54,9 +59,64 @@ export function AddWorkspaceScreen({
       await git.clone();
 
       // Load workspace manifest
-      const manifestString = await FS.readFile(`${dir}/manifest.json`);
-      if (!manifestString) throw 'Repo is not a valid Tiperite workspace';
-      const manifest = JSON.parse(manifestString) as WorkspaceManifestFileData;
+      const manifestPath = `${dir}/manifest.json`;
+      const _manifest = await FS.readJSON<WorkspaceManifestFileData>(
+        manifestPath,
+      );
+      let manifest: WorkspaceManifestFileData;
+      if (!_manifest) {
+        // Ask the user if they'd like to initialize a new workspace
+        const initialize = await TrAlert.confirm(
+          "This repo doesn't contain a Tiperite workspace. Would you like to initialize one?",
+        );
+        if (!initialize) throw Error("Repo doesn't contain a workspace");
+
+        // Generate config to use for PBKDF2
+        const iterations = TrPBKDF2.generateIterations();
+        const salt = TrPBKDF2.generateSalt();
+
+        // Generate key
+        const passkey = await TrPBKDF2.deriveKey(
+          passwords[0],
+          salt,
+          iterations,
+        );
+        const keys: EncryptionKey[] = [
+          {
+            passkey,
+            type: 'AES-256-GCM',
+          },
+        ];
+
+        // Encrypt key with itself
+        const passkeyEncrypted = await TrCrypto.encrypt(passkey, keys);
+
+        // Initialize workspace manifest
+        manifest = {
+          encryption: [
+            {
+              createdAt: new Date().toISOString(),
+              keys: [
+                {
+                  passkey: passkeyEncrypted,
+                  type: 'AES-256-GCM',
+                },
+              ],
+            },
+          ],
+          password: {
+            iterations,
+            salt,
+          },
+          version: LatestWorkspaceManifestVersion,
+        };
+        await FS.writeJSON<WorkspaceManifestFileData>(manifestPath, manifest);
+        await FS.mkdir(`${dir}/docs`);
+      } else {
+        manifest = _manifest;
+      }
+
+      // Parse and validate manifest
       if (manifest.version != LatestWorkspaceManifestVersion) {
         throw `Workspace manifest version ${manifest.version} is not supported`;
       }
