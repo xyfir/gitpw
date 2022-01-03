@@ -29,10 +29,7 @@ export interface StorageFileWorkspace {
    *  `KeyDeriver.deriveKey()` using the user-supplied passwords and the
    *  requirements from the workspace's manifest.
    */
-  keys: {
-    passkey: HexString;
-    type: EncryptionType;
-  }[];
+  keys: EncryptionKey[];
   id: WorkspaceID;
 }
 
