@@ -184,13 +184,18 @@ export function HomeScreen({
       const workspace = workspaces.byId[workspaceId];
       const git = new TrGit(workspace.id);
 
-      const hasRemoteChanges = await git.hasRemoteChanges();
+      const branches = await git.listBranches();
+      const hasRemoteChanges = branches.length
+        ? await git.hasRemoteChanges()
+        : false; // new repo
       if (hasRemoteChanges) {
         TrAlert.alert('There are remote changes. Pull first.');
         return;
       }
 
       const files = await git.getUnstagedChanges();
+      if (!files.length) continue;
+
       await git.addAll(files.filter((f) => !f.remove).map((f) => f.filepath));
       await git.removeAll(files.filter((f) => f.remove).map((f) => f.filepath));
       await git.commit('Update');
