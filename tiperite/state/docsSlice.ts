@@ -98,6 +98,26 @@ export const docsSlice = createSlice({
       state.allIds = state.allIds.filter((docId) => docId != id);
       delete state.byId[id];
     },
+
+    /**
+     * Delete workspace
+     */
+    deleteWorkspace(state, action: PayloadAction<WorkspaceID>): void {
+      if (!state) throw nullError;
+
+      const deletedDocIds: DocID[] = [];
+      const workspaceId = action.payload;
+
+      for (const docId of state.allIds) {
+        if (state.byId[docId].workspaceId == workspaceId) {
+          deletedDocIds.push(docId);
+          delete state.byId[docId];
+        }
+      }
+      state.allIds = state.allIds.filter(
+        (docId) => !deletedDocIds.includes(docId),
+      );
+    },
   },
   name: 'docs',
 });
