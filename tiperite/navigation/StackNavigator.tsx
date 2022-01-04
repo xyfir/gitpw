@@ -1,4 +1,5 @@
 import { CredentialManagerScreen } from '../screens/CredentialManagerScreen';
+import { WorkspacesListScreen } from '../screens/WorkspacesListScreen';
 import { StackNavigatorParams } from '../types';
 import { EnterPasscodeScreen } from '../screens/EnterPasscodeScreen';
 import { AddWorkspaceScreen } from '../screens/AddWorkspaceScreen';
@@ -27,6 +28,11 @@ export const StackNavigator = (): JSX.Element => (
       component={CredentialManagerScreen}
       options={{ headerTitle: 'Credentials' }}
       name="CredentialManagerScreen"
+    />
+    <Screen
+      component={WorkspacesListScreen}
+      options={{ headerTitle: 'Workspaces' }}
+      name="WorkspacesListScreen"
     />
     <Screen
       component={EnterPasscodeScreen}

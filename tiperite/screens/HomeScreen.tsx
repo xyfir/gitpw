@@ -124,10 +124,6 @@ export function HomeScreen({
     }
   }
 
-  function onAddWorkspace(): void {
-    navigation.navigate('AddWorkspaceScreen');
-  }
-
   function onDeleteDoc(docId: DocID): void {
     TrAlert.confirm('Delete doc?').then((yes) => {
       if (!docs || !yes) return;
@@ -219,9 +215,9 @@ export function HomeScreen({
       ListFooterComponent={
         <View style={theme.footer}>
           <TrButton
-            onPress={onAddWorkspace}
-            title="Add Workspace"
+            onPress={() => navigation.navigate('WorkspacesListScreen')}
             style={theme.button}
+            title="Workspaces"
           />
 
           <TrButtonPicker

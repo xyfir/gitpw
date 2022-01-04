@@ -1,4 +1,5 @@
 import { CredentialManagerScreenStyles } from './screens/CredentialManagerScreenStyles';
+import { WorkspacesListScreenStyles } from './screens/WorkspacesListScreenStyles';
 import { EnterPasscodeScreenStyles } from './screens/EnterPasscodeScreenStyles';
 import { AddWorkspaceScreenStyles } from './screens/AddWorkspaceScreenStyles';
 import { TrTextInputPickerStyles } from './components/TrTextInputPickerStyles';
@@ -28,6 +29,7 @@ export const styles = {
   ...TrTextInputPickerStyles,
   ...TrTextInputStyles,
   ...TrTextStyles,
+  ...WorkspacesListScreenStyles,
 };
 
 export type RootStyles = typeof styles;

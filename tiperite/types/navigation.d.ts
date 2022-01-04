@@ -6,6 +6,7 @@ import { DocID } from '.';
  */
 export type StackNavigatorParams = {
   CredentialManagerScreen: undefined;
+  WorkspacesListScreen: undefined;
   EnterPasscodeScreen: undefined;
   AddWorkspaceScreen: undefined;
   SetPasscodeScreen: undefined;
