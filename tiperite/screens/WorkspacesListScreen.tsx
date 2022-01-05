@@ -27,28 +27,7 @@ export function WorkspacesListScreen({
     TrAlert.confirm('Delete workspace?').then((yes) => {
       if (!yes) return;
 
-      const dir = `/workspaces/${workspaceId}`;
-
-      // Get all the docs in the workspace
-      FS.readdir(`${dir}/docs`)
-        // Delete each doc
-        .then((files) => {
-          return Promise.all(
-            files.map((file) => FS.unlink(`${dir}/docs/${file}`)),
-          );
-        })
-        // Delete manifest file and empty docs directory
-        .then(() => {
-          return Promise.all([
-            FS.unlink(`${dir}/manifest.json`),
-            FS.rmdir(`${dir}/docs`),
-          ]);
-        })
-        // Delete workspace directory
-        .then(() => {
-          return FS.rmdir(dir);
-        })
-        // Update state
+      FS.emptyDir(`/workspaces/${workspaceId}`)
         .then(() => {
           store.dispatch(docsSlice.actions.deleteWorkspace(workspaceId));
           store.dispatch(workspacesSlice.actions.delete(workspaceId));
