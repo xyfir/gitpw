@@ -48,6 +48,22 @@ export class FS {
   }
 
   /**
+   * Ensures that a directory is empty
+   */
+  public static async emptyDir(path: string): Promise<void> {
+    const subpaths = await this.readdir(path);
+    for (const subpath of subpaths) {
+      await this.emptyDir(`${path}/${subpath}`)
+        .then(() => {
+          return this.rmdir(`${path}/${subpath}`);
+        })
+        .catch(() => {
+          return this.unlink(`${path}/${subpath}`);
+        });
+    }
+  }
+
+  /**
    * List the files in a directory (unsorted)
    */
   public static readdir(path: string): Promise<string[]> {
