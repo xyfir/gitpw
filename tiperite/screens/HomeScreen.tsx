@@ -231,6 +231,12 @@ export function HomeScreen({
             title="Add Doc"
           />
 
+          <TrButton
+            onPress={() => navigation.navigate('SearchScreen')}
+            style={theme.button}
+            title="Search"
+          />
+
           <TrButton onPress={onPush} style={theme.button} title="Push" />
 
           <TrButton onPress={onPull} style={theme.button} title="Pull" />

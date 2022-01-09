@@ -10,6 +10,7 @@ export type StackNavigatorParams = {
   EnterPasscodeScreen: undefined;
   AddWorkspaceScreen: undefined;
   SetPasscodeScreen: undefined;
+  SearchScreen: undefined;
   EditorScreen: {
     docId: DocID;
   };

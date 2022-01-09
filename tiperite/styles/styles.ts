@@ -5,6 +5,7 @@ import { AddWorkspaceScreenStyles } from './screens/AddWorkspaceScreenStyles';
 import { TrTextInputPickerStyles } from './components/TrTextInputPickerStyles';
 import { SetPasscodeScreenStyles } from './screens/SetPasscodeScreenStyles';
 import { NavigationRootStyles } from './navigation/NavigationRootStyles';
+import { SearchScreenStyles } from './screens/SearchScreenStyles';
 import { EditorScreenStyles } from './screens/EditorScreenStyles';
 import { TrTextInputStyles } from './components/TrTextInputStyles';
 import { HomeScreenStyles } from './screens/HomeScreenStyles';
@@ -20,6 +21,7 @@ export const styles = {
   ...EditorScreenStyles,
   ...EnterPasscodeScreenStyles,
   ...HomeScreenStyles,
+  ...SearchScreenStyles,
   ...NavigationRootStyles,
   ...SetPasscodeScreenStyles,
   ...TrButtonStyles,
