@@ -42,27 +42,23 @@ export function WorkspacesListScreen({
   return (
     <FlatList
       ListFooterComponent={
-        <View style={theme.footer}>
-          <TrButton
-            onPress={() => navigation.navigate('AddWorkspaceScreen')}
-            style={theme.button}
-            title="Add"
-          />
-        </View>
+        <TrButton
+          onPress={() => navigation.navigate('AddWorkspaceScreen')}
+          style={theme.button}
+          title="Add"
+        />
       }
       renderItem={({ item: workspaceId }) => (
-        <View style={theme.doc}>
-          <View style={theme.docMain}>
-            <TrText weight="600" style={theme.title} size={16}>
-              {workspaces.byId[workspaceId].name}
-            </TrText>
+        <View style={theme.workspace}>
+          <TrText weight="600" style={theme.title} size={16}>
+            {workspaces.byId[workspaceId].name}
+          </TrText>
 
-            <TouchableOpacity onPress={() => onDelete(workspaceId)}>
-              <TrText weight="900" size={16}>
-                [x]
-              </TrText>
-            </TouchableOpacity>
-          </View>
+          <TouchableOpacity onPress={() => onDelete(workspaceId)}>
+            <TrText weight="900" size={16}>
+              [x]
+            </TrText>
+          </TouchableOpacity>
         </View>
       )}
       style={theme.root}
