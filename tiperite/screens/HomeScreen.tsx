@@ -1,6 +1,7 @@
 import { TouchableOpacity, FlatList, View } from 'react-native';
 import { selectNonNullableWorkspaces } from '../state/workspacesSlice';
 import { selectDocs, docsSlice } from '../state/docsSlice';
+import { ensureAllDocsLoaded } from '../utils/ensureAllDocsLoaded';
 import { TrTextTimestamp } from '../components/TrTextTimestamp';
 import { TrButtonPicker } from '../components/TrButtonPicker';
 import { useTrSelector } from '../hooks/useTrSelector';
@@ -33,7 +34,6 @@ import {
 export function HomeScreen({
   navigation,
 }: StackNavigatorScreenProps<'HomeScreen'>): JSX.Element | null {
-  const allDocsLoaded = React.useRef(false);
   const workspaces = useTrSelector(selectNonNullableWorkspaces);
   const theme = useTheme('HomeScreen');
   const docs = useTrSelector(selectDocs);
@@ -72,56 +72,6 @@ export function HomeScreen({
         store.dispatch(docsSlice.actions.load(docs));
       })
       .catch(console.error);
-  }
-
-  async function loadAllDocs(): Promise<void> {
-    if (allDocsLoaded.current) return;
-    allDocsLoaded.current = true;
-
-    for (const workspaceId of workspaces.allIds) {
-      const workspace = workspaces.byId[workspaceId];
-
-      // Get documents in workspace
-      const dir = `/workspaces/${workspaceId}/docs`;
-      await FS.readdir(dir)
-        .then((files) => {
-          // Read each file not already in state
-          return Promise.all(
-            files
-              .filter((file) => file.endsWith('.meta.json'))
-              .filter((file) => {
-                const docId = file.split('.')[0];
-                return docs ? !docs.byId[docId] : true;
-              })
-              .map((file) => {
-                return FS.readJSON<EncryptedDocMeta>(
-                  `${dir}/${file}`,
-                ) as Promise<EncryptedDocMeta>;
-              }),
-          );
-        })
-        .then((docs) => {
-          // Build DecryptedDocMeta to load into state
-          return Promise.all(
-            docs.map((doc) => {
-              return TrCrypto.decrypt(doc.headers, workspace.keys).then(
-                (headers): [EncryptedDocMeta, DocHeaders] => [
-                  doc,
-                  JSON.parse(headers as JSONString) as DocHeaders,
-                ],
-              );
-            }),
-          );
-        })
-        .then((docs) => {
-          store.dispatch(
-            docsSlice.actions.load(
-              docs.map(([meta, headers]) => ({ workspaceId, headers, meta })),
-            ),
-          );
-        })
-        .catch(console.error);
-    }
   }
 
   function onDeleteDoc(docId: DocID): void {
@@ -242,7 +192,7 @@ export function HomeScreen({
           <TrButton onPress={onPull} style={theme.button} title="Pull" />
         </View>
       }
-      onEndReached={loadAllDocs}
+      onEndReached={ensureAllDocsLoaded}
       renderItem={
         docs
           ? ({ item: docId }) => (
