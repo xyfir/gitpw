@@ -1,5 +1,6 @@
 import { selectNonNullableDocs, docsSlice } from '../state/docsSlice';
 import { selectNonNullableWorkspaces } from '../state/workspacesSlice';
+import { loadDecryptedDocBody } from '../utils/loadDecryptedDocBody';
 import { View, TextInput } from 'react-native';
 import { useTrSelector } from '../hooks/useTrSelector';
 import { useTheme } from '../hooks/useTheme';
@@ -46,22 +47,19 @@ export function EditorScreen({
 
     FS.readJSON<EncryptedDocMeta>(doc.metaPath)
       .then((meta) => {
-        if (!meta) return;
+        if (!meta) throw Error(`Missing file ${doc.metaPath}`);
+
         originalEncryptedHeaderBlock = meta.headers;
-        return FS.readJSON<EncryptedDocBody>(doc.bodyPath);
+        return loadDecryptedDocBody(doc, workspace);
       })
       .then((body) => {
-        if (!body) throw Error('Missing file');
-        originalEncryptedBlocks = body.blocks;
-        return Promise.all(
-          body.blocks.map((block) => {
-            return TrCrypto.decrypt(block, workspace.keys);
-          }),
+        originalEncryptedBlocks = body.encryptedBlocks;
+        originalDecryptedBlocks = body.decryptedBlocks;
+        setContent(
+          `${originalDecryptedHeaderBlock}\n\n${body.decryptedBlocks.join(
+            '\n\n',
+          )}`,
         );
-      })
-      .then((blocks) => {
-        originalDecryptedBlocks = blocks;
-        setContent(`${originalDecryptedHeaderBlock}\n\n${blocks.join('\n\n')}`);
       })
       .catch(console.error);
 
