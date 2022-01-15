@@ -8,6 +8,7 @@ import { NavigationRootStyles } from './navigation/NavigationRootStyles';
 import { SearchScreenStyles } from './screens/SearchScreenStyles';
 import { EditorScreenStyles } from './screens/EditorScreenStyles';
 import { TrTextInputStyles } from './components/TrTextInputStyles';
+import { DocListItemStyles } from './screens/DocListItemStyles';
 import { HomeScreenStyles } from './screens/HomeScreenStyles';
 import { TrDividerStyles } from './components/TrDividerStyles';
 import { TrButtonStyles } from './components/TrButtonStyles';
@@ -18,6 +19,7 @@ import { TrTextStyles } from './components/TrTextStyles';
 export const styles = {
   ...AddWorkspaceScreenStyles,
   ...CredentialManagerScreenStyles,
+  ...DocListItemStyles,
   ...EditorScreenStyles,
   ...EnterPasscodeScreenStyles,
   ...HomeScreenStyles,

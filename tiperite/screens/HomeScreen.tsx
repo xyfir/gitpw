@@ -2,9 +2,9 @@ import { TouchableOpacity, FlatList, View } from 'react-native';
 import { selectNonNullableWorkspaces } from '../state/workspacesSlice';
 import { selectDocs, docsSlice } from '../state/docsSlice';
 import { ensureAllDocsLoaded } from '../utils/ensureAllDocsLoaded';
-import { TrTextTimestamp } from '../components/TrTextTimestamp';
 import { TrButtonPicker } from '../components/TrButtonPicker';
 import { useTrSelector } from '../hooks/useTrSelector';
+import { DocListItem } from '../components/DocListItem';
 import { StorageFile } from '../utils/StorageFile';
 import { TrButton } from '../components/TrButton';
 import { useTheme } from '../hooks/useTheme';
@@ -196,41 +196,18 @@ export function HomeScreen({
       renderItem={
         docs
           ? ({ item: docId }) => (
-              <TouchableOpacity
+              <DocListItem
+                workspace={workspaces.byId[docs.byId[docId].workspaceId]}
                 onPress={() => onOpenDoc(docId)}
-                style={theme.doc}
-              >
-                <View style={theme.docMain}>
-                  <TrText weight="600" style={theme.title} size={16}>
-                    {docs.byId[docId].headers.title || 'Untitled'}
-                  </TrText>
-
+                action={
                   <TouchableOpacity onPress={() => onDeleteDoc(docId)}>
                     <TrText weight="900" size={16}>
                       [x]
                     </TrText>
                   </TouchableOpacity>
-                </View>
-
-                <TrText numberOfLines={1} opacity={0.5} style={theme.infoLine}>
-                  {workspaces.byId[docs.byId[docId].workspaceId].name}
-                </TrText>
-
-                <TrTextTimestamp
-                  numberOfLines={1}
-                  opacity={0.5}
-                  style={theme.infoLine}
-                  ts={
-                    docs.byId[docId].headers.updated ||
-                    docs.byId[docId].updatedAt
-                  }
-                />
-
-                <TrText numberOfLines={1} opacity={0.5} style={theme.infoLine}>
-                  {docs.byId[docId].headers.tags ||
-                    docs.byId[docId].headers.folder}
-                </TrText>
-              </TouchableOpacity>
+                }
+                doc={docs.byId[docId]}
+              />
             )
           : () => null
       }
