@@ -212,16 +212,21 @@ export function HomeScreen({
                   </TouchableOpacity>
                 </View>
 
+                <TrText numberOfLines={1} opacity={0.5} style={theme.infoLine}>
+                  {workspaces.byId[docs.byId[docId].workspaceId].name}
+                </TrText>
+
                 <TrTextTimestamp
                   numberOfLines={1}
                   opacity={0.5}
+                  style={theme.infoLine}
                   ts={
                     docs.byId[docId].headers.updated ||
                     docs.byId[docId].updatedAt
                   }
                 />
 
-                <TrText numberOfLines={1} opacity={0.5}>
+                <TrText numberOfLines={1} opacity={0.5} style={theme.infoLine}>
                   {docs.byId[docId].headers.tags ||
                     docs.byId[docId].headers.folder}
                 </TrText>

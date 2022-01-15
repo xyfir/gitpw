@@ -2,6 +2,7 @@ import { StyleProp, ViewStyle, TextStyle } from 'react-native';
 
 export const HomeScreenStyles: {
   HomeScreen: {
+    infoLine: StyleProp<TextStyle>;
     docMain: StyleProp<ViewStyle>;
     footer: StyleProp<ViewStyle>;
     button: StyleProp<TextStyle>;
@@ -11,6 +12,9 @@ export const HomeScreenStyles: {
   };
 } = {
   HomeScreen: {
+    infoLine: {
+      marginTop: 2,
+    },
     docMain: {
       flexDirection: 'row',
     },
@@ -22,7 +26,7 @@ export const HomeScreenStyles: {
       marginTop: 20,
     },
     title: {
-      marginBottom: 4,
+      marginBottom: 2,
       flex: 1,
     },
     root: {
