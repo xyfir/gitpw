@@ -11,11 +11,13 @@ import React from 'react';
 export function DocListItem({
   workspace,
   onPress,
+  preview,
   action,
   doc,
 }: {
   workspace: StorageFileWorkspace;
   onPress(): void;
+  preview?: string[];
   action: JSX.Element;
   doc: DecryptedDocMeta;
 }): JSX.Element {
@@ -45,6 +47,21 @@ export function DocListItem({
       <TrText numberOfLines={1} opacity={0.5} style={theme.infoLine}>
         {doc.headers.tags || doc.headers.folder}
       </TrText>
+
+      {preview ? (
+        <View style={theme.preview}>
+          {preview.map((line, i) => (
+            <TrText
+              numberOfLines={1}
+              opacity={0.8}
+              style={theme.previewLine}
+              key={i}
+            >
+              {line}
+            </TrText>
+          ))}
+        </View>
+      ) : null}
     </TouchableOpacity>
   );
 }
