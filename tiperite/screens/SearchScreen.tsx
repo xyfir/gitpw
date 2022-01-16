@@ -14,13 +14,12 @@ import React from 'react';
 import Fuse from 'fuse.js';
 
 interface MatchingBlock {
-  stringIndex: number;
-  blockIndex: number;
-  block: string;
+  preview: string;
+  index: number;
 }
 
 interface MatchingDoc {
-  matches: MatchingBlock[];
+  blocks: MatchingBlock[];
   docId: DocID;
 }
 
@@ -78,12 +77,13 @@ export function SearchScreen({
       if (!results.length) continue;
 
       _matches.push({
-        matches: results.map((r): MatchingBlock => {
+        blocks: results.map((r): MatchingBlock => {
+          const startIndex = (r.matches as Fuse.FuseResultMatch[])[0]
+            .indices?.[0][0];
           return {
-            stringIndex: (r.matches as Fuse.FuseResultMatch[])[0]
-              .indices?.[0][0],
-            blockIndex: r.refIndex,
-            block: r.item,
+            preview:
+              startIndex > 40 ? `... ${r.item.substring(startIndex)}` : r.item,
+            index: r.refIndex,
           };
         }),
         docId,
@@ -148,6 +148,7 @@ export function SearchScreen({
         <DocListItem
           workspace={workspaces.byId[docs.byId[match.docId].workspaceId]}
           onPress={() => undefined}
+          preview={match.blocks.map((b) => b.preview)}
           action={
             <TouchableOpacity onPress={() => onRemoveMatch(match.docId)}>
               <TrText weight="900" size={16}>
