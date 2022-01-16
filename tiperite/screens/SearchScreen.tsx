@@ -1,13 +1,15 @@
+import { TouchableOpacity, FlatList, View } from 'react-native';
 import { StackNavigatorScreenProps, DocID } from '../types';
 import { selectNonNullableWorkspaces } from '../state/workspacesSlice';
 import { selectNonNullableDocs } from '../state/docsSlice';
 import { loadDecryptedDocBody } from '../utils/loadDecryptedDocBody';
 import { ensureAllDocsLoaded } from '../utils/ensureAllDocsLoaded';
-import { FlatList, View } from 'react-native';
 import { useTrSelector } from '../hooks/useTrSelector';
+import { DocListItem } from '../components/DocListItem';
 import { TrTextInput } from '../components/TrTextInput';
 import { TrButton } from '../components/TrButton';
 import { useTheme } from '../hooks/useTheme';
+import { TrText } from '../components/TrText';
 import React from 'react';
 import Fuse from 'fuse.js';
 
@@ -37,6 +39,10 @@ export function SearchScreen({
   const workspaces = useTrSelector(selectNonNullableWorkspaces);
   const theme = useTheme('SearchScreen');
   const docs = useTrSelector(selectNonNullableDocs);
+
+  function onRemoveMatch(docId: DocID): void {
+    setMatches(matches.filter((match) => match.docId != docId));
+  }
 
   /**
    * Search docs
@@ -138,7 +144,20 @@ export function SearchScreen({
         </View>
       }
       keyExtractor={(m) => m.docId}
-      renderItem={({ item: match }) => <View />}
+      renderItem={({ item: match }) => (
+        <DocListItem
+          workspace={workspaces.byId[docs.byId[match.docId].workspaceId]}
+          onPress={() => undefined}
+          action={
+            <TouchableOpacity onPress={() => onRemoveMatch(match.docId)}>
+              <TrText weight="900" size={16}>
+                [x]
+              </TrText>
+            </TouchableOpacity>
+          }
+          doc={docs.byId[match.docId]}
+        />
+      )}
       style={theme.root}
       data={matches}
     />

@@ -1,4 +1,4 @@
-import { StyleProp, ViewStyle, TextStyle } from 'react-native';
+import { StyleProp, ViewStyle } from 'react-native';
 
 export const SearchScreenStyles: {
   SearchScreen: {
