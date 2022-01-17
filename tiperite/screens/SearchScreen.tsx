@@ -5,6 +5,7 @@ import { selectNonNullableDocs } from '../state/docsSlice';
 import { loadDecryptedDocBody } from '../utils/loadDecryptedDocBody';
 import { ensureAllDocsLoaded } from '../utils/ensureAllDocsLoaded';
 import { stringifyDocHeaders } from '../utils/stringifyDocHeaders';
+import escapeStringRegexp from 'escape-string-regexp';
 import { useTrSelector } from '../hooks/useTrSelector';
 import { DocListItem } from '../components/DocListItem';
 import { TrTextInput } from '../components/TrTextInput';
@@ -46,6 +47,7 @@ export function SearchScreen({
   const docs = useTrSelector(selectNonNullableDocs);
 
   function onToggleSearchType(): void {
+    setCaseSensitive(false);
     setSearchType(
       searchType == 'contains'
         ? 'fuzzy'
@@ -53,6 +55,8 @@ export function SearchScreen({
         ? 'regex'
         : 'contains',
     );
+    setWholeWord(false);
+    setExtended(false);
   }
 
   function onRemoveMatch(docId: DocID): void {
@@ -61,9 +65,6 @@ export function SearchScreen({
 
   /**
    * Search docs
-   *
-   * @todo contains search
-   * @todo regex search
    */
   async function onSearch(): Promise<void> {
     const _matches: typeof matches = [];
@@ -82,6 +83,14 @@ export function SearchScreen({
       location: 0,
     });
 
+    const regexString =
+      searchType == 'regex' ? query : escapeStringRegexp(query);
+    const boundary = wholeWord ? '\\b' : '';
+    const regex = new RegExp(
+      `${boundary}${regexString}${boundary}`,
+      caseSensitive ? '' : 'i',
+    );
+
     // Loop through docs
     for (const docId of docs.allIds) {
       const doc = docs.byId[docId];
@@ -93,22 +102,43 @@ export function SearchScreen({
         b.decryptedBlocks.forEach((b) => list.push(b));
       });
 
-      // Search
-      fuse.setCollection(list);
-      const results = fuse.search(query);
-      if (!results.length) continue;
+      // Fuzzy search
+      if (searchType == 'fuzzy') {
+        fuse.setCollection(list);
+        const results = fuse.search(query);
+        if (!results.length) continue;
 
-      _matches.push({
-        blocks: results.map((r): MatchingBlock => {
-          const start = (r.matches as Fuse.FuseResultMatch[])[0]
-            .indices?.[0][0];
-          return {
-            preview: start > 40 ? `... ${r.item.substring(start)}` : r.item,
-            index: r.refIndex,
-          };
-        }),
-        docId,
-      });
+        _matches.push({
+          blocks: results.map((r): MatchingBlock => {
+            const start = (r.matches as Fuse.FuseResultMatch[])[0]
+              .indices?.[0][0];
+            return {
+              preview: start > 40 ? `... ${r.item.substring(start)}` : r.item,
+              index: r.refIndex,
+            };
+          }),
+          docId,
+        });
+      }
+      // Contains/regex search
+      else {
+        const results = list.map((line) => line.match(regex));
+        if (!results.some((r) => r)) continue;
+
+        _matches.push({
+          blocks: results
+            .map((r, i): MatchingBlock | undefined => {
+              if (!r || r.index === undefined || r.input === undefined) return;
+              return {
+                preview:
+                  r.index > 40 ? `... ${r.input.substring(r.index)}` : r.input,
+                index: i,
+              };
+            })
+            .filter(Boolean) as MatchingBlock[],
+          docId,
+        });
+      }
     }
 
     setMatches(_matches);
