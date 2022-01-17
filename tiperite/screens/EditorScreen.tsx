@@ -1,6 +1,7 @@
 import { selectNonNullableDocs, docsSlice } from '../state/docsSlice';
 import { selectNonNullableWorkspaces } from '../state/workspacesSlice';
 import { loadDecryptedDocBody } from '../utils/loadDecryptedDocBody';
+import { stringifyDocHeaders } from '../utils/stringifyDocHeaders';
 import { View, TextInput } from 'react-native';
 import { useTrSelector } from '../hooks/useTrSelector';
 import { useTheme } from '../hooks/useTheme';
@@ -37,13 +38,9 @@ export function EditorScreen({
     let originalDecryptedBlocks: string[];
     let originalEncryptedBlocks: string[];
     let originalEncryptedHeaderBlock: string;
-    const originalDecryptedHeaderBlock = [
-      ...Object.entries(doc.headers),
-      ...Object.entries(doc.headers.x),
-    ]
-      .filter(([k]) => k != 'x')
-      .map(([k, v]) => `${k} ${Array.isArray(v) ? v.join(' ') : v}`)
-      .join('\n');
+    const originalDecryptedHeaderBlock = stringifyDocHeaders(doc.headers).join(
+      '\n',
+    );
 
     FS.readJSON<EncryptedDocMeta>(doc.metaPath)
       .then((meta) => {
