@@ -4,6 +4,7 @@ import { selectNonNullableWorkspaces } from '../state/workspacesSlice';
 import { selectNonNullableDocs } from '../state/docsSlice';
 import { loadDecryptedDocBody } from '../utils/loadDecryptedDocBody';
 import { ensureAllDocsLoaded } from '../utils/ensureAllDocsLoaded';
+import { stringifyDocHeaders } from '../utils/stringifyDocHeaders';
 import { useTrSelector } from '../hooks/useTrSelector';
 import { DocListItem } from '../components/DocListItem';
 import { TrTextInput } from '../components/TrTextInput';
@@ -24,16 +25,6 @@ interface MatchingDoc {
 }
 
 type SearchType = 'contains' | 'fuzzy' | 'regex';
-
-type FuseBlockItem = { block: string };
-
-type FuseListItem =
-  | { folder: string }
-  | FuseBlockItem
-  | { title: string }
-  | { tags: string[] }
-  | { slug: string }
-  | { x: string[] }; // { x: ['x-header-key value'] }
 
 /**
  * Search docs
@@ -71,14 +62,12 @@ export function SearchScreen({
   /**
    * Search docs
    *
-   * @todo header search (as lines of text)
    * @todo contains search
    * @todo regex search
    */
   async function onSearch(): Promise<void> {
-    const containsX = /\bx-\w/.test(query);
     const _matches: typeof matches = [];
-    const fuse = new Fuse<FuseListItem>([], {
+    const fuse = new Fuse<string>([], {
       minMatchCharLength: 1,
       useExtendedSearch: extended,
       isCaseSensitive: caseSensitive,
@@ -91,14 +80,6 @@ export function SearchScreen({
       threshold: 0.6,
       distance: 100,
       location: 0,
-      keys: [
-        { weight: 1, name: 'title' },
-        { weight: 0.8, name: 'slug' },
-        { weight: 0.7, name: 'block' },
-        { weight: 0.5, name: 'folder' },
-        { weight: 0.5, name: 'tags' },
-        { weight: containsX ? 1 : 0.3, name: 'x' },
-      ],
     });
 
     // Loop through docs
@@ -106,22 +87,11 @@ export function SearchScreen({
       const doc = docs.byId[docId];
       const workspace = workspaces.byId[doc.workspaceId];
 
-      const list: FuseListItem[] = [];
-
+      // Read doc's content into lines/blocks for searching
+      const list = stringifyDocHeaders(doc.headers);
       await loadDecryptedDocBody(doc, workspace).then((b) => {
-        b.decryptedBlocks.forEach((block) => list.push({ block }));
+        b.decryptedBlocks.forEach((b) => list.push(b));
       });
-
-      if (doc.headers.tags?.length) list.push({ tags: doc.headers.tags });
-      if (doc.headers.folder) list.push({ folder: doc.headers.folder });
-      if (doc.headers.title) list.push({ title: doc.headers.title });
-      if (doc.headers.slug) list.push({ slug: doc.headers.slug });
-
-      const x: string[] = [];
-      Object.entries(doc.headers.x).forEach(([key, value]) => {
-        x.push(`${key} ${value}`);
-      });
-      if (x.length) list.push({ x });
 
       // Search
       fuse.setCollection(list);
@@ -129,21 +99,14 @@ export function SearchScreen({
       if (!results.length) continue;
 
       _matches.push({
-        blocks: results
-          .filter((r) => (r.item as FuseBlockItem).block)
-          .map((r): MatchingBlock => {
-            const startIndex = (r.matches as Fuse.FuseResultMatch[])[0]
-              .indices?.[0][0];
-            return {
-              preview:
-                startIndex > 40
-                  ? `... ${(r.item as FuseBlockItem).block.substring(
-                      startIndex,
-                    )}`
-                  : (r.item as FuseBlockItem).block,
-              index: r.refIndex,
-            };
-          }),
+        blocks: results.map((r): MatchingBlock => {
+          const start = (r.matches as Fuse.FuseResultMatch[])[0]
+            .indices?.[0][0];
+          return {
+            preview: start > 40 ? `... ${r.item.substring(start)}` : r.item,
+            index: r.refIndex,
+          };
+        }),
         docId,
       });
     }
