@@ -2,6 +2,7 @@ import { StyleProp, ViewStyle, TextStyle } from 'react-native';
 
 export const SearchScreenStyles: {
   SearchScreen: {
+    searchInputField: StyleProp<TextStyle>;
     resultsCount: StyleProp<TextStyle>;
     searchInput: StyleProp<ViewStyle>;
     toggles: StyleProp<ViewStyle>;
@@ -10,6 +11,9 @@ export const SearchScreenStyles: {
   };
 } = {
   SearchScreen: {
+    searchInputField: {
+      textAlign: 'left',
+    },
     resultsCount: {
       marginTop: 10,
     },

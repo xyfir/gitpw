@@ -23,6 +23,8 @@ interface MatchingDoc {
   docId: DocID;
 }
 
+type SearchType = 'contains' | 'fuzzy' | 'regex';
+
 /**
  * Search docs
  */
@@ -30,10 +32,10 @@ export function SearchScreen({
   navigation,
 }: StackNavigatorScreenProps<'SearchScreen'>): JSX.Element {
   const [caseSensitive, setCaseSensitive] = React.useState(false);
+  const [searchType, setSearchType] = React.useState<SearchType>('fuzzy');
   const [wholeWord, setWholeWord] = React.useState(false);
   const [extended, setExtended] = React.useState(false);
   const [matches, setMatches] = React.useState<MatchingDoc[]>([]);
-  const [fuzzy, setFuzzy] = React.useState(true);
   const [query, setQuery] = React.useState('');
   const resultsCount = React.useMemo(() => {
     return matches.reduce((c, match) => c + match.blocks.length, 0);
@@ -41,6 +43,16 @@ export function SearchScreen({
   const workspaces = useTrSelector(selectNonNullableWorkspaces);
   const theme = useTheme('SearchScreen');
   const docs = useTrSelector(selectNonNullableDocs);
+
+  function onToggleSearchType(): void {
+    setSearchType(
+      searchType == 'contains'
+        ? 'fuzzy'
+        : searchType == 'fuzzy'
+        ? 'regex'
+        : 'contains',
+    );
+  }
 
   function onRemoveMatch(docId: DocID): void {
     setMatches(matches.filter((match) => match.docId != docId));
@@ -95,7 +107,6 @@ export function SearchScreen({
       // search headers
     }
 
-    console.log(_matches);
     setMatches(_matches);
   }
 
@@ -113,36 +124,41 @@ export function SearchScreen({
             autoCapitalize="none"
             returnKeyType="search"
             onChangeText={setQuery}
+            endAdornment={
+              <TrButton onPress={onToggleSearchType} title={searchType} small />
+            }
             placeholder="Search..."
             autoCorrect={false}
+            inputStyle={theme.searchInputField}
             autoFocus
             style={theme.searchInput}
             value={query}
           />
+
           {/*
             [fields = body, title, tags, folder]
            */}
+
           <View style={theme.toggles}>
-            <TrButton
-              onPress={() => setFuzzy(!fuzzy)}
-              title={fuzzy ? 'fuzzy' : 'regex'}
-              small
-            />
-            <TrButton
-              onPress={() => setWholeWord(!wholeWord)}
-              title={wholeWord ? 'word' : 'text'}
-              small
-            />
             <TrButton
               onPress={() => setCaseSensitive(!caseSensitive)}
               title={`case ${caseSensitive ? '' : 'in'}sensitive`}
               small
             />
-            <TrButton
-              onPress={() => setExtended(!extended)}
-              title={extended ? 'extended' : 'simple'}
-              small
-            />
+
+            {searchType == 'contains' ? (
+              <TrButton
+                onPress={() => setWholeWord(!wholeWord)}
+                title={wholeWord ? 'word' : 'text'}
+                small
+              />
+            ) : searchType == 'fuzzy' ? (
+              <TrButton
+                onPress={() => setExtended(!extended)}
+                title={extended ? 'extended' : 'simple'}
+                small
+              />
+            ) : null}
           </View>
 
           {matches.length ? (
