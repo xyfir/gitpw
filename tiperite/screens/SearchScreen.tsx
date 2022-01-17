@@ -35,6 +35,9 @@ export function SearchScreen({
   const [matches, setMatches] = React.useState<MatchingDoc[]>([]);
   const [fuzzy, setFuzzy] = React.useState(true);
   const [query, setQuery] = React.useState('');
+  const resultsCount = React.useMemo(() => {
+    return matches.reduce((c, match) => c + match.blocks.length, 0);
+  }, [matches]);
   const workspaces = useTrSelector(selectNonNullableWorkspaces);
   const theme = useTheme('SearchScreen');
   const docs = useTrSelector(selectNonNullableDocs);
@@ -141,6 +144,13 @@ export function SearchScreen({
               small
             />
           </View>
+
+          {matches.length ? (
+            <TrText style={theme.resultsCount}>
+              {resultsCount} result{resultsCount == 1 ? '' : 's'} in{' '}
+              {matches.length} file{matches.length == 1 ? '' : 's'}
+            </TrText>
+          ) : null}
         </View>
       }
       keyExtractor={(m) => m.docId}

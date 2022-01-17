@@ -1,7 +1,8 @@
-import { StyleProp, ViewStyle } from 'react-native';
+import { StyleProp, ViewStyle, TextStyle } from 'react-native';
 
 export const SearchScreenStyles: {
   SearchScreen: {
+    resultsCount: StyleProp<TextStyle>;
     searchInput: StyleProp<ViewStyle>;
     toggles: StyleProp<ViewStyle>;
     header: StyleProp<ViewStyle>;
@@ -9,6 +10,9 @@ export const SearchScreenStyles: {
   };
 } = {
   SearchScreen: {
+    resultsCount: {
+      marginTop: 10,
+    },
     searchInput: {
       marginVertical: 10,
     },
