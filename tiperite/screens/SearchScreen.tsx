@@ -25,6 +25,16 @@ interface MatchingDoc {
 
 type SearchType = 'contains' | 'fuzzy' | 'regex';
 
+type FuseBlockItem = { block: string };
+
+type FuseListItem =
+  | { folder: string }
+  | FuseBlockItem
+  | { title: string }
+  | { tags: string[] }
+  | { slug: string }
+  | { x: string[] }; // { x: ['x-header-key value'] }
+
 /**
  * Search docs
  */
@@ -38,7 +48,7 @@ export function SearchScreen({
   const [matches, setMatches] = React.useState<MatchingDoc[]>([]);
   const [query, setQuery] = React.useState('');
   const resultsCount = React.useMemo(() => {
-    return matches.reduce((c, match) => c + match.blocks.length, 0);
+    return matches.reduce((c, match) => c + (match.blocks.length || 1), 0);
   }, [matches]);
   const workspaces = useTrSelector(selectNonNullableWorkspaces);
   const theme = useTheme('SearchScreen');
@@ -60,51 +70,82 @@ export function SearchScreen({
 
   /**
    * Search docs
+   *
+   * @todo header search (as lines of text)
+   * @todo contains search
+   * @todo regex search
    */
   async function onSearch(): Promise<void> {
+    const containsX = /\bx-\w/.test(query);
     const _matches: typeof matches = [];
+    const fuse = new Fuse<FuseListItem>([], {
+      minMatchCharLength: 1,
+      useExtendedSearch: extended,
+      isCaseSensitive: caseSensitive,
+      ignoreFieldNorm: false,
+      ignoreLocation: true,
+      includeMatches: true,
+      findAllMatches: true,
+      includeScore: false,
+      shouldSort: true,
+      threshold: 0.6,
+      distance: 100,
+      location: 0,
+      keys: [
+        { weight: 1, name: 'title' },
+        { weight: 0.8, name: 'slug' },
+        { weight: 0.7, name: 'block' },
+        { weight: 0.5, name: 'folder' },
+        { weight: 0.5, name: 'tags' },
+        { weight: containsX ? 1 : 0.3, name: 'x' },
+      ],
+    });
 
     // Loop through docs
     for (const docId of docs.allIds) {
       const doc = docs.byId[docId];
       const workspace = workspaces.byId[doc.workspaceId];
 
-      const blocks = await loadDecryptedDocBody(doc, workspace).then(
-        (b) => b.decryptedBlocks,
-      );
+      const list: FuseListItem[] = [];
 
-      // Search body blocks
-      const fuse = new Fuse(blocks, {
-        minMatchCharLength: 1,
-        useExtendedSearch: extended,
-        isCaseSensitive: caseSensitive,
-        ignoreFieldNorm: false,
-        ignoreLocation: true,
-        includeMatches: true,
-        findAllMatches: true,
-        includeScore: false,
-        shouldSort: true,
-        threshold: 0.6,
-        distance: 100,
-        location: 0,
+      await loadDecryptedDocBody(doc, workspace).then((b) => {
+        b.decryptedBlocks.forEach((block) => list.push({ block }));
       });
+
+      if (doc.headers.tags?.length) list.push({ tags: doc.headers.tags });
+      if (doc.headers.folder) list.push({ folder: doc.headers.folder });
+      if (doc.headers.title) list.push({ title: doc.headers.title });
+      if (doc.headers.slug) list.push({ slug: doc.headers.slug });
+
+      const x: string[] = [];
+      Object.entries(doc.headers.x).forEach(([key, value]) => {
+        x.push(`${key} ${value}`);
+      });
+      if (x.length) list.push({ x });
+
+      // Search
+      fuse.setCollection(list);
       const results = fuse.search(query);
       if (!results.length) continue;
 
       _matches.push({
-        blocks: results.map((r): MatchingBlock => {
-          const startIndex = (r.matches as Fuse.FuseResultMatch[])[0]
-            .indices?.[0][0];
-          return {
-            preview:
-              startIndex > 40 ? `... ${r.item.substring(startIndex)}` : r.item,
-            index: r.refIndex,
-          };
-        }),
+        blocks: results
+          .filter((r) => (r.item as FuseBlockItem).block)
+          .map((r): MatchingBlock => {
+            const startIndex = (r.matches as Fuse.FuseResultMatch[])[0]
+              .indices?.[0][0];
+            return {
+              preview:
+                startIndex > 40
+                  ? `... ${(r.item as FuseBlockItem).block.substring(
+                      startIndex,
+                    )}`
+                  : (r.item as FuseBlockItem).block,
+              index: r.refIndex,
+            };
+          }),
         docId,
       });
-
-      // search headers
     }
 
     setMatches(_matches);
