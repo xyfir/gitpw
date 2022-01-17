@@ -17,7 +17,7 @@ export function DocListItem({
 }: {
   workspace: StorageFileWorkspace;
   onPress(): void;
-  preview?: string[];
+  preview?: { highlight: [number, number]; text: string }[];
   action: JSX.Element;
   doc: DecryptedDocMeta;
 }): JSX.Element {
@@ -50,14 +50,18 @@ export function DocListItem({
 
       {preview ? (
         <View style={theme.preview}>
-          {preview.map((line, i) => (
+          {preview.map(({ highlight, text }, i) => (
             <TrText
               numberOfLines={1}
               opacity={0.8}
               style={theme.previewLine}
               key={i}
             >
-              {line}
+              {text.substring(0, highlight[0])}
+              <TrText style={theme.highlight}>
+                {text.substring(highlight[0], highlight[1] + 1)}
+              </TrText>
+              {text.substring(highlight[1] + 1)}
             </TrText>
           ))}
         </View>

@@ -2,7 +2,10 @@ import { StyleProp, ViewStyle, TextStyle } from 'react-native';
 
 export const DocListItemStyles: {
   DocListItem: {
+    highlight_dark: StyleProp<TextStyle>;
+    preview_dark: StyleProp<ViewStyle>;
     previewLine: StyleProp<TextStyle>;
+    highlight: StyleProp<TextStyle>;
     infoLine: StyleProp<TextStyle>;
     mainLine: StyleProp<ViewStyle>;
     preview: StyleProp<ViewStyle>;
@@ -11,7 +14,18 @@ export const DocListItemStyles: {
   };
 } = {
   DocListItem: {
+    highlight_dark: {
+      backgroundColor: 'dodgerblue',
+      fontFamily: 'monospace',
+    },
+    preview_dark: {
+      borderLeftColor: 'rgba(255, 255, 255, 0.5)',
+    },
     previewLine: {
+      fontFamily: 'monospace',
+    },
+    highlight: {
+      backgroundColor: 'cyan',
       fontFamily: 'monospace',
     },
     infoLine: {
@@ -21,7 +35,7 @@ export const DocListItemStyles: {
       flexDirection: 'row',
     },
     preview: {
-      borderLeftColor: 'rgba(255, 255, 255, 0.5)',
+      borderLeftColor: 'rgba(0, 0, 0, 0.5)',
       borderLeftWidth: 3,
       paddingLeft: 10,
       marginLeft: 5,

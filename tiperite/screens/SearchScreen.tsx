@@ -16,6 +16,7 @@ import React from 'react';
 import Fuse from 'fuse.js';
 
 interface MatchingBlock {
+  highlight?: [number, number];
   preview: string;
   index: number;
 }
@@ -130,6 +131,7 @@ export function SearchScreen({
             .map((r, i): MatchingBlock | undefined => {
               if (!r || r.index === undefined || r.input === undefined) return;
               return {
+                highlight: [r.index, r.index + r[0].length - 1],
                 preview:
                   r.index > 40 ? `... ${r.input.substring(r.index)}` : r.input,
                 index: i,
@@ -208,7 +210,10 @@ export function SearchScreen({
         <DocListItem
           workspace={workspaces.byId[docs.byId[match.docId].workspaceId]}
           onPress={() => undefined}
-          preview={match.blocks.map((b) => b.preview)}
+          preview={match.blocks.map((b) => ({
+            highlight: b.highlight || [-1, -1],
+            text: b.preview,
+          }))}
           action={
             <TouchableOpacity onPress={() => onRemoveMatch(match.docId)}>
               <TrText weight="900" size={16}>
