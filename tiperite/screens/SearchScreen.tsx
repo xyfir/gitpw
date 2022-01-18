@@ -89,7 +89,7 @@ export function SearchScreen({
     const boundary = wholeWord ? '\\b' : '';
     const regex = new RegExp(
       `${boundary}${regexString}${boundary}`,
-      caseSensitive ? '' : 'i',
+      caseSensitive ? 'g' : 'gi',
     );
 
     // Loop through docs
@@ -123,23 +123,23 @@ export function SearchScreen({
       }
       // Contains/regex search
       else {
-        const results = list.map((line) => line.match(regex));
-        if (!results.some((r) => r)) continue;
+        const blocks: MatchingBlock[] = [];
 
-        _matches.push({
-          blocks: results
-            .map((r, i): MatchingBlock | undefined => {
-              if (!r || r.index === undefined || r.input === undefined) return;
-              return {
-                highlight: [r.index, r.index + r[0].length - 1],
-                preview:
-                  r.index > 40 ? `... ${r.input.substring(r.index)}` : r.input,
-                index: i,
-              };
-            })
-            .filter(Boolean) as MatchingBlock[],
-          docId,
-        });
+        for (let i = 0; i < list.length; i++) {
+          const line = list[i];
+          let r: RegExpExecArray | null = null;
+
+          while ((r = regex.exec(line)) != null) {
+            blocks.push({
+              highlight: [r.index, r.index + r[0].length - 1],
+              preview:
+                r.index > 40 ? `... ${r.input.substring(r.index)}` : r.input,
+              index: i,
+            });
+          }
+        }
+
+        if (blocks.length) _matches.push({ blocks, docId });
       }
     }
 
