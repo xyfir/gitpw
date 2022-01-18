@@ -110,14 +110,9 @@ export function SearchScreen({
         if (!results.length) continue;
 
         _matches.push({
-          blocks: results.map((r): MatchingBlock => {
-            const start = (r.matches as Fuse.FuseResultMatch[])[0]
-              .indices?.[0][0];
-            return {
-              preview: start > 40 ? `... ${r.item.substring(start)}` : r.item,
-              index: r.refIndex,
-            };
-          }),
+          blocks: results.map(
+            (r): MatchingBlock => ({ preview: r.item, index: r.refIndex }),
+          ),
           docId,
         });
       }
@@ -132,8 +127,7 @@ export function SearchScreen({
           while ((r = regex.exec(line)) != null) {
             blocks.push({
               highlight: [r.index, r.index + r[0].length - 1],
-              preview:
-                r.index > 40 ? `... ${r.input.substring(r.index)}` : r.input,
+              preview: r.input,
               index: i,
             });
           }
