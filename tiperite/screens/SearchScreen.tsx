@@ -35,7 +35,7 @@ export function SearchScreen({
   navigation,
 }: StackNavigatorScreenProps<'SearchScreen'>): JSX.Element {
   const [caseSensitive, setCaseSensitive] = React.useState(false);
-  const [searchType, setSearchType] = React.useState<SearchType>('fuzzy');
+  const [searchType, setSearchType] = React.useState<SearchType>('contains');
   const [wholeWord, setWholeWord] = React.useState(false);
   const [extended, setExtended] = React.useState(false);
   const [matches, setMatches] = React.useState<MatchingDoc[]>([]);
@@ -203,7 +203,9 @@ export function SearchScreen({
       renderItem={({ item: match }) => (
         <DocListItem
           workspace={workspaces.byId[docs.byId[match.docId].workspaceId]}
-          onPress={() => undefined}
+          onPress={() =>
+            navigation.push('EditorScreen', { docId: match.docId })
+          }
           preview={match.blocks.map((b) => ({
             highlight: b.highlight || [-1, -1],
             text: b.preview,
