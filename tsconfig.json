@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "sourceMap": true,
+    "rootDir": "./src",
+    "target": "esnext",
+    "module": "commonjs",
+    "outDir": "./build",
+    "strict": true
+  },
+  "compileOnSave": true,
+  "include": ["src"]
+}

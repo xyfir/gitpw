@@ -1,0 +1,6 @@
+{
+  "search.useIgnoreFiles": false,
+  "search.exclude": {
+    "package-lock.json": true,
+  },
+}
