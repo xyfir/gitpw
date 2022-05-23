@@ -1,6 +1,3 @@
 tsconfig.json
 node_modules
-.expo-shared
-web-build
-.expo
-dist
+build

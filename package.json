@@ -1,7 +1,9 @@
 {
+  "main": "build/index.js",
   "scripts": {
     "eslint": "eslint . --ext .ts,.json --max-warnings 0",
-    "build": "tsc --project tsconfig.json"
+    "build": "tsc --project tsconfig.json",
+    "cli": "node build/index.js"
   },
   "dependencies": {
     "crypto-random-string": "^3.3.1",
