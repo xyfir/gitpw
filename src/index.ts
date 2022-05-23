@@ -1,17 +1,20 @@
+import { unlockCommand } from './commands/unlockCommand';
+import { lockCommand } from './commands/lockCommand';
+
 (async () => {
   try {
-    const command = process.argv[2] as 'unlock' | 'lock';
-
-    switch (command) {
-      case 'unlock': {
+    switch (process.argv[2] as 'unlock' | 'lock') {
+      case 'unlock':
+        await unlockCommand();
         break;
-      }
-      case 'lock': {
+      case 'lock':
+        await lockCommand();
         break;
-      }
       default:
         throw Error('Invalid command');
     }
+
+    process.exit(0);
   } catch (err) {
     console.error(err);
     process.exit(1);
