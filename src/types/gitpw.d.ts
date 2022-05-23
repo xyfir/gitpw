@@ -95,7 +95,7 @@ export type GpwKeyStretcher = {
 };
 
 /**
- * The structure of the `gitpw.json` file in a GpwRepo.
+ * The structure of the `manifest.json` file in a GpwRepo.
  */
 export type GpwRepoManifest = {
   /**
@@ -118,7 +118,7 @@ export type GpwRepoManifest = {
   /**
    * Namespaced application-specific data. Avoid using if possible.
    */
-  extra: Record<string, unknown>;
+  extra?: Record<string, unknown>;
 };
 
 /**
@@ -160,7 +160,9 @@ export type GpwFile = {
   /**
    * Namespaced application-specific data. Avoid using if possible.
    */
-  extra: Record<string, unknown>;
+  extra?: Record<string, unknown>;
   type: 'Doc' | 'Bin';
   id: GpwFileID;
 };
+
+export type GpwFileMap = Record<string, string>;
