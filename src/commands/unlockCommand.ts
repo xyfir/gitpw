@@ -1,26 +1,34 @@
-import { readJSON, readdir } from 'fs-extra';
-import { getGitPwPath } from '../utils/getGitPwPath';
+import { GpwFileMap, GpwFile } from '../types';
+import { writeFile, readJSON } from 'fs-extra';
+import { getGpwPath } from '../utils/getGpwPath';
 import { getSession } from '../utils/getSession';
-import { GpwFileMap } from '../types';
 import { TrCrypto } from '../utils/TrCrypto';
+import { getPath } from '../utils/getPath';
 import path from 'path';
 
 export async function unlockCommand(): Promise<void> {
   // Get session
   const session = await getSession();
 
-  // Grab encrypted files
-  const files = await readdir(getGitPwPath('files/'));
-
   // Get encrypted-decrypted file name/path map
-  const map: GpwFileMap = await readJSON(path.join(getGitPwPath('map.json')));
+  const map: GpwFileMap = await readJSON(path.join(getGpwPath('map.json')));
 
-  // Decrypt map
-  for (const [uuid, filepath] of Object.entries(map)) {
-    map[uuid] = await TrCrypto.decrypt(filepath, session.unlocked_keychain);
+  // Decrypt contents
+  for (const [id, filepath] of Object.entries(map)) {
+    // Decrypt map
+    map[id] = await TrCrypto.decrypt(filepath, session.unlocked_keychain);
+
+    // Read encrypted file and decrypt its content
+    const file: GpwFile = await readJSON(
+      path.join(getGpwPath(`files/${id}.json`)),
+    );
+    const content = await Promise.all(
+      file.content.map((c) => TrCrypto.decrypt(c, session.unlocked_keychain)),
+    ).then((c) => c.join(''));
+
+    // Write decrypted file
+    await writeFile(getPath(map[id]), content);
   }
-
-  // Decrypt each file to copy outside of .gitpw
 
   return;
 }
