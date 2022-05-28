@@ -115,10 +115,6 @@ export type GpwRepoManifest = {
    */
   key_stretchers: GpwKeyStretcher[];
   version: GpwRepoVersion;
-  /**
-   * Namespaced application-specific data. Avoid using if possible.
-   */
-  extra?: Record<string, unknown>;
 };
 
 /**
@@ -127,42 +123,19 @@ export type GpwRepoManifest = {
 export type GpwFileID = GpwID;
 
 /**
- * A `GpwFile`'s keychain, which is either a unique `GpwLockedKeychain`, or a
- *  reference by ID to a `GpwUnlockedKeychain` in the `GpwRepo`.
- */
-export type GpwFileKeychain =
-  | { keychain_id: GpwKeychainID }
-  | GpwLockedKeychain;
-
-/**
- * A `GpwFile`'s keychain, which is either a unique `GpwLockedKeychain`, or a
- *  reference by ID to a `GpwUnlockedKeychain` in the `GpwRepo`.
- */
-export type GpwUnlockedFileKeychain =
-  | { keychain_id: GpwKeychainID }
-  | GpwUnlockedKeychain;
-
-/**
  * The raw encrypted file within a `GpwRepo`.
  */
 export type GpwFile = {
-  /**
-   * Past and current keychains for the `GpwFile`, ordered newest to oldest,
-   *  with each key's `data` encrypted using the current keychain.
-   */
-  locked_keychains: GpwFileKeychain[];
   created_at: DateString;
   updated_at: DateString;
   /**
    * The encrypted contents of the file, optionally broken up into "blocks".
    */
   content: GpwEncryptedString[];
-  /**
-   * Namespaced application-specific data. Avoid using if possible.
-   */
-  extra?: Record<string, unknown>;
-  type: 'Doc' | 'Bin';
   id: GpwFileID;
 };
 
-export type GpwFileMap = Record<string, string>;
+/**
+ * Map a file ID to its plaintext file path relative to repo's root.
+ */
+export type GpwFileMap = Record<GpwFileID, string>;
