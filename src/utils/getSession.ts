@@ -1,6 +1,6 @@
 import { GpwUnlockedKeychain, GpwRepoManifest } from '../types';
 import { createInterface } from 'readline';
-import { getGitPwPath } from './getGitPwPath';
+import { getGpwPath } from './getGpwPath';
 import { TrPBKDF2 } from './TrPBKDF2';
 import { readJSON } from 'fs-extra';
 
@@ -10,9 +10,7 @@ type Session = GpwRepoManifest & {
 
 export async function getSession(): Promise<Session> {
   // Get manifest
-  const manifest: GpwRepoManifest = await readJSON(
-    getGitPwPath('manifest.json'),
-  );
+  const manifest: GpwRepoManifest = await readJSON(getGpwPath('manifest.json'));
 
   // Prompt user for repo's passwords
   const passwords: string[] = [];
@@ -30,7 +28,7 @@ export async function getSession(): Promise<Session> {
   }
   cli.close();
 
-  // Derive key from password
+  // Derive keys from passwords
   const passkeys = await Promise.all(
     manifest.key_stretchers.map((stretcher, i) =>
       TrPBKDF2.deriveKey(passwords[i], stretcher.salt, stretcher.iterations),
