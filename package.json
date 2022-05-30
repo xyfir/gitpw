@@ -1,6 +1,7 @@
 {
   "main": "build/index.js",
   "scripts": {
+    "watch-build": "npm run build -- -w",
     "eslint": "eslint . --ext .ts,.json --max-warnings 0",
     "build": "tsc --project tsconfig.json",
     "cli": "node build/index.js"
