@@ -17,7 +17,7 @@ export async function initializeCommand(): Promise<void> {
     input: process.stdin,
   });
   const password = await new Promise<string>((resolve) => {
-    cli.question('Create password:', resolve);
+    cli.question('Create password:\n', resolve);
   });
   cli.close();
 
@@ -52,6 +52,8 @@ export async function initializeCommand(): Promise<void> {
   manifest.locked_keychains.push(keychain);
 
   // Write files
-  await writeJSON(getGpwPath('manifest.json'), manifest);
-  await writeJSON(getGpwPath('map.json'), {});
+  await writeJSON(getGpwPath('manifest.json'), manifest, { spaces: 2 });
+  await writeJSON(getGpwPath('map.json'), {}, { spaces: 2 });
+
+  console.log('Initialized gitpw repo');
 }
