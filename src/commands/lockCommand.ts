@@ -64,7 +64,7 @@ export async function lockCommand(): Promise<void> {
           content: [encrypted],
           id,
         };
-        await writeJSON(gpwFilepath, file);
+        await writeJSON(gpwFilepath, file, { spaces: 2 });
 
         // Save relative path in newMap
         if (oldMap[id]) {
@@ -94,5 +94,5 @@ export async function lockCommand(): Promise<void> {
   }
 
   // Write new file map
-  await writeJSON(getGpwPath('map.json'), newMap);
+  await writeJSON(getGpwPath('map.json'), newMap, { spaces: 2 });
 }
