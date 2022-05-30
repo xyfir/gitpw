@@ -4,8 +4,9 @@ import { lockCommand } from './commands/lockCommand';
 
 (async () => {
   try {
-    switch (process.argv[2] as 'initialize' | 'unlock' | 'lock') {
+    switch (process.argv[2] as 'initialize' | 'unlock' | 'lock' | 'init') {
       case 'initialize':
+      case 'init':
         await initializeCommand();
         break;
       case 'unlock':
