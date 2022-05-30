@@ -1,9 +1,13 @@
+import { initializeCommand } from './commands/initializeCommand';
 import { unlockCommand } from './commands/unlockCommand';
 import { lockCommand } from './commands/lockCommand';
 
 (async () => {
   try {
-    switch (process.argv[2] as 'unlock' | 'lock') {
+    switch (process.argv[2] as 'initialize' | 'unlock' | 'lock') {
+      case 'initialize':
+        await initializeCommand();
+        break;
       case 'unlock':
         await unlockCommand();
         break;
