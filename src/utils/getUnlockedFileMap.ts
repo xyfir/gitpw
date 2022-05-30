@@ -1,6 +1,6 @@
 import { GpwUnlockedKeychain, GpwFileMap } from '../types';
 import { getGpwPath } from './getGpwPath';
-import { TrCrypto } from './TrCrypto';
+import { GpwCrypto } from './GpwCrypto';
 import { readJSON } from 'fs-extra';
 
 /**
@@ -15,7 +15,7 @@ export async function getUnlockedFileMap(
 
   // Decrypt filepaths
   for (const [id, filepath] of Object.entries(map)) {
-    map[id] = await TrCrypto.decrypt(filepath, unlockedKeychain);
+    map[id] = await GpwCrypto.decrypt(filepath, unlockedKeychain);
   }
 
   return map;

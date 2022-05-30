@@ -1,11 +1,11 @@
 import { convertBufferToArrayBuffer } from './convertBufferToArrayBuffer';
-import { HexString } from '../types';
+import { GpwHexString } from '../types';
 import { crypto } from './crypto';
 
 /**
  * Derive key from a user-supplied password using PBKDF2
  */
-export class TrPBKDF2 {
+export class GpwPBKDF2 {
   /**
    * Randomly generate iterations count for PBKDF2
    *
@@ -19,7 +19,7 @@ export class TrPBKDF2 {
   /**
    * Generate a random 16-byte salt as a hexstring
    */
-  public static generateSalt(): HexString {
+  public static generateSalt(): GpwHexString {
     const salt = crypto.getRandomValues(new Uint8Array(16));
     return Buffer.from(salt).toString('hex');
   }
@@ -29,9 +29,9 @@ export class TrPBKDF2 {
    */
   public static async deriveKey(
     pass: string,
-    salt: HexString,
+    salt: GpwHexString,
     itr: number,
-  ): Promise<HexString> {
+  ): Promise<GpwHexString> {
     const saltBuffer = convertBufferToArrayBuffer(Buffer.from(salt, 'hex'));
     const passBuffer = new TextEncoder().encode(pass);
 

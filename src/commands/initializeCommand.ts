@@ -2,8 +2,8 @@ import { GpwRepoManifest, GpwKeychain } from '../types';
 import { writeJSON, mkdir } from 'fs-extra';
 import { createInterface } from 'readline';
 import { getGpwPath } from '../utils/getGpwPath';
-import { TrPBKDF2 } from '../utils/TrPBKDF2';
-import { TrCrypto } from '../utils/TrCrypto';
+import { GpwPBKDF2 } from '../utils/GpwPBKDF2';
+import { GpwCrypto } from '../utils/GpwCrypto';
 import { nanoid } from 'nanoid';
 
 export async function initializeCommand(): Promise<void> {
@@ -26,9 +26,9 @@ export async function initializeCommand(): Promise<void> {
     locked_keychains: [],
     key_stretchers: [
       {
-        iterations: TrPBKDF2.generateIterations(),
+        iterations: GpwPBKDF2.generateIterations(),
         type: 'PBKDF2-SHA-512',
-        salt: TrPBKDF2.generateSalt(),
+        salt: GpwPBKDF2.generateSalt(),
         id: nanoid(),
       },
     ],
@@ -36,7 +36,7 @@ export async function initializeCommand(): Promise<void> {
   };
 
   // Derive key from password
-  const passkey = await TrPBKDF2.deriveKey(
+  const passkey = await GpwPBKDF2.deriveKey(
     password,
     manifest.key_stretchers[0].salt,
     manifest.key_stretchers[0].iterations,
@@ -48,7 +48,7 @@ export async function initializeCommand(): Promise<void> {
     keys: [{ data: passkey, type: 'AES-256-GCM' }],
     id: nanoid(),
   };
-  keychain.keys[0].data = await TrCrypto.encrypt(passkey, keychain);
+  keychain.keys[0].data = await GpwCrypto.encrypt(passkey, keychain);
   manifest.locked_keychains.push(keychain);
 
   // Write files

@@ -1,18 +1,18 @@
+import { GpwEncryptedString, GpwHexString } from '../types';
 import { convertBufferToArrayBuffer } from './convertBufferToArrayBuffer';
-import { EncryptedString, HexString } from '../types';
 import { crypto } from './crypto';
 
 /**
  * AES-256 GCM utility based on web crypto
  */
-export class TrAES {
+export class GpwAES {
   /**
    * Encrypts plaintext using AES-256 GCM
    */
   public static async encrypt(
     plaintext: string,
-    keyHex: HexString,
-  ): Promise<EncryptedString> {
+    keyHex: GpwHexString,
+  ): Promise<GpwEncryptedString> {
     // Generate a random IV and set our algo config
     const iv = crypto.getRandomValues(new Uint8Array(12));
     const alg = { name: 'AES-GCM', iv };
@@ -46,8 +46,8 @@ export class TrAES {
    * Decrypts AES-256 GCM ciphertext
    */
   public static async decrypt(
-    ciphertext: EncryptedString,
-    keyHex: HexString,
+    ciphertext: GpwEncryptedString,
+    keyHex: GpwHexString,
   ): Promise<string> {
     // Extract IV from ciphertext
     const iv = convertBufferToArrayBuffer(

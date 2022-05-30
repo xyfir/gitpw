@@ -2,7 +2,7 @@ import { GpwFileMap, GpwFile } from '../types';
 import { getUnlockedFileMap } from '../utils/getUnlockedFileMap';
 import { getGpwPath } from '../utils/getGpwPath';
 import { getSession } from '../utils/getSession';
-import { TrCrypto } from '../utils/TrCrypto';
+import { GpwCrypto } from '../utils/GpwCrypto';
 import { getPath } from '../utils/getPath';
 import { nanoid } from 'nanoid';
 import {
@@ -54,7 +54,7 @@ export async function lockCommand(): Promise<void> {
 
         // Encrypt file
         const plaintext = await readFile(filepath, 'utf8');
-        const encrypted = await TrCrypto.encrypt(
+        const encrypted = await GpwCrypto.encrypt(
           plaintext,
           session.unlocked_keychain,
         );
@@ -70,7 +70,7 @@ export async function lockCommand(): Promise<void> {
         if (oldMap[id]) {
           newMap[id] = oldMap[id];
         } else {
-          newMap[id] = await TrCrypto.encrypt(
+          newMap[id] = await GpwCrypto.encrypt(
             filepath.replace(rootDir, ''),
             session.unlocked_keychain,
           );

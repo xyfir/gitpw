@@ -1,13 +1,10 @@
 import { GpwUnlockedKeychain, GpwEncryptedString } from '../types';
-import { TrAES } from './TrAES';
+import { GpwAES } from './GpwAES';
 
 /**
- * A high-level wrapper for encrypting and decrypting data using Tiperite's
- *  `EncryptionKey` arrays.
- *
- * @see EncryptionKey
+ * A high-level wrapper for encrypting and decrypting data using keychains.
  */
-export class TrCrypto {
+export class GpwCrypto {
   /**
    * Encrypts plaintext with provided keychain
    */
@@ -20,7 +17,7 @@ export class TrCrypto {
     for (const key of keychain.keys) {
       if (key.type != 'AES-256-GCM') throw Error('Invalid encryption type');
 
-      temp = await TrAES.encrypt(temp, key.data);
+      temp = await GpwAES.encrypt(temp, key.data);
     }
 
     return temp;
@@ -39,7 +36,7 @@ export class TrCrypto {
     for (const key of keys) {
       if (key.type != 'AES-256-GCM') throw Error('Invalid encryption type');
 
-      temp = await TrAES.decrypt(temp, key.data);
+      temp = await GpwAES.decrypt(temp, key.data);
     }
 
     return temp;

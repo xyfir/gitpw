@@ -3,7 +3,7 @@ import { writeFile, readJSON } from 'fs-extra';
 import { getUnlockedFileMap } from '../utils/getUnlockedFileMap';
 import { getGpwPath } from '../utils/getGpwPath';
 import { getSession } from '../utils/getSession';
-import { TrCrypto } from '../utils/TrCrypto';
+import { GpwCrypto } from '../utils/GpwCrypto';
 import { getPath } from '../utils/getPath';
 
 export async function unlockCommand(): Promise<void> {
@@ -18,7 +18,7 @@ export async function unlockCommand(): Promise<void> {
     // Read encrypted file and decrypt its content
     const file: GpwFile = await readJSON(getGpwPath(`files/${id}.json`));
     const content = await Promise.all(
-      file.content.map((c) => TrCrypto.decrypt(c, session.unlocked_keychain)),
+      file.content.map((c) => GpwCrypto.decrypt(c, session.unlocked_keychain)),
     ).then((c) => c.join(''));
 
     // Write decrypted file
