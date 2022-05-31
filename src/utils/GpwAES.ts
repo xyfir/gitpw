@@ -1,5 +1,4 @@
 import { GpwEncryptedString, GpwHexString } from '../types';
-import { convertBufferToArrayBuffer } from './convertBufferToArrayBuffer';
 import { crypto } from './crypto';
 
 /**
@@ -20,7 +19,7 @@ export class GpwAES {
     // Convert the key's hex string into a CryptoKey
     const cryptoKey = await crypto.subtle.importKey(
       'raw',
-      convertBufferToArrayBuffer(Buffer.from(keyHex, 'hex')),
+      Buffer.from(keyHex, 'hex'),
       alg,
       false,
       ['encrypt'],
@@ -50,15 +49,13 @@ export class GpwAES {
     keyHex: GpwHexString,
   ): Promise<string> {
     // Extract IV from ciphertext
-    const iv = convertBufferToArrayBuffer(
-      Buffer.from(ciphertext.slice(0, 24), 'hex'),
-    );
+    const iv = Buffer.from(ciphertext.slice(0, 24), 'hex');
     const alg = { name: 'AES-GCM', iv };
 
     // Convert the key's hex string into a CryptoKey
     const cryptoKey = await crypto.subtle.importKey(
       'raw',
-      convertBufferToArrayBuffer(Buffer.from(keyHex, 'hex')),
+      Buffer.from(keyHex, 'hex'),
       alg,
       false,
       ['decrypt'],

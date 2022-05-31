@@ -1,4 +1,3 @@
-import { convertBufferToArrayBuffer } from './convertBufferToArrayBuffer';
 import { GpwHexString } from '../types';
 import { crypto } from './crypto';
 
@@ -32,7 +31,7 @@ export class GpwPBKDF2 {
     salt: GpwHexString,
     itr: number,
   ): Promise<GpwHexString> {
-    const saltBuffer = convertBufferToArrayBuffer(Buffer.from(salt, 'hex'));
+    const saltBuffer = Buffer.from(salt, 'hex');
     const passBuffer = new TextEncoder().encode(pass);
 
     const key = await crypto.subtle.importKey(
