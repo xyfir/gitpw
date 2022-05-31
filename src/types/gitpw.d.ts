@@ -6,11 +6,9 @@
 export type GpwDateString = string;
 
 /**
- * A hexadecimal string
- *
- * @example "48656c6c6f20576f726c64203a29"
+ * A base64-encoded string
  */
-export type GpwHexString = string;
+export type GpwBase64String = string;
 
 /**
  * A unique string. UUIDv4 or Nano ID recommended.
@@ -102,7 +100,7 @@ export type GpwKeyStretcherType = 'PBKDF2-SHA-512';
 export type GpwKeyStretcher = {
   iterations: number;
   type: GpwKeyStretcherType;
-  salt: GpwHexString;
+  salt: GpwBase64String;
   id: string;
 };
 

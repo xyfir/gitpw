@@ -1,4 +1,4 @@
-import { GpwEncryptedString, GpwHexString } from '../types';
+import { GpwEncryptedString, GpwBase64String } from '../types';
 import { crypto } from './crypto';
 
 /**
@@ -10,16 +10,16 @@ export class GpwAES {
    */
   public static async encrypt(
     plaintext: string,
-    keyHex: GpwHexString,
+    b64Key: GpwBase64String,
   ): Promise<GpwEncryptedString> {
     // Generate a random IV and set our algo config
     const iv = crypto.getRandomValues(new Uint8Array(12));
     const alg = { name: 'AES-GCM', iv };
 
-    // Convert the key's hex string into a CryptoKey
+    // Convert the key's base64 string into a CryptoKey
     const cryptoKey = await crypto.subtle.importKey(
       'raw',
-      Buffer.from(keyHex, 'hex'),
+      Buffer.from(b64Key, 'base64'),
       alg,
       false,
       ['encrypt'],
@@ -35,10 +35,10 @@ export class GpwAES {
     // Convert ciphertext to a base64 string
     const ctBase64 = Buffer.from(ciphertextBuffer).toString('base64');
 
-    // Convert IV to a hex string
-    const ivHex = Buffer.from(iv).toString('hex');
+    // Convert IV to a base64 string
+    const b64IV = Buffer.from(iv).toString('base64');
 
-    return ivHex + ctBase64;
+    return `${b64IV} ${ctBase64}`;
   }
 
   /**
@@ -46,16 +46,16 @@ export class GpwAES {
    */
   public static async decrypt(
     ciphertext: GpwEncryptedString,
-    keyHex: GpwHexString,
+    b64Key: GpwBase64String,
   ): Promise<string> {
     // Extract IV from ciphertext
-    const iv = Buffer.from(ciphertext.slice(0, 24), 'hex');
+    const iv = Buffer.from(ciphertext.split(' ')[0], 'base64');
     const alg = { name: 'AES-GCM', iv };
 
-    // Convert the key's hex string into a CryptoKey
+    // Convert the key's base64 string into a CryptoKey
     const cryptoKey = await crypto.subtle.importKey(
       'raw',
-      Buffer.from(keyHex, 'hex'),
+      Buffer.from(b64Key, 'base64'),
       alg,
       false,
       ['decrypt'],
@@ -66,9 +66,9 @@ export class GpwAES {
       alg,
       cryptoKey,
       new Uint8Array(
-        (atob(ciphertext.slice(24)).match(/[\s\S]/g) as RegExpMatchArray).map(
-          (ch) => ch.charCodeAt(0),
-        ),
+        (
+          atob(ciphertext.split(' ')[1]).match(/[\s\S]/g) as RegExpMatchArray
+        ).map((ch) => ch.charCodeAt(0)),
       ),
     );
 

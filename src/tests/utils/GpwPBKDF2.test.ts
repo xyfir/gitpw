@@ -5,7 +5,7 @@ test('GpwPBKDF2.generateIterations()', () => {
 });
 
 test('GpwPBKDF2.generateSalt()', () => {
-  expect(GpwPBKDF2.generateSalt()).toHaveLength(32);
+  expect(GpwPBKDF2.generateSalt()).toHaveLength(24);
 });
 
 test('GpwPBKDF2.deriveKey(pass, salt, itr)', async () => {
@@ -14,7 +14,7 @@ test('GpwPBKDF2.deriveKey(pass, salt, itr)', async () => {
   const itr = GpwPBKDF2.generateIterations();
   const key = await GpwPBKDF2.deriveKey(pass, salt, itr);
 
-  expect(/^[a-f0-9]{64}$/.test(key)).toBe(true);
+  expect(/^[-A-Za-z0-9+/=]{44}$/.test(key)).toBe(true);
 
   const sameKey = await GpwPBKDF2.deriveKey(pass, salt, itr);
   expect(key).toBe(sameKey);

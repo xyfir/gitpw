@@ -1,4 +1,4 @@
-import { GpwHexString } from '../types';
+import { GpwBase64String } from '../types';
 import { crypto } from './crypto';
 
 /**
@@ -16,11 +16,11 @@ export class GpwPBKDF2 {
   }
 
   /**
-   * Generate a random 16-byte salt as a hexstring
+   * Generate a random 16-byte salt as base64
    */
-  public static generateSalt(): GpwHexString {
+  public static generateSalt(): GpwBase64String {
     const salt = crypto.getRandomValues(new Uint8Array(16));
-    return Buffer.from(salt).toString('hex');
+    return Buffer.from(salt).toString('base64');
   }
 
   /**
@@ -28,10 +28,10 @@ export class GpwPBKDF2 {
    */
   public static async deriveKey(
     pass: string,
-    salt: GpwHexString,
+    salt: GpwBase64String,
     itr: number,
-  ): Promise<GpwHexString> {
-    const saltBuffer = Buffer.from(salt, 'hex');
+  ): Promise<GpwBase64String> {
+    const saltBuffer = Buffer.from(salt, 'base64');
     const passBuffer = new TextEncoder().encode(pass);
 
     const key = await crypto.subtle.importKey(
@@ -59,6 +59,6 @@ export class GpwPBKDF2 {
     );
 
     const keyBuffer = await crypto.subtle.exportKey('raw', derivedKey);
-    return Buffer.from(keyBuffer).toString('hex');
+    return Buffer.from(keyBuffer).toString('base64');
   }
 }
