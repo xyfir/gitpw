@@ -1,7 +1,6 @@
 import { GpwKeychain } from '../../types';
 import { GpwPBKDF2 } from '../../utils/GpwPBKDF2';
 import { GpwCrypto } from '../../utils/GpwCrypto';
-import { nanoid } from 'nanoid';
 
 test('GpwCrypto', async () => {
   const plaintext = 'Hello, World!';
@@ -18,7 +17,6 @@ test('GpwCrypto', async () => {
         data: passkey,
       },
     ],
-    id: nanoid(),
   };
 
   const ciphertext = await GpwCrypto.encrypt(plaintext, keychain);

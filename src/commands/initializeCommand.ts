@@ -6,7 +6,6 @@ import { GpwPBKDF2 } from '../utils/GpwPBKDF2';
 import { GpwCrypto } from '../utils/GpwCrypto';
 import { promisify } from 'util';
 import { getPath } from '../utils/getPath';
-import { nanoid } from 'nanoid';
 import { exec } from 'child_process';
 
 const execp = promisify(exec);
@@ -41,7 +40,6 @@ export async function initializeCommand(): Promise<void> {
         iterations: GpwPBKDF2.generateIterations(),
         type: 'PBKDF2-SHA-512',
         salt: GpwPBKDF2.generateSalt(),
-        id: nanoid(),
       },
     ],
     version: 'com.xyfir.gitpw/1.0.0',
@@ -58,7 +56,6 @@ export async function initializeCommand(): Promise<void> {
   const keychain: GpwKeychain = {
     created_at: new Date().toISOString(),
     keys: [{ data: passkey, type: 'AES-256-GCM' }],
-    id: nanoid(),
   };
   keychain.keys[0].data = await GpwCrypto.encrypt(passkey, keychain);
   manifest.locked_keychains.push(keychain);

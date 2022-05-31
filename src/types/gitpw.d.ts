@@ -16,16 +16,6 @@ export type GpwBase64String = string;
 export type GpwID = string;
 
 /**
- * A unique ID string for a `GpwRepo`.
- */
-export type GpwRepoID = GpwID;
-
-/**
- * A unique ID string for a `GpwKeychain`.
- */
-export type GpwKeychainID = GpwID;
-
-/**
  * Unique identifier for a specific mode of encryption
  */
 export type GpwKeyType = 'AES-256-GCM';
@@ -54,7 +44,6 @@ export type GpwKeychain = {
    * For encryption, use in order. For decryption, reverse order.
    */
   keys: GpwKey[];
-  id: GpwKeychainID;
 };
 
 /**
@@ -84,11 +73,6 @@ export type GpwUnlockedKeychain = GpwKeychain;
 export type GpwRepoVersion = 'com.xyfir.gitpw/1.0.0';
 
 /**
- * A unique ID string for a `GpwKeyStretcher`.
- */
-export type GpwKeyStretcherID = GpwID;
-
-/**
  * A key stretching method.
  */
 export type GpwKeyStretcherType = 'PBKDF2-SHA-512';
@@ -101,7 +85,6 @@ export type GpwKeyStretcher = {
   iterations: number;
   type: GpwKeyStretcherType;
   salt: GpwBase64String;
-  id: string;
 };
 
 /**
