@@ -1,5 +1,5 @@
 import { GpwRepoManifest, GpwKeychain } from '../types';
-import { writeJSON, mkdir } from 'fs-extra';
+import { writeJSON, mkdir, readdir } from 'fs-extra';
 import { createInterface } from 'readline';
 import { getGpwPath } from '../utils/getGpwPath';
 import { GpwPBKDF2 } from '../utils/GpwPBKDF2';
@@ -7,6 +7,10 @@ import { GpwCrypto } from '../utils/GpwCrypto';
 import { nanoid } from 'nanoid';
 
 export async function initializeCommand(): Promise<void> {
+  // Check that the directory is empty
+  const entries = await readdir(getGpwPath(''));
+  if (entries.length) throw Error('Directory is not empty');
+
   // Create .gitpw directories
   await mkdir(getGpwPath(''));
   await mkdir(getGpwPath('files'));
