@@ -1,15 +1,16 @@
 import { GpwRepoManifest, GpwKeychain } from '../types';
-import { writeJSON, mkdir, readdir } from 'fs-extra';
+import { writeJSON, mkdir, readdir, writeFile } from 'fs-extra';
 import { createInterface } from 'readline';
 import { getGpwPath } from '../utils/getGpwPath';
 import { GpwPBKDF2 } from '../utils/GpwPBKDF2';
 import { GpwCrypto } from '../utils/GpwCrypto';
+import { getPath } from '../utils/getPath';
 import { nanoid } from 'nanoid';
 
 export async function initializeCommand(): Promise<void> {
   // Check that the directory is empty
-  const entries = await readdir(getGpwPath(''));
-  if (entries.length) throw Error('Directory is not empty');
+  const entries = await readdir(getPath(''));
+  if (entries.some((e) => e != '.git')) throw Error('Directory is not empty');
 
   // Create .gitpw directories
   await mkdir(getGpwPath(''));
@@ -58,6 +59,10 @@ export async function initializeCommand(): Promise<void> {
   // Write files
   await writeJSON(getGpwPath('manifest.json'), manifest, { spaces: 2 });
   await writeJSON(getGpwPath('map.json'), {}, { spaces: 2 });
+  await writeFile(
+    getPath('.gitignore'),
+    ['/*', '!/.gitignore', '!/.gitpw/'].join('\n'),
+  );
 
   console.log('Initialized gitpw repo');
 }
