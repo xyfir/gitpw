@@ -1,11 +1,15 @@
+import { writeJSON, writeFile, readdir, mkdir } from 'fs-extra';
 import { GpwRepoManifest, GpwKeychain } from '../types';
-import { writeJSON, mkdir, readdir, writeFile } from 'fs-extra';
 import { createInterface } from 'readline';
 import { getGpwPath } from '../utils/getGpwPath';
 import { GpwPBKDF2 } from '../utils/GpwPBKDF2';
 import { GpwCrypto } from '../utils/GpwCrypto';
+import { promisify } from 'util';
 import { getPath } from '../utils/getPath';
 import { nanoid } from 'nanoid';
+import { exec } from 'child_process';
+
+const execp = promisify(exec);
 
 export async function initializeCommand(): Promise<void> {
   // Check that the directory is empty
@@ -15,6 +19,9 @@ export async function initializeCommand(): Promise<void> {
   // Create .gitpw directories
   await mkdir(getGpwPath(''));
   await mkdir(getGpwPath('files'));
+
+  // Run `git init` command
+  await execp('git init');
 
   // Prompt for password
   const cli = createInterface({
