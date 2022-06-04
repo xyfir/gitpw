@@ -48,8 +48,10 @@ export class GpwAES {
     ciphertext: GpwEncryptedString,
     b64Key: GpwBase64String,
   ): Promise<string> {
+    const [b64IV, b64ciphertext] = ciphertext.split(' ');
+
     // Extract IV from ciphertext
-    const iv = Buffer.from(ciphertext.split(' ')[0], 'base64');
+    const iv = Buffer.from(b64IV, 'base64');
     const alg = { name: 'AES-GCM', iv };
 
     // Convert the key's base64 string into a CryptoKey
@@ -65,11 +67,7 @@ export class GpwAES {
     const plainBuffer = await crypto.subtle.decrypt(
       alg,
       cryptoKey,
-      new Uint8Array(
-        (
-          atob(ciphertext.split(' ')[1]).match(/[\s\S]/g) as RegExpMatchArray
-        ).map((ch) => ch.charCodeAt(0)),
-      ),
+      Buffer.from(b64ciphertext, 'base64'),
     );
 
     // Convert and return decrypted binary to text
