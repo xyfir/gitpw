@@ -11,14 +11,14 @@ export type GpwDateString = string;
 export type GpwBase64String = string;
 
 /**
- * A unique string. UUIDv4 or Nano ID recommended.
+ * A unique identifier string
  */
 export type GpwID = string;
 
 /**
  * Unique identifier for a specific mode of encryption
  */
-export type GpwKeyType = 'AES-256-GCM';
+export type GpwKeyType = 'XChaCha20-Poly1305' | 'AES-256-GCM';
 
 /**
  * A key within a keychain
