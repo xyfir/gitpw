@@ -1,12 +1,18 @@
 import { writeJSON, writeFile, readdir, mkdir } from 'fs-extra';
-import { GpwRepoManifest, GpwKeychain } from '../types';
-import { createInterface } from 'readline';
 import { getGpwPath } from '../utils/getGpwPath';
 import { GpwPBKDF2 } from '../utils/GpwPBKDF2';
 import { GpwCrypto } from '../utils/GpwCrypto';
 import { promisify } from 'util';
 import { getPath } from '../utils/getPath';
 import { exec } from 'child_process';
+import inquirer from 'inquirer';
+import {
+  GpwUnlockedKeychain,
+  GpwLockedKeychain,
+  GpwRepoManifest,
+  GpwKeyType,
+  GpwKey,
+} from '../types';
 
 const execp = promisify(exec);
 
@@ -22,43 +28,79 @@ export async function initializeCommand(): Promise<void> {
   // Run `git init` command
   await execp('git init');
 
-  // Prompt for password
-  const cli = createInterface({
-    output: process.stdout,
-    input: process.stdin,
-  });
-  const password = await new Promise<string>((resolve) => {
-    cli.question('Create password:\n', resolve);
-  });
-  cli.close();
+  // Ask the user how many keys they want to encrypt their repo with
+  const { keyCount } = await inquirer.prompt<{ keyCount: number }>([
+    {
+      message: '# of keys to encrypt with',
+      default: 1,
+      name: 'keyCount',
+      type: 'number',
+    },
+  ]);
+
+  // Prompt for key types and their corresponding passwords
+  const questions: inquirer.Question[] = [];
+  for (let i = 0; i < keyCount; i++) {
+    questions.push({
+      message: `Type of key #${i + 1}`,
+      choices: ['XChaCha20-Poly1305', 'AES-256-GCM'] as GpwKeyType[],
+      default: (i == 0 ? 'AES-256-GCM' : 'XChaCha20-Poly1305') as GpwKeyType,
+      name: `keyType${i}`,
+      type: 'list',
+    } as inquirer.ListQuestion);
+    questions.push({
+      message: `Password for key #${i + 1}`,
+      choices: ['XChaCha20-Poly1305', 'AES-256-GCM'] as GpwKeyType[],
+      default: (i == 0 ? 'AES-256-GCM' : 'XChaCha20-Poly1305') as GpwKeyType,
+      name: `keyPass${i}`,
+      type: 'password',
+    } as inquirer.PasswordQuestion);
+  }
+  const answers = await inquirer.prompt(questions);
 
   // Create repo manifest
   const manifest: GpwRepoManifest = {
     locked_keychains: [],
-    key_stretchers: [
-      {
+    key_stretchers: Array(keyCount)
+      .fill(0)
+      .map(() => ({
         iterations: GpwPBKDF2.generateIterations(),
         type: 'PBKDF2-SHA-512',
         salt: GpwPBKDF2.generateSalt(),
-      },
-    ],
+      })),
     version: 'com.xyfir.gitpw/1.0.0',
   };
 
-  // Derive key from password
-  const passkey = await GpwPBKDF2.deriveKey(
-    password,
-    manifest.key_stretchers[0].salt,
-    manifest.key_stretchers[0].iterations,
+  // Derive keys from passwords
+  const passkeys = await Promise.all(
+    manifest.key_stretchers.map((stretcher, i) =>
+      GpwPBKDF2.deriveKey(
+        answers[`keyPass${i}`] as string,
+        stretcher.salt,
+        stretcher.iterations,
+      ),
+    ),
   );
 
-  // Create locked keychain
-  const keychain: GpwKeychain = {
+  // Create un/locked keychains
+  const keychain: GpwUnlockedKeychain = {
     created_at: new Date().toISOString(),
-    keys: [{ data: passkey, type: 'AES-256-GCM' }],
+    keys: Array(keyCount)
+      .fill(0)
+      .map(
+        (_, i): GpwKey => ({
+          type: answers[`keyType${i}`] as GpwKeyType,
+          data: passkeys[i],
+        }),
+      ),
   };
-  keychain.keys[0].data = await GpwCrypto.encrypt(passkey, keychain);
-  manifest.locked_keychains.push(keychain);
+  const lockedKeychain = JSON.parse(
+    JSON.stringify(keychain),
+  ) as GpwLockedKeychain;
+  for (const key of lockedKeychain.keys) {
+    key.data = await GpwCrypto.encrypt(key.data, keychain);
+  }
+  manifest.locked_keychains.push(lockedKeychain);
 
   // Write files
   await writeJSON(getGpwPath('manifest.json'), manifest, { spaces: 2 });
