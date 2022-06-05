@@ -32,7 +32,7 @@ export class GpwPBKDF2 {
     itr: number,
   ): Promise<GpwBase64String> {
     const saltBuffer = Buffer.from(salt, 'base64');
-    const passBuffer = new TextEncoder().encode(pass);
+    const passBuffer = Buffer.from(pass, 'utf-8');
 
     const key = await crypto.subtle.importKey(
       'raw',

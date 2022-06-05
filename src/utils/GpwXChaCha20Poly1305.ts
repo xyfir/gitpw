@@ -18,7 +18,7 @@ export class GpwXChaCha20Poly1305 {
     const nonce = crypto.getRandomValues(new Uint8Array(24));
 
     const xcha = new XChaCha20Poly1305(Buffer.from(b64Key, 'base64'));
-    const sealed = xcha.seal(nonce, new TextEncoder().encode(plaintext));
+    const sealed = xcha.seal(nonce, Buffer.from(plaintext, 'utf-8'));
 
     const ctBase64 = Buffer.from(sealed).toString('base64');
     const b64Nonce = Buffer.from(nonce).toString('base64');

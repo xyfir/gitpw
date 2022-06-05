@@ -29,7 +29,7 @@ export class GpwAES {
     const ciphertextBuffer = await crypto.subtle.encrypt(
       alg,
       cryptoKey,
-      new TextEncoder().encode(plaintext),
+      Buffer.from(plaintext, 'utf-8'),
     );
 
     // Convert ciphertext to a base64 string
