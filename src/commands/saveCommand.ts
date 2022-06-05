@@ -14,6 +14,8 @@ import {
   remove,
 } from 'fs-extra';
 
+const ignore = ['.gitignore', '.gitpw', '.git'];
+
 export async function saveCommand(): Promise<void> {
   // Get session
   const session = await getSession();
@@ -82,7 +84,7 @@ export async function saveCommand(): Promise<void> {
   // Recursively encrypt each file to copy to .gitpw and build newMap
   await encryptDir(
     rootDir,
-    entries.filter((e) => e.name != '.gitpw'),
+    entries.filter((e) => !ignore.includes(e.name)),
   );
 
   // Delete files in oldMap that aren't in newMap
