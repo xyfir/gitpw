@@ -58,6 +58,16 @@ export async function initializeCommand(): Promise<void> {
   }
   const answers = await inquirer.prompt(questions);
 
+  // Ask if we should configure the repo for VS Code
+  const { vsCode } = await inquirer.prompt<{ vsCode: boolean }>([
+    {
+      message: 'Configure for VS Code?',
+      default: false,
+      type: 'confirm',
+      name: 'vsCode',
+    },
+  ]);
+
   // Create repo manifest
   const manifest: GpwRepoManifest = {
     locked_keychains: [],
@@ -109,6 +119,24 @@ export async function initializeCommand(): Promise<void> {
     getPath('.gitignore'),
     ['/*', '!/.gitignore', '!/.gitpw/'].join('\n'),
   );
+
+  // Configure for VS Code:
+  // - Only search non-config plaintext ignored by git
+  if (vsCode) {
+    await mkdir(getPath('.vscode'));
+    await writeJSON(
+      getPath('.vscode/settings.json'),
+      {
+        'search.useIgnoreFiles': false,
+        'search.exclude': {
+          '.gitignore': true,
+          '.vscode': true,
+          '.gitpw': true,
+        },
+      },
+      { spaces: 2 },
+    );
+  }
 
   console.log('Initialized gitpw repo');
 }
