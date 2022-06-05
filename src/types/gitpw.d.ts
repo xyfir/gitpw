@@ -70,7 +70,7 @@ export type GpwUnlockedKeychain = GpwKeychain;
 /**
  * A GpwRepo's (`gitpw.json`) configuration file's version.
  */
-export type GpwRepoVersion = 'com.xyfir.gitpw/1.0.0';
+export type GpwRepoVersion = 'com.xyfir.gitpw/0.0.0';
 
 /**
  * A key stretching method.

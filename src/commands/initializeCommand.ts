@@ -68,7 +68,7 @@ export async function initializeCommand(): Promise<void> {
         type: 'PBKDF2-SHA-512',
         salt: GpwPBKDF2.generateSalt(),
       })),
-    version: 'com.xyfir.gitpw/1.0.0',
+    version: 'com.xyfir.gitpw/0.0.0',
   };
 
   // Derive keys from passwords

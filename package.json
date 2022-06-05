@@ -1,5 +1,6 @@
 {
   "main": "build/index.js",
+  "version": "0.0.0",
   "scripts": {
     "watch-build": "npm run build -- -w",
     "coverage": "jest --coverage",
