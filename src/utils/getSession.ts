@@ -19,7 +19,6 @@ export async function getSession(): Promise<Session> {
       .prompt<{ pass: string }>([
         {
           message: `Password for key #${i + 1}`,
-          default: 1,
           type: 'password',
           name: 'pass',
         },
