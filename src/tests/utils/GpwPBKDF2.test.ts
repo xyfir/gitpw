@@ -11,7 +11,7 @@ test('GpwPBKDF2.generateSalt()', () => {
 test('GpwPBKDF2.deriveKey(pass, salt, itr)', async () => {
   const pass = 'password';
   const salt = GpwPBKDF2.generateSalt();
-  const itr = GpwPBKDF2.generateIterations();
+  const itr = GpwPBKDF2.generateIterations(true);
   const key = await GpwPBKDF2.deriveKey(pass, salt, itr);
 
   expect(/^[-A-Za-z0-9+/=]{44}$/.test(key)).toBe(true);

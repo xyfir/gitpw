@@ -6,7 +6,7 @@ test('GpwXChaCha20Poly1305', async () => {
   const passkey = await GpwPBKDF2.deriveKey(
     'password',
     GpwPBKDF2.generateSalt(),
-    GpwPBKDF2.generateIterations(),
+    GpwPBKDF2.generateIterations(true),
   );
   const ciphertext = await GpwXChaCha20Poly1305.encrypt(plaintext, passkey);
   const ciphertext2 = await GpwXChaCha20Poly1305.encrypt(plaintext, passkey);

@@ -11,8 +11,8 @@ export class GpwPBKDF2 {
    * **Min:** 1,000,000\
    * **Max:** 1,099,999
    */
-  public static generateIterations(): number {
-    return 1000000 + Number(Math.random().toString().slice(-5));
+  public static generateIterations(easy = false): number {
+    return (easy ? 0 : 1000000) + Number(Math.random().toString().slice(-5));
   }
 
   /**

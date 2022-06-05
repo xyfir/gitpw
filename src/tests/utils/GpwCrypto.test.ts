@@ -7,7 +7,7 @@ test('GpwCrypto with AES-256-GCM', async () => {
   const passkey = await GpwPBKDF2.deriveKey(
     'password',
     GpwPBKDF2.generateSalt(),
-    GpwPBKDF2.generateIterations(),
+    GpwPBKDF2.generateIterations(true),
   );
   const keychain: GpwKeychain = {
     created_at: new Date().toISOString(),
@@ -33,7 +33,7 @@ test('GpwCrypto with XChaCha20-Poly1305', async () => {
   const passkey = await GpwPBKDF2.deriveKey(
     'password',
     GpwPBKDF2.generateSalt(),
-    GpwPBKDF2.generateIterations(),
+    GpwPBKDF2.generateIterations(true),
   );
   const keychain: GpwKeychain = {
     created_at: new Date().toISOString(),
@@ -59,12 +59,12 @@ test('GpwCrypto with AES-256-GCM => XChaCha20-Poly1305', async () => {
   const aesPasskey = await GpwPBKDF2.deriveKey(
     'password',
     GpwPBKDF2.generateSalt(),
-    GpwPBKDF2.generateIterations(),
+    GpwPBKDF2.generateIterations(true),
   );
   const xchaPasskey = await GpwPBKDF2.deriveKey(
     'password2',
     GpwPBKDF2.generateSalt(),
-    GpwPBKDF2.generateIterations(),
+    GpwPBKDF2.generateIterations(true),
   );
 
   const keychain: GpwKeychain = {
@@ -95,12 +95,12 @@ test('GpwCrypto with XChaCha20-Poly1305 => AES-256-GCM', async () => {
   const aesPasskey = await GpwPBKDF2.deriveKey(
     'password',
     GpwPBKDF2.generateSalt(),
-    GpwPBKDF2.generateIterations(),
+    GpwPBKDF2.generateIterations(true),
   );
   const xchaPasskey = await GpwPBKDF2.deriveKey(
     'password2',
     GpwPBKDF2.generateSalt(),
-    GpwPBKDF2.generateIterations(),
+    GpwPBKDF2.generateIterations(true),
   );
 
   const keychain: GpwKeychain = {
