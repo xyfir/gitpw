@@ -1,8 +1,8 @@
 import { GpwUnlockedKeychain, GpwRepoManifest } from '../types';
-import { createInterface } from 'readline';
 import { getGpwPath } from './getGpwPath';
 import { GpwPBKDF2 } from './GpwPBKDF2';
 import { readJSON } from 'fs-extra';
+import inquirer from 'inquirer';
 
 type Session = GpwRepoManifest & {
   unlocked_keychain: GpwUnlockedKeychain;
@@ -14,19 +14,18 @@ export async function getSession(): Promise<Session> {
 
   // Prompt user for repo's passwords
   const passwords: string[] = [];
-  const cli = createInterface({
-    output: process.stdout,
-    input: process.stdin,
-  });
   for (let i = 0; i < manifest.key_stretchers.length; i++) {
-    await new Promise<void>((resolve) => {
-      cli.question(`Enter password #${i + 1}:\n`, (password) => {
-        passwords.push(password);
-        resolve();
-      });
-    });
+    await inquirer
+      .prompt<{ pass: string }>([
+        {
+          message: `Password for key #${i + 1}`,
+          default: 1,
+          type: 'password',
+          name: 'pass',
+        },
+      ])
+      .then((answers) => passwords.push(answers.pass));
   }
-  cli.close();
 
   // Derive keys from passwords
   const passkeys = await Promise.all(
