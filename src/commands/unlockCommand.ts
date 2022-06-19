@@ -1,10 +1,11 @@
+import { writeFile, readJSON, ensureDir } from 'fs-extra';
 import { GpwFileMap, GpwFile } from '../types';
-import { writeFile, readJSON } from 'fs-extra';
 import { getUnlockedFileMap } from '../utils/getUnlockedFileMap';
 import { getGpwPath } from '../utils/getGpwPath';
 import { getSession } from '../utils/getSession';
 import { GpwCrypto } from '../utils/GpwCrypto';
 import { getPath } from '../utils/getPath';
+import { dirname } from 'path';
 import { utimes } from 'utimes';
 
 export async function unlockCommand(): Promise<void> {
@@ -23,8 +24,10 @@ export async function unlockCommand(): Promise<void> {
     ).then((c) => c.join(''));
 
     // Write decrypted file
-    await writeFile(getPath(map[id]), content);
-    await utimes(getPath(map[id]), {
+    const path = getPath(map[id]);
+    await ensureDir(dirname(path));
+    await writeFile(path, content);
+    await utimes(path, {
       btime: new Date(file.created_at).getTime(),
       mtime: new Date(file.updated_at).getTime(),
     });
