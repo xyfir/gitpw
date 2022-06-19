@@ -4,6 +4,7 @@ import { GpwPBKDF2 } from '../utils/GpwPBKDF2';
 import { GpwCrypto } from '../utils/GpwCrypto';
 import { promisify } from 'util';
 import { getPath } from '../utils/getPath';
+import { nanoid } from 'nanoid';
 import { exec } from 'child_process';
 import inquirer from 'inquirer';
 import {
@@ -94,7 +95,6 @@ export async function initializeCommand(): Promise<void> {
 
   // Create un/locked keychains
   const keychain: GpwUnlockedKeychain = {
-    created_at: new Date().toISOString(),
     keys: Array(keyCount)
       .fill(0)
       .map(
@@ -103,6 +103,7 @@ export async function initializeCommand(): Promise<void> {
           data: passkeys[i],
         }),
       ),
+    id: nanoid(),
   };
   const lockedKeychain = JSON.parse(
     JSON.stringify(keychain),
@@ -117,7 +118,9 @@ export async function initializeCommand(): Promise<void> {
   await writeJSON(getGpwPath('map.json'), {}, { spaces: 2 });
   await writeFile(
     getPath('.gitignore'),
-    ['/*', '!/.gitignore', '!/.gitpw/'].join('\n'),
+    ['/*', '!/.gitignore', vsCode ? '!/.vscode/' : '', '!/.gitpw/']
+      .filter(Boolean)
+      .join('\n'),
   );
 
   // Configure for VS Code:
