@@ -7,7 +7,7 @@ export async function lockCommand(): Promise<void> {
 
   const entries = await readdir(getPath(''), { withFileTypes: true });
   for (const entry of entries) {
-    if (entry.name != '.gitpw' && entry.name != '.gitignore') {
+    if (!entry.name.startsWith('.')) {
       await remove(getPath(entry.name));
     }
   }
