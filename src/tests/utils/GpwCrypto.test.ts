@@ -1,6 +1,7 @@
 import { GpwKeychain } from '../../types';
 import { GpwPBKDF2 } from '../../utils/GpwPBKDF2';
 import { GpwCrypto } from '../../utils/GpwCrypto';
+import { nanoid } from 'nanoid';
 
 test('GpwCrypto with AES-256-GCM', async () => {
   const plaintext = 'Hello, World!';
@@ -10,13 +11,13 @@ test('GpwCrypto with AES-256-GCM', async () => {
     GpwPBKDF2.generateIterations(true),
   );
   const keychain: GpwKeychain = {
-    created_at: new Date().toISOString(),
     keys: [
       {
         type: 'AES-256-GCM',
         data: passkey,
       },
     ],
+    id: nanoid(),
   };
 
   const ciphertext = await GpwCrypto.encrypt(plaintext, keychain);
@@ -36,13 +37,13 @@ test('GpwCrypto with XChaCha20-Poly1305', async () => {
     GpwPBKDF2.generateIterations(true),
   );
   const keychain: GpwKeychain = {
-    created_at: new Date().toISOString(),
     keys: [
       {
         type: 'XChaCha20-Poly1305',
         data: passkey,
       },
     ],
+    id: nanoid(),
   };
 
   const ciphertext = await GpwCrypto.encrypt(plaintext, keychain);
@@ -68,7 +69,6 @@ test('GpwCrypto with AES-256-GCM => XChaCha20-Poly1305', async () => {
   );
 
   const keychain: GpwKeychain = {
-    created_at: new Date().toISOString(),
     keys: [
       {
         type: 'AES-256-GCM',
@@ -79,6 +79,7 @@ test('GpwCrypto with AES-256-GCM => XChaCha20-Poly1305', async () => {
         data: xchaPasskey,
       },
     ],
+    id: nanoid(),
   };
 
   const ciphertext = await GpwCrypto.encrypt(plaintext, keychain);
@@ -104,7 +105,6 @@ test('GpwCrypto with XChaCha20-Poly1305 => AES-256-GCM', async () => {
   );
 
   const keychain: GpwKeychain = {
-    created_at: new Date().toISOString(),
     keys: [
       {
         type: 'XChaCha20-Poly1305',
@@ -115,6 +115,7 @@ test('GpwCrypto with XChaCha20-Poly1305 => AES-256-GCM', async () => {
         data: aesPasskey,
       },
     ],
+    id: nanoid(),
   };
 
   const ciphertext = await GpwCrypto.encrypt(plaintext, keychain);

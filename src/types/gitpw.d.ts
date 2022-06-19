@@ -34,16 +34,21 @@ export type GpwKey = {
 };
 
 /**
+ * A unique ID string for a `GpwKeychain`.
+ */
+export type GpwKeychainID = GpwID;
+
+/**
  * A keychain specifies a set of `GpwKey`s to be used for encryption.
  */
 export type GpwKeychain = {
-  created_at: GpwDateString;
   /**
    * An array of keys to use for encryption/decryption.
    *
    * For encryption, use in order. For decryption, reverse order.
    */
   keys: GpwKey[];
+  id: GpwKeychainID;
 };
 
 /**
@@ -119,6 +124,10 @@ export type GpwFileID = GpwID;
  * The raw encrypted file within a `GpwRepo`.
  */
 export type GpwFile = {
+  /**
+   * The ID of the keychain that encrypted this version of the file.
+   */
+  keychain_id: GpwKeychainID;
   created_at: GpwDateString;
   updated_at: GpwDateString;
   /**
