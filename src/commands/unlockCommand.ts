@@ -5,6 +5,7 @@ import { getGpwPath } from '../utils/getGpwPath';
 import { getSession } from '../utils/getSession';
 import { GpwCrypto } from '../utils/GpwCrypto';
 import { getPath } from '../utils/getPath';
+import { utimes } from 'utimes';
 
 export async function unlockCommand(): Promise<void> {
   // Get session
@@ -23,5 +24,9 @@ export async function unlockCommand(): Promise<void> {
 
     // Write decrypted file
     await writeFile(getPath(map[id]), content);
+    await utimes(getPath(map[id]), {
+      btime: new Date(file.created_at).getTime(),
+      mtime: new Date(file.updated_at).getTime(),
+    });
   }
 }

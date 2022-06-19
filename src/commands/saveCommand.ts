@@ -1,3 +1,4 @@
+import { writeJSON, readFile, readdir, Dirent, remove, stat } from 'fs-extra';
 import { GpwFileMap, GpwFile } from '../types';
 import { getUnlockedFileMap } from '../utils/getUnlockedFileMap';
 import { getGpwPath } from '../utils/getGpwPath';
@@ -5,19 +6,10 @@ import { getSession } from '../utils/getSession';
 import { GpwCrypto } from '../utils/GpwCrypto';
 import { getPath } from '../utils/getPath';
 import { nanoid } from 'nanoid';
-import {
-  writeJSON,
-  readFile,
-  readJSON,
-  readdir,
-  Dirent,
-  remove,
-} from 'fs-extra';
 
 export async function saveCommand(): Promise<void> {
   // Get session
   const session = await getSession();
-  const now = new Date().toISOString();
 
   // Grab files in gitpw repo
   const rootDir = getPath('');
@@ -48,19 +40,17 @@ export async function saveCommand(): Promise<void> {
           Object.entries(oldMap).find((e) => e[1] == filepath)?.[0] || nanoid();
         const gpwFilepath = getGpwPath(`files/${id}.json`);
 
-        const oldFile: GpwFile = oldMap[id]
-          ? await readJSON(gpwFilepath, 'utf8')
-          : undefined;
-
         // Encrypt file
+        const { birthtime, mtime } = await stat(filepath);
         const plaintext = await readFile(filepath, 'utf8');
         const encrypted = await GpwCrypto.encrypt(
           plaintext,
           session.unlocked_keychain,
         );
         const file: GpwFile = {
-          created_at: oldFile?.created_at || now,
-          updated_at: now,
+          keychain_id: session.unlocked_keychain.id,
+          created_at: new Date(birthtime).toISOString(),
+          updated_at: new Date(mtime).toISOString(),
           content: [encrypted],
           id,
         };
