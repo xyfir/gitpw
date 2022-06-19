@@ -2,12 +2,16 @@ import { initializeCommand } from './commands/initializeCommand';
 import { unlockCommand } from './commands/unlockCommand';
 import { lockCommand } from './commands/lockCommand';
 import { saveCommand } from './commands/saveCommand';
+import { convertCommand } from './commands/convertCommand';
 
 type Commands = 'initialize' | 'unlock' | 'lock' | 'init' | 'save';
 
 (async () => {
   try {
     switch (process.argv[2] as Commands) {
+      case 'convert':
+        await convertCommand();
+        break;
       case 'initialize':
       case 'init':
         await initializeCommand();
