@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>tiperite</title>
+
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+
+    <style>
+      #root,
+      body,
+      html {
+        -webkit-overflow-scrolling: touch;
+        min-height: 100%;
+        padding: 0;
+        margin: 0;
+        width: 100%;
+      }
+      #root {
+        flex-shrink: 0;
+        flex-basis: auto;
+        flex-grow: 1;
+        display: flex;
+        flex: 1;
+      }
+      html {
+        -webkit-text-size-adjust: 100%;
+        scroll-behavior: smooth;
+        height: calc(100% + env(safe-area-inset-top));
+      }
+      body {
+        -moz-osx-font-smoothing: grayscale;
+        -webkit-font-smoothing: antialiased;
+        overscroll-behavior-y: none;
+        -ms-overflow-style: scrollbar;
+        text-rendering: optimizeLegibility;
+        overflow-y: auto;
+        display: flex;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="root"></div>
+
+    <script src="data:text/javascript;base64,%DIST%"></script>
+  </body>
+</html>
