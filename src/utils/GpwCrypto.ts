@@ -13,22 +13,24 @@ export class GpwCrypto {
     plaintext: string,
     keychain: GpwUnlockedKeychain,
   ): Promise<GpwEncryptedString> {
-    let temp = plaintext;
+    let data = Buffer.from(plaintext, 'utf-8');
 
     for (const key of keychain.keys) {
+      const k = Buffer.from(key.data, 'base64');
+
       switch (key.type) {
         case 'XChaCha20-Poly1305':
-          temp = await GpwXChaCha20Poly1305.encrypt(temp, key.data);
+          data = await GpwXChaCha20Poly1305.encrypt(data, k);
           break;
         case 'AES-256-GCM':
-          temp = await GpwAES.encrypt(temp, key.data);
+          data = await GpwAES.encrypt(data, k);
           break;
         default:
           throw Error('Invalid encryption type');
       }
     }
 
-    return temp;
+    return data.toString('base64');
   }
 
   /**
@@ -38,22 +40,24 @@ export class GpwCrypto {
     ciphertext: GpwEncryptedString,
     keychain: GpwUnlockedKeychain,
   ): Promise<string> {
-    let temp = ciphertext;
+    let data = Buffer.from(ciphertext, 'base64');
     const keys = keychain.keys.slice().reverse();
 
     for (const key of keys) {
+      const k = Buffer.from(key.data, 'base64');
+
       switch (key.type) {
         case 'XChaCha20-Poly1305':
-          temp = await GpwXChaCha20Poly1305.decrypt(temp, key.data);
+          data = await GpwXChaCha20Poly1305.decrypt(data, k);
           break;
         case 'AES-256-GCM':
-          temp = await GpwAES.decrypt(temp, key.data);
+          data = await GpwAES.decrypt(data, k);
           break;
         default:
           throw Error('Invalid encryption type');
       }
     }
 
-    return temp;
+    return data.toString('utf-8');
   }
 }

@@ -1,4 +1,3 @@
-import { GpwEncryptedString, GpwBase64String } from '../types';
 import { XChaCha20Poly1305 } from '@stablelib/xchacha20poly1305';
 import { crypto } from './crypto';
 
@@ -9,40 +8,26 @@ import { crypto } from './crypto';
  */
 export class GpwXChaCha20Poly1305 {
   /**
-   * Encrypts plaintext using XChaCha20-Poly1305
+   * Encrypt using XChaCha20-Poly1305
    */
-  public static async encrypt(
-    plaintext: string,
-    b64Key: GpwBase64String,
-  ): Promise<GpwEncryptedString> {
+  public static async encrypt(data: Buffer, key: Buffer): Promise<Buffer> {
     const nonce = crypto.getRandomValues(new Uint8Array(24));
 
-    const xcha = new XChaCha20Poly1305(Buffer.from(b64Key, 'base64'));
-    const sealed = xcha.seal(nonce, Buffer.from(plaintext, 'utf-8'));
+    const xcha = new XChaCha20Poly1305(key);
+    const sealed = xcha.seal(nonce, data);
 
-    const ctBase64 = Buffer.from(sealed).toString('base64');
-    const b64Nonce = Buffer.from(nonce).toString('base64');
-
-    return `${b64Nonce} ${ctBase64}`;
+    return Buffer.concat([nonce, sealed]);
   }
 
   /**
-   * Decrypts ciphertext using XChaCha20-Poly1305
+   * Decrypt using XChaCha20-Poly1305
    */
-  public static async decrypt(
-    ciphertext: GpwEncryptedString,
-    b64Key: GpwBase64String,
-  ): Promise<string> {
-    const [b64Nonce, b64ciphertext] = ciphertext.split(' ');
-
-    const xcha = new XChaCha20Poly1305(Buffer.from(b64Key, 'base64'));
-    const opened = xcha.open(
-      Buffer.from(b64Nonce, 'base64'),
-      Buffer.from(b64ciphertext, 'base64'),
-    );
+  public static async decrypt(data: Buffer, key: Buffer): Promise<Buffer> {
+    const xcha = new XChaCha20Poly1305(key);
+    const opened = xcha.open(data.slice(0, 24), data.slice(24));
 
     if (opened === null) throw Error('Could not decrypt');
 
-    return new TextDecoder().decode(opened);
+    return Buffer.from(opened);
   }
 }
