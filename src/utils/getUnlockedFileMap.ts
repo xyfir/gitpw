@@ -8,15 +8,16 @@ import { readJSON } from 'fs-extra';
  */
 export async function getUnlockedFileMap(
   unlockedKeychain: GpwUnlockedKeychain,
-): Promise<GpwFileMap> {
+): Promise<{ unlocked: GpwFileMap; locked: GpwFileMap }> {
   // Get encrypted-decrypted file name/path map
   const map: GpwFileMap = await readJSON(getGpwPath('map.json'));
-  if (!map) return {};
+  if (!map) return { unlocked: {}, locked: {} };
 
   // Decrypt filepaths
+  const unlocked: GpwFileMap = {};
   for (const [id, filepath] of Object.entries(map)) {
-    map[id] = await GpwCrypto.decrypt(filepath, unlockedKeychain);
+    unlocked[id] = await GpwCrypto.decrypt(filepath, unlockedKeychain);
   }
 
-  return map;
+  return { unlocked, locked: map };
 }
