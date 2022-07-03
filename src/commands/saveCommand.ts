@@ -19,7 +19,7 @@ export async function saveCommand(): Promise<void> {
   }
 
   // Get previous encrypted-decrypted file name/path map
-  const oldMap = await getUnlockedFileMap(session.unlocked_keychain);
+  const oldMaps = await getUnlockedFileMap(session.unlocked_keychain);
   const newMap: GpwFileMap = {};
 
   // Recursively encrypt directories and build newMap
@@ -34,10 +34,13 @@ export async function saveCommand(): Promise<void> {
       // Encrypt file
       else {
         const filepath = `${dirs}/${entry.name}`;
+        const relativeFilepath = filepath.replace(rootDir, '');
 
         // Get ID from oldMap or create new ID
         const id =
-          Object.entries(oldMap).find((e) => e[1] == filepath)?.[0] || nanoid();
+          Object.entries(oldMaps.unlocked).find(
+            (e) => e[1] == relativeFilepath,
+          )?.[0] || nanoid();
         const gpwFilepath = getGpwPath(`files/${id}.json`);
 
         // Encrypt file
@@ -57,11 +60,11 @@ export async function saveCommand(): Promise<void> {
         await writeJSON(gpwFilepath, file, { spaces: 2 });
 
         // Save relative path in newMap
-        if (oldMap[id]) {
-          newMap[id] = oldMap[id];
+        if (oldMaps.locked[id]) {
+          newMap[id] = oldMaps.locked[id];
         } else {
           newMap[id] = await GpwCrypto.encrypt(
-            filepath.replace(rootDir, ''),
+            relativeFilepath,
             session.unlocked_keychain,
           );
         }
@@ -76,7 +79,7 @@ export async function saveCommand(): Promise<void> {
   );
 
   // Delete files in oldMap that aren't in newMap
-  for (const id of Object.keys(oldMap)) {
+  for (const id of Object.keys(oldMaps.locked)) {
     if (newMap[id]) continue;
 
     const gpwFilepath = getGpwPath(`files/${id}.json`);
