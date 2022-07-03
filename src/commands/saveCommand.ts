@@ -1,4 +1,3 @@
-import { writeJSON, readFile, readdir, Dirent, remove, stat } from 'fs-extra';
 import { GpwFileMap, GpwFile } from '../types';
 import { getUnlockedFileMap } from '../utils/getUnlockedFileMap';
 import { getGpwPath } from '../utils/getGpwPath';
@@ -6,6 +5,15 @@ import { getSession } from '../utils/getSession';
 import { GpwCrypto } from '../utils/GpwCrypto';
 import { getPath } from '../utils/getPath';
 import { nanoid } from 'nanoid';
+import {
+  writeJSON,
+  readFile,
+  readJSON,
+  readdir,
+  Dirent,
+  remove,
+  stat,
+} from 'fs-extra';
 
 export async function saveCommand(): Promise<void> {
   // Get session
@@ -43,9 +51,32 @@ export async function saveCommand(): Promise<void> {
           )?.[0] || nanoid();
         const gpwFilepath = getGpwPath(`files/${id}.json`);
 
+        // Get current potentially-untracked plaintext
+        const plaintext = await readFile(filepath, 'utf8');
+
+        // Save relative path in newMap
+        // File already exists
+        if (oldMaps.locked[id]) {
+          newMap[id] = oldMaps.locked[id];
+
+          // Check if the file's content changed
+          const originalEncryptedFile: GpwFile = await readJSON(gpwFilepath);
+          const originalDecryptedContent = await GpwCrypto.decrypt(
+            originalEncryptedFile.content[0],
+            session.unlocked_keychain,
+          );
+          if (originalDecryptedContent == plaintext) continue;
+        }
+        // New file
+        else {
+          newMap[id] = await GpwCrypto.encrypt(
+            relativeFilepath,
+            session.unlocked_keychain,
+          );
+        }
+
         // Encrypt file
         const { birthtime, mtime } = await stat(filepath);
-        const plaintext = await readFile(filepath, 'utf8');
         const encrypted = await GpwCrypto.encrypt(
           plaintext,
           session.unlocked_keychain,
@@ -58,16 +89,6 @@ export async function saveCommand(): Promise<void> {
           id,
         };
         await writeJSON(gpwFilepath, file, { spaces: 2 });
-
-        // Save relative path in newMap
-        if (oldMaps.locked[id]) {
-          newMap[id] = oldMaps.locked[id];
-        } else {
-          newMap[id] = await GpwCrypto.encrypt(
-            relativeFilepath,
-            session.unlocked_keychain,
-          );
-        }
       }
     }
   }
