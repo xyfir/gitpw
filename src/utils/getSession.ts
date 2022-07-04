@@ -4,7 +4,7 @@ import { GpwPBKDF2 } from './GpwPBKDF2';
 import { readJSON } from 'fs-extra';
 import inquirer from 'inquirer';
 
-type Session = GpwRepoManifest & {
+export type Session = GpwRepoManifest & {
   unlocked_keychain: GpwUnlockedKeychain;
 };
 
