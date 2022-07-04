@@ -1,12 +1,8 @@
-import { GpwUnlockedKeychain, GpwRepoManifest } from '../types';
+import type { GpwUnlockedKeychain, GpwRepoManifest, Session } from '../types';
 import { getGpwPath } from './getGpwPath';
 import { GpwPBKDF2 } from './GpwPBKDF2';
 import { readJSON } from 'fs-extra';
 import inquirer from 'inquirer';
-
-export type Session = GpwRepoManifest & {
-  unlocked_keychain: GpwUnlockedKeychain;
-};
 
 export async function getSession(): Promise<Session> {
   // Get manifest

@@ -1,4 +1,5 @@
-import { runCommand, Command } from './utils/runCommand';
+import type { Command } from './types';
+import { runCommand } from './utils/runCommand';
 
 (async () => {
   try {

@@ -1,7 +1,6 @@
 import { writeFile, readJSON, ensureDir } from 'fs-extra';
+import type { GpwFile, Session } from '../types';
 import { getUnlockedFileMap } from '../utils/getUnlockedFileMap';
-import type { Session } from '../utils/getSession';
-import type { GpwFile } from '../types';
 import { getGpwPath } from '../utils/getGpwPath';
 import { GpwCrypto } from '../utils/GpwCrypto';
 import { getPath } from '../utils/getPath';

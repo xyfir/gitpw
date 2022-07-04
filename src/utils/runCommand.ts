@@ -1,14 +1,10 @@
-import { getSession, Session } from './getSession';
+import type { IntrasessionCommand, Session, Command } from '../types';
 import { initializeCommand } from '../commands/initializeCommand';
 import { sessionCommand } from '../commands/sessionCommand';
 import { unlockCommand } from '../commands/unlockCommand';
 import { lockCommand } from '../commands/lockCommand';
 import { saveCommand } from '../commands/saveCommand';
-
-/**
- * Command that can be run from within the `session` command.
- */
-export type IntrasessionCommand = 'unlock' | 'lock' | 'save';
+import { getSession } from './getSession';
 
 /**
  * @see IntrasessionCommand
@@ -18,11 +14,6 @@ export const intrasessionCommands: IntrasessionCommand[] = [
   'lock',
   'save',
 ];
-
-/**
- * All command types
- */
-export type Command = IntrasessionCommand | 'initialize' | 'session' | 'init';
 
 /**
  * Run a command

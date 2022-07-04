@@ -1,6 +1,5 @@
-import { GpwFileMap, GpwFile } from '../types';
+import type { GpwFileMap, GpwFile, Session } from '../types';
 import { getUnlockedFileMap } from '../utils/getUnlockedFileMap';
-import type { Session } from '../utils/getSession';
 import { getGpwPath } from '../utils/getGpwPath';
 import { GpwCrypto } from '../utils/GpwCrypto';
 import { getPath } from '../utils/getPath';

@@ -1,5 +1,5 @@
 import { readdir, remove } from 'fs-extra';
-import type { Session } from '../utils/getSession';
+import type { Session } from '../types';
 import { saveCommand } from './saveCommand';
 import { getPath } from '../utils/getPath';
 
