@@ -8,7 +8,7 @@ import inquirer from 'inquirer';
  *  run multiple commands back-to-back.
  */
 export async function sessionCommand(): Promise<never> {
-  const commands: Command[] = ['unlock', 'lock', 'save'];
+  const commands: Command[] = ['save', 'lock', 'unlock'];
 
   // Authenticate and prepare session
   const session = await getSession();
