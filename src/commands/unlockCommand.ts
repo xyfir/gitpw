@@ -1,17 +1,14 @@
 import { writeFile, readJSON, ensureDir } from 'fs-extra';
 import { getUnlockedFileMap } from '../utils/getUnlockedFileMap';
+import type { Session } from '../utils/getSession';
 import type { GpwFile } from '../types';
 import { getGpwPath } from '../utils/getGpwPath';
-import { getSession } from '../utils/getSession';
 import { GpwCrypto } from '../utils/GpwCrypto';
 import { getPath } from '../utils/getPath';
 import { dirname } from 'path';
 import { utimes } from 'utimes';
 
-export async function unlockCommand(): Promise<void> {
-  // Get session
-  const session = await getSession();
-
+export async function unlockCommand(session: Session): Promise<void> {
   // Get encrypted-decrypted file name/path map
   const { unlocked: map } = await getUnlockedFileMap(session.unlocked_keychain);
 

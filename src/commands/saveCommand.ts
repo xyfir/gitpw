@@ -1,7 +1,7 @@
 import { GpwFileMap, GpwFile } from '../types';
 import { getUnlockedFileMap } from '../utils/getUnlockedFileMap';
+import type { Session } from '../utils/getSession';
 import { getGpwPath } from '../utils/getGpwPath';
-import { getSession } from '../utils/getSession';
 import { GpwCrypto } from '../utils/GpwCrypto';
 import { getPath } from '../utils/getPath';
 import { nanoid } from 'nanoid';
@@ -15,10 +15,7 @@ import {
   stat,
 } from 'fs-extra';
 
-export async function saveCommand(): Promise<void> {
-  // Get session
-  const session = await getSession();
-
+export async function saveCommand(session: Session): Promise<void> {
   // Grab files in gitpw repo
   const rootDir = getPath('');
   const entries = await readdir(rootDir, { withFileTypes: true });

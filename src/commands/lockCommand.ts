@@ -1,9 +1,10 @@
 import { readdir, remove } from 'fs-extra';
+import type { Session } from '../utils/getSession';
 import { saveCommand } from './saveCommand';
 import { getPath } from '../utils/getPath';
 
-export async function lockCommand(): Promise<void> {
-  await saveCommand();
+export async function lockCommand(session: Session): Promise<void> {
+  await saveCommand(session);
 
   const entries = await readdir(getPath(''), { withFileTypes: true });
   for (const entry of entries) {
