@@ -1,6 +1,6 @@
 import type { Command } from '../types';
-import { runCommand } from '../utils/runCommand';
 import { getSession } from '../utils/getSession';
+import { runCommand } from './runCommand';
 import inquirer from 'inquirer';
 
 /**

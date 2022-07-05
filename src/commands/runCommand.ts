@@ -1,10 +1,10 @@
 import type { IntrasessionCommand, Session, Command } from '../types';
-import { initializeCommand } from '../commands/initializeCommand';
-import { sessionCommand } from '../commands/sessionCommand';
-import { unlockCommand } from '../commands/unlockCommand';
-import { lockCommand } from '../commands/lockCommand';
-import { saveCommand } from '../commands/saveCommand';
-import { getSession } from './getSession';
+import { initializeCommand } from './initializeCommand';
+import { sessionCommand } from './sessionCommand';
+import { unlockCommand } from './unlockCommand';
+import { lockCommand } from './lockCommand';
+import { saveCommand } from './saveCommand';
+import { getSession } from '../utils/getSession';
 
 /**
  * @see IntrasessionCommand

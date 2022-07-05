@@ -1,5 +1,5 @@
 import type { Command } from './types';
-import { runCommand } from './utils/runCommand';
+import { runCommand } from './commands/runCommand';
 
 (async () => {
   try {
