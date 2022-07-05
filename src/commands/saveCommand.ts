@@ -57,10 +57,11 @@ export async function saveCommand(session: Session): Promise<void> {
 
           // Check if the file's content changed
           const originalEncryptedFile: GpwFile = await readJSON(gpwFilepath);
-          const originalDecryptedContent = await GpwCrypto.decrypt(
-            originalEncryptedFile.content[0],
-            session.unlocked_keychain,
-          );
+          const originalDecryptedContent = await Promise.all(
+            originalEncryptedFile.content.map((c) =>
+              GpwCrypto.decrypt(c, session.unlocked_keychain),
+            ),
+          ).then((c) => c.join(''));
           if (originalDecryptedContent == plaintext) continue;
         }
         // New file
