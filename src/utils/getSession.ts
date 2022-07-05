@@ -4,6 +4,10 @@ import { GpwPBKDF2 } from './GpwPBKDF2';
 import { readJSON } from 'fs-extra';
 import inquirer from 'inquirer';
 
+/**
+ * Generate an authenticated session object by reading the CWD's manifest and
+ *  unlocking its keychain.
+ */
 export async function getSession(): Promise<Session> {
   // Get manifest
   const manifest: GpwRepoManifest = await readJSON(getGpwPath('manifest.json'));

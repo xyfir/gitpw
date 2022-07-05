@@ -16,7 +16,7 @@ export const intrasessionCommands: IntrasessionCommand[] = [
 ];
 
 /**
- * Run a command
+ * Run a command function from a name string.
  */
 export async function runCommand(
   command: Command,

@@ -1,9 +1,10 @@
-import { GpwUnlockedKeychain, GpwEncryptedString } from '../types';
+import type { GpwUnlockedKeychain, GpwEncryptedString } from '../types';
 import { GpwXChaCha20Poly1305 } from './GpwXChaCha20Poly1305';
 import { GpwAES } from './GpwAES';
 
 /**
- * A high-level wrapper for encrypting and decrypting data using keychains.
+ * A high-level wrapper for encrypting and decrypting text strings using
+ *  Gpw keychains.
  */
 export class GpwCrypto {
   /**

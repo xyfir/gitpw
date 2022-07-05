@@ -17,6 +17,9 @@ import {
 
 const execp = promisify(exec);
 
+/**
+ * Initialize a new .gitpw _and_ .git repository within an empty directory.
+ */
 export async function initializeCommand(): Promise<void> {
   // Check that the directory is empty
   const entries = await readdir(getPath(''));

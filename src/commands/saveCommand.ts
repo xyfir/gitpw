@@ -14,6 +14,11 @@ import {
   stat,
 } from 'fs-extra';
 
+/**
+ * Save any changes made to the plaintext files to the .gitpw directory after
+ *  encrypting them. Unlike the `lock` command, this does not delete plaintext
+ *  files afterwards.
+ */
 export async function saveCommand(session: Session): Promise<void> {
   // Grab files in gitpw repo
   const rootDir = getPath('');

@@ -3,6 +3,9 @@ import type { Session } from '../types';
 import { saveCommand } from './saveCommand';
 import { getPath } from '../utils/getPath';
 
+/**
+ * Wipe the plaintext files after encrypting any changes.
+ */
 export async function lockCommand(session: Session): Promise<void> {
   await saveCommand(session);
 

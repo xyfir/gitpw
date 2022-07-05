@@ -1,4 +1,4 @@
-import { GpwBase64String } from '../types';
+import type { GpwBase64String } from '../types';
 import { crypto } from './crypto';
 
 /**
@@ -10,9 +10,13 @@ export class GpwPBKDF2 {
    *
    * **Min:** 1,000,000\
    * **Max:** 1,099,999
+   *
+   * @param easy only intended to be true during testing for speed improvements
    */
   public static generateIterations(easy = false): number {
-    return (easy ? 0 : 1000000) + Number(Math.random().toString().slice(-5));
+    return easy
+      ? Number(Math.random().toString().slice(-2))
+      : 1000000 + Number(Math.random().toString().slice(-5));
   }
 
   /**
@@ -39,7 +43,7 @@ export class GpwPBKDF2 {
       passBuffer,
       { name: 'PBKDF2' },
       false,
-      ['deriveBits', 'deriveKey'],
+      ['deriveKey'],
     );
 
     const derivedKey = await crypto.subtle.deriveKey(
@@ -55,7 +59,7 @@ export class GpwPBKDF2 {
         name: 'AES-GCM',
       },
       true,
-      ['encrypt', 'decrypt'],
+      [],
     );
 
     const keyBuffer = await crypto.subtle.exportKey('raw', derivedKey);

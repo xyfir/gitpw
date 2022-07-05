@@ -7,6 +7,11 @@ import { getPath } from '../utils/getPath';
 import { dirname } from 'path';
 import { utimes } from 'utimes';
 
+/**
+ * Decrypt the files in the .gitpw directory and write their plaintext contents
+ *  to the current working directory, overwriting any existing files and any
+ *  untracked changes that may exist.
+ */
 export async function unlockCommand(session: Session): Promise<void> {
   // Get encrypted-decrypted file name/path map
   const { unlocked: map } = await getUnlockedFileMap(session.unlocked_keychain);

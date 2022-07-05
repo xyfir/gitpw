@@ -26,11 +26,10 @@ export type GpwKeyType = 'XChaCha20-Poly1305' | 'AES-256-GCM';
 export type GpwKey = {
   type: GpwKeyType;
   /**
-   * Data can be any type of string, but generally it is a base64 encoded string
-   *  representing the `type` key's raw binary data. It may also be an encrypted
-   *  version of the aforementioned.
+   * A base64 encoded string representing the `type` key's raw binary data. It
+   *  may optionally be encrypted when in its 'locked' state.
    */
-  data: string;
+  data: GpwBase64String;
 };
 
 /**
@@ -109,7 +108,7 @@ export type GpwRepoManifest = {
   /**
    * Configurations for key derivation functions. Each stretcher is used to
    *  generate the (decrypted) key `data` for the `GpwKey` of the same index in
-   *  the first keychain in `locked_keychains`.
+   *  the first keychain within `locked_keychains`.
    */
   key_stretchers: GpwKeyStretcher[];
   version: GpwRepoVersion;
@@ -131,7 +130,9 @@ export type GpwFile = {
   created_at: GpwDateString;
   updated_at: GpwDateString;
   /**
-   * The encrypted contents of the file, optionally broken up into "blocks".
+   * The encrypted contents of the file, optionally broken up into "blocks". It
+   *  should always be presumed that each file has multiple blocks, even if they
+   *  don't. Blocks are joined together with an empty string separator.
    */
   content: GpwEncryptedString[];
   id: GpwFileID;
