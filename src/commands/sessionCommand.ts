@@ -1,4 +1,4 @@
-import type { Command } from '../types';
+import type { Command, Argv } from '../types';
 import { getSession } from '../utils/getSession';
 import { runCommand } from './runCommand';
 import inquirer from 'inquirer';
@@ -7,11 +7,11 @@ import inquirer from 'inquirer';
  * Create an authenticated interactive session that allows the user to easily
  *  run multiple commands back-to-back.
  */
-export async function sessionCommand(): Promise<never> {
+export async function sessionCommand(argv?: Argv<'session'>): Promise<never> {
   const commands: Command[] = ['save', 'lock', 'unlock'];
 
   // Authenticate and prepare session
-  const session = await getSession();
+  const session = await getSession(argv);
 
   // eslint-disable-next-line no-constant-condition
   while (true) {

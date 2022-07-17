@@ -1,29 +1,44 @@
-import type { GpwUnlockedKeychain, GpwRepoManifest, Session } from '../types';
 import { getGpwPath } from './getGpwPath';
 import { GpwPBKDF2 } from './GpwPBKDF2';
 import { readJSON } from 'fs-extra';
 import inquirer from 'inquirer';
+import type {
+  GpwUnlockedKeychain,
+  GpwRepoManifest,
+  Session,
+  Argv,
+} from '../types';
 
 /**
  * Generate an authenticated session object by reading the CWD's manifest and
  *  unlocking its keychain.
  */
-export async function getSession(): Promise<Session> {
+export async function getSession(argv?: Argv<'session'>): Promise<Session> {
   // Get manifest
   const manifest: GpwRepoManifest = await readJSON(getGpwPath('manifest.json'));
 
-  // Prompt user for repo's passwords
+  // Get passwords
   const passwords: string[] = [];
-  for (let i = 0; i < manifest.key_stretchers.length; i++) {
-    await inquirer
-      .prompt<{ pass: string }>([
-        {
-          message: `Password for key #${i + 1}`,
-          type: 'password',
-          name: 'pass',
-        },
-      ])
-      .then((answers) => passwords.push(answers.pass));
+  if (argv?.password) {
+    if (argv.password.length != manifest.key_stretchers.length) {
+      throw Error(
+        `Received ${argv.password.length} passwords, expected ${manifest.key_stretchers.length}`,
+      );
+    }
+
+    passwords.push(...argv.password);
+  } else {
+    for (let i = 0; i < manifest.key_stretchers.length; i++) {
+      await inquirer
+        .prompt<{ pass: string }>([
+          {
+            message: `Password for key #${i + 1}`,
+            type: 'password',
+            name: 'pass',
+          },
+        ])
+        .then((answers) => passwords.push(answers.pass));
+    }
   }
 
   // Derive keys from passwords

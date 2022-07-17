@@ -7,12 +7,13 @@ import { getPath } from '../utils/getPath';
 import { nanoid } from 'nanoid';
 import { exec } from 'child_process';
 import inquirer from 'inquirer';
-import {
+import type {
   GpwUnlockedKeychain,
   GpwLockedKeychain,
   GpwRepoManifest,
   GpwKeyType,
   GpwKey,
+  Argv,
 } from '../types';
 
 const execp = promisify(exec);
@@ -20,7 +21,7 @@ const execp = promisify(exec);
 /**
  * Initialize a new .gitpw _and_ .git repository within an empty directory.
  */
-export async function initCommand(): Promise<void> {
+export async function initCommand(argv: Argv<'init'>): Promise<void> {
   // Check that the directory is empty
   const entries = await readdir(getPath(''));
   if (entries.some((e) => e != '.git')) throw Error('Directory is not empty');
@@ -32,45 +33,71 @@ export async function initCommand(): Promise<void> {
   // Run `git init` command
   await execp('git init');
 
-  // Ask the user how many keys they want to encrypt their repo with
-  const { keyCount } = await inquirer.prompt<{ keyCount: number }>([
-    {
-      message: '# of keys to encrypt with',
-      default: 1,
-      name: 'keyCount',
-      type: 'number',
-    },
-  ]);
-
-  // Prompt for key types and their corresponding passwords
-  const questions: inquirer.Question[] = [];
-  for (let i = 0; i < keyCount; i++) {
-    questions.push({
-      message: `Type of key #${i + 1}`,
-      choices: ['XChaCha20-Poly1305', 'AES-256-GCM'] as GpwKeyType[],
-      default: (i == 0 ? 'AES-256-GCM' : 'XChaCha20-Poly1305') as GpwKeyType,
-      name: `keyType${i}`,
-      type: 'list',
-    } as inquirer.ListQuestion);
-    questions.push({
-      message: `Password for key #${i + 1}`,
-      choices: ['XChaCha20-Poly1305', 'AES-256-GCM'] as GpwKeyType[],
-      default: (i == 0 ? 'AES-256-GCM' : 'XChaCha20-Poly1305') as GpwKeyType,
-      name: `keyPass${i}`,
-      type: 'password',
-    } as inquirer.PasswordQuestion);
+  // Validate arguments
+  if (argv?.encryption?.length != argv?.password?.length) {
+    throw Error('--encryption,-e and --password,-p count mismatch');
   }
-  const answers = await inquirer.prompt(questions);
+  const useArgv = Array.isArray(argv?.encryption);
 
-  // Ask if we should configure the repo for VS Code
-  const { vsCode } = await inquirer.prompt<{ vsCode: boolean }>([
-    {
-      message: 'Configure for VS Code?',
-      default: false,
-      type: 'confirm',
-      name: 'vsCode',
-    },
-  ]);
+  // How many keys should we encrypt the repo with?
+  const keyCount = useArgv
+    ? argv!.encryption!.length
+    : await inquirer
+        .prompt<{ keyCount: number }>([
+          {
+            message: '# of keys to encrypt with',
+            default: 1,
+            name: 'keyCount',
+            type: 'number',
+          },
+        ])
+        .then((a) => a.keyCount);
+
+  // What key types and passwords should we use?
+  const encryptWith: [GpwKeyType, string][] = [];
+  if (useArgv) {
+    for (let i = 0; i < keyCount; i++) {
+      encryptWith.push([argv!.encryption![i], argv!.password![i]]);
+    }
+  } else {
+    const questions: inquirer.Question[] = [];
+    for (let i = 0; i < keyCount; i++) {
+      questions.push({
+        message: `Type of key #${i + 1}`,
+        choices: ['XChaCha20-Poly1305', 'AES-256-GCM'] as GpwKeyType[],
+        default: (i == 0 ? 'AES-256-GCM' : 'XChaCha20-Poly1305') as GpwKeyType,
+        name: `keyType${i}`,
+        type: 'list',
+      } as inquirer.ListQuestion);
+      questions.push({
+        message: `Password for key #${i + 1}`,
+        choices: ['XChaCha20-Poly1305', 'AES-256-GCM'] as GpwKeyType[],
+        default: (i == 0 ? 'AES-256-GCM' : 'XChaCha20-Poly1305') as GpwKeyType,
+        name: `keyPass${i}`,
+        type: 'password',
+      } as inquirer.PasswordQuestion);
+    }
+    const answers = await inquirer.prompt(questions);
+
+    for (let i = 0; i < keyCount; i++) {
+      encryptWith.push([
+        answers[`keyType${i}`] as GpwKeyType,
+        answers[`keyPass${i}`] as string,
+      ]);
+    }
+  }
+
+  // Should we configure the repo for VS Code?
+  const vsCode = useArgv
+    ? argv!.vscode!
+    : await inquirer.prompt<{ vsCode: boolean }>([
+        {
+          message: 'Configure for VS Code?',
+          default: false,
+          type: 'confirm',
+          name: 'vsCode',
+        },
+      ]);
 
   // Create repo manifest
   const manifest: GpwRepoManifest = {
@@ -89,7 +116,7 @@ export async function initCommand(): Promise<void> {
   const passkeys = await Promise.all(
     manifest.key_stretchers.map((stretcher, i) =>
       GpwPBKDF2.deriveKey(
-        answers[`keyPass${i}`] as string,
+        encryptWith[i][1],
         stretcher.salt,
         stretcher.iterations,
       ),
@@ -102,7 +129,7 @@ export async function initCommand(): Promise<void> {
       .fill(0)
       .map(
         (_, i): GpwKey => ({
-          type: answers[`keyType${i}`] as GpwKeyType,
+          type: encryptWith[i][0],
           data: passkeys[i],
         }),
       ),
