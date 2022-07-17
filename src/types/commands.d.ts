@@ -15,4 +15,4 @@ export type IntrasessionCommand = 'unlock' | 'lock' | 'save';
 /**
  * All command types
  */
-export type Command = IntrasessionCommand | 'initialize' | 'session' | 'init';
+export type Command = IntrasessionCommand | 'session' | 'init';
