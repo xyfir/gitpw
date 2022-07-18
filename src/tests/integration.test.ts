@@ -15,6 +15,11 @@ beforeAll(async () => {
   await mkdir(process.cwd());
 });
 
+/**
+ * @todo test file timestamps plaintext->encrypted
+ * @todo test file timestamps encrypted->plaintext
+ * @todo test deleting tracked file
+ */
 test('cli', async () => {
   const password = ['hunter42', 'hunter24', 'pass123', 'pass456'];
 
