@@ -1,4 +1,5 @@
 {
+  "name": "gitpw",
   "main": "build/index.js",
   "version": "0.0.0",
   "author": "xyfir <contact@xyfir.com> (https://www.xyfir.com)",
@@ -11,6 +12,9 @@
     "test": "jest",
     "cli": "node build/index.js"
   },
+  "files": [
+    "/build"
+  ],
   "dependencies": {
     "@stablelib/xchacha20poly1305": "^1.0.1",
     "fs-extra": "^10.1.0",
@@ -38,6 +42,5 @@
     "ts-jest": "^28.0.3",
     "typescript": "^4.3.5",
     "utility-types": "^3.10.0"
-  },
-  "private": true
+  }
 }
