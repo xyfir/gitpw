@@ -10,7 +10,7 @@ import fs from 'fs-extra';
  * Move a plaintext file and its encrypted file map routing to a new path.
  */
 export async function moveCommand(
-  argv: Argv<'move'>,
+  argv: Argv<'move'> = {},
   session: Session,
 ): Promise<void> {
   const rootDir = getPath('');
