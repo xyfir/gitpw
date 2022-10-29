@@ -24,6 +24,6 @@ export async function sessionCommand(argv?: Argv<'session'>): Promise<never> {
     });
 
     // Run command
-    await runCommand(command, session);
+    await runCommand(command, session).catch(console.error);
   }
 }
