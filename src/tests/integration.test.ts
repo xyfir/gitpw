@@ -50,7 +50,7 @@ test('cli', async () => {
 
   // Confirm that file map was created and has both entries
   const session = await getSession({ password });
-  const maps = await getUnlockedFileMap(session.unlocked_keychain);
+  let maps = await getUnlockedFileMap(session.unlocked_keychain);
   expect(Object.keys(maps.locked).length).toBe(2);
   expect(Object.keys(maps.unlocked).length).toBe(2);
   expect(Object.values(maps.unlocked).some((v) => v == '/test.txt')).toBe(true);
@@ -74,4 +74,23 @@ test('cli', async () => {
   expect(content).toBe('Hello World');
   content = await readFile(getPath('dir/abc.md'), 'utf8');
   expect(content).toBe('foo bar');
+
+  // Move file
+  await runCommand('move', undefined, {
+    password,
+    source: 'test.txt',
+    target: '/dir/test2.txt',
+  });
+
+  // Confirm that the plaintext file has been moved
+  entries = await readdir(getPath(''));
+  expect(entries).not.toContain('test.txt');
+  entries = await readdir(getPath('dir'));
+  expect(entries).toContain('test2.txt');
+
+  // Confirm that filemap has been updated
+  maps = await getUnlockedFileMap(session.unlocked_keychain);
+  expect(Object.values(maps.unlocked).some((v) => v == '/dir/test2.txt')).toBe(
+    true,
+  );
 });
