@@ -4,6 +4,7 @@ import { unlockCommand } from './unlockCommand';
 import { initCommand } from './initCommand';
 import { lockCommand } from './lockCommand';
 import { saveCommand } from './saveCommand';
+import { moveCommand } from './moveCommand';
 import { getSession } from '../utils/getSession';
 
 /**
@@ -13,6 +14,7 @@ export const intrasessionCommands: IntrasessionCommand[] = [
   'unlock',
   'lock',
   'save',
+  'move',
 ];
 
 /**
@@ -37,6 +39,8 @@ export async function runCommand(
       return sessionCommand(argv);
     case 'unlock':
       return unlockCommand(session!);
+    case 'move':
+      return moveCommand(argv, session!);
     case 'init':
       return initCommand(argv);
     case 'lock':

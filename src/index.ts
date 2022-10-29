@@ -29,6 +29,21 @@ yargs(hideBin(process.argv))
     (argv) => runCommand('init', undefined, argv as Argv<'init'>),
   )
   .command(
+    'move [source] [target]',
+    'Move or rename a file using plaintext paths',
+    (yargs) =>
+      yargs
+        .positional('source', {
+          description: 'The source file to move',
+          type: 'string',
+        })
+        .positional('target', {
+          description: 'The new file path to move the source to',
+          type: 'string',
+        }),
+    (argv) => runCommand('move', undefined, argv as Argv<'move'>),
+  )
+  .command(
     'save',
     'Encrypt and track plaintext changes to the gitpw repo',
     () => undefined,

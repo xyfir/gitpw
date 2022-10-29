@@ -10,7 +10,7 @@ export type Session = GpwRepoManifest & {
 /**
  * Command that can be run from within the `session` command
  */
-export type IntrasessionCommand = 'unlock' | 'lock' | 'save';
+export type IntrasessionCommand = 'unlock' | 'lock' | 'save' | 'move';
 
 /**
  * All command types
@@ -22,15 +22,28 @@ export type Command = IntrasessionCommand | 'session' | 'init';
  */
 export type CommandsArgv = {
   // [command]: argv
-  session?: { password?: string[] };
-  unlock?: { password?: string[] };
+  session?: {
+    password?: string[];
+  };
+  unlock?: {
+    password?: string[];
+  };
+  move?: {
+    password?: string[];
+    source?: string;
+    target?: string;
+  };
   init?: {
     encryption?: GpwKeyType[];
     password?: string[];
     vscode?: boolean;
   };
-  save?: { password?: string[] };
-  lock?: { password?: string[] };
+  save?: {
+    password?: string[];
+  };
+  lock?: {
+    password?: string[];
+  };
 };
 
 /**
