@@ -1,4 +1,8 @@
-import type { GpwUnlockedKeychain, GpwRepoManifest, GpwKeyType } from '.';
+import type {
+  GpwUnlockedKeychain,
+  GpwRepoManifest,
+  GpwKeyType,
+} from './index.js';
 
 /**
  * Authenticated session data

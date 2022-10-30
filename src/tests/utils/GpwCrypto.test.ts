@@ -1,6 +1,6 @@
-import { GpwKeychain } from '../../types';
-import { GpwPBKDF2 } from '../../utils/GpwPBKDF2';
-import { GpwCrypto } from '../../utils/GpwCrypto';
+import { GpwKeychain } from '../../types/index.js';
+import { GpwPBKDF2 } from '../../utils/GpwPBKDF2.js';
+import { GpwCrypto } from '../../utils/GpwCrypto.js';
 import { nanoid } from 'nanoid';
 
 test('GpwCrypto with AES-256-GCM', async () => {

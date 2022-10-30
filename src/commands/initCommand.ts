@@ -1,12 +1,12 @@
-import { writeJSON, writeFile, readdir, mkdir } from 'fs-extra';
-import { getGpwPath } from '../utils/getGpwPath';
-import { GpwPBKDF2 } from '../utils/GpwPBKDF2';
-import { GpwCrypto } from '../utils/GpwCrypto';
+import { getGpwPath } from '../utils/getGpwPath.js';
+import { GpwPBKDF2 } from '../utils/GpwPBKDF2.js';
+import { GpwCrypto } from '../utils/GpwCrypto.js';
 import { promisify } from 'util';
-import { getPath } from '../utils/getPath';
+import { getPath } from '../utils/getPath.js';
 import { nanoid } from 'nanoid';
 import { exec } from 'child_process';
 import inquirer from 'inquirer';
+import fs from 'fs-extra';
 import type {
   GpwUnlockedKeychain,
   GpwLockedKeychain,
@@ -14,7 +14,7 @@ import type {
   GpwKeyType,
   GpwKey,
   Argv,
-} from '../types';
+} from '../types/index.js';
 
 const execp = promisify(exec);
 
@@ -23,12 +23,12 @@ const execp = promisify(exec);
  */
 export async function initCommand(argv: Argv<'init'>): Promise<void> {
   // Check that the directory is empty
-  const entries = await readdir(getPath(''));
+  const entries = await fs.readdir(getPath(''));
   if (entries.some((e) => e != '.git')) throw Error('Directory is not empty');
 
   // Create .gitpw directories
-  await mkdir(getGpwPath(''));
-  await mkdir(getGpwPath('files'));
+  await fs.mkdir(getGpwPath(''));
+  await fs.mkdir(getGpwPath('files'));
 
   // Run `git init` command
   await execp('git init');
@@ -144,9 +144,9 @@ export async function initCommand(argv: Argv<'init'>): Promise<void> {
   manifest.locked_keychains.push(lockedKeychain);
 
   // Write files
-  await writeJSON(getGpwPath('manifest.json'), manifest, { spaces: 2 });
-  await writeJSON(getGpwPath('map.json'), {}, { spaces: 2 });
-  await writeFile(
+  await fs.writeJSON(getGpwPath('manifest.json'), manifest, { spaces: 2 });
+  await fs.writeJSON(getGpwPath('map.json'), {}, { spaces: 2 });
+  await fs.writeFile(
     getPath('.gitignore'),
     ['/*', '!/.gitignore', vsCode ? '!/.vscode/' : '', '!/.gitpw/']
       .filter(Boolean)
@@ -156,8 +156,8 @@ export async function initCommand(argv: Argv<'init'>): Promise<void> {
   // Configure for VS Code:
   // - Only search non-config plaintext ignored by git
   if (vsCode) {
-    await mkdir(getPath('.vscode'));
-    await writeJSON(
+    await fs.mkdir(getPath('.vscode'));
+    await fs.writeJSON(
       getPath('.vscode/settings.json'),
       {
         'search.useIgnoreFiles': false,

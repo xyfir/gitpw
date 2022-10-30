@@ -1,5 +1,5 @@
 import { XChaCha20Poly1305 } from '@stablelib/xchacha20poly1305';
-import { crypto } from './crypto';
+import { crypto } from './crypto.js';
 
 /**
  * Utility class for XChaCha20-Poly1305 encryption

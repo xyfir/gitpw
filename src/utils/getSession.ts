@@ -1,13 +1,13 @@
-import { getGpwPath } from './getGpwPath';
-import { GpwPBKDF2 } from './GpwPBKDF2';
-import { readJSON } from 'fs-extra';
+import { getGpwPath } from './getGpwPath.js';
+import { GpwPBKDF2 } from './GpwPBKDF2.js';
 import inquirer from 'inquirer';
 import type {
   GpwUnlockedKeychain,
   GpwRepoManifest,
   Session,
   Argv,
-} from '../types';
+} from '../types/index.js';
+import fs from 'fs-extra';
 
 /**
  * Generate an authenticated session object by reading the CWD's manifest and
@@ -15,7 +15,9 @@ import type {
  */
 export async function getSession(argv?: Argv<'session'>): Promise<Session> {
   // Get manifest
-  const manifest: GpwRepoManifest = await readJSON(getGpwPath('manifest.json'));
+  const manifest: GpwRepoManifest = await fs.readJSON(
+    getGpwPath('manifest.json'),
+  );
 
   // Get passwords
   const passwords: string[] = [];

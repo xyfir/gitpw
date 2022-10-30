@@ -1,2 +1,2 @@
-export * from './commands';
-export * from './gitpw';
+export * from './commands.js';
+export * from './gitpw.js';

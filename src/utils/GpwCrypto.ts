@@ -1,6 +1,9 @@
-import type { GpwUnlockedKeychain, GpwEncryptedString } from '../types';
-import { GpwXChaCha20Poly1305 } from './GpwXChaCha20Poly1305';
-import { GpwAES } from './GpwAES';
+import { GpwXChaCha20Poly1305 } from './GpwXChaCha20Poly1305.js';
+import { GpwAES } from './GpwAES.js';
+import type {
+  GpwUnlockedKeychain,
+  GpwEncryptedString,
+} from '../types/index.js';
 
 /**
  * A high-level wrapper for encrypting and decrypting text strings using

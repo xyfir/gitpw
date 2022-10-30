@@ -1,4 +1,4 @@
-import { getPath } from '../../utils/getPath';
+import { getPath } from '../../utils/getPath.js';
 
 test("getPath('')", () => {
   expect(getPath('')).toBe(process.cwd());

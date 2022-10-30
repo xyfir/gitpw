@@ -1,8 +1,8 @@
-import { getUnlockedFileMap } from '../utils/getUnlockedFileMap';
-import type { Session, Argv } from '../types';
-import { getGpwPath } from '../utils/getGpwPath';
-import { GpwCrypto } from '../utils/GpwCrypto';
-import { getPath } from '../utils/getPath';
+import { getUnlockedFileMap } from '../utils/getUnlockedFileMap.js';
+import type { Session, Argv } from '../types/index.js';
+import { getGpwPath } from '../utils/getGpwPath.js';
+import { GpwCrypto } from '../utils/GpwCrypto.js';
+import { getPath } from '../utils/getPath.js';
 import inquirer from 'inquirer';
 import fs from 'fs-extra';
 

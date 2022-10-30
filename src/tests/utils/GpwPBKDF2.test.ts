@@ -1,4 +1,4 @@
-import { GpwPBKDF2 } from '../../utils/GpwPBKDF2';
+import { GpwPBKDF2 } from '../../utils/GpwPBKDF2.js';
 
 test('GpwPBKDF2.generateIterations()', () => {
   expect(GpwPBKDF2.generateIterations()).toBeGreaterThanOrEqual(1000000);

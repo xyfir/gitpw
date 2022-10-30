@@ -1,4 +1,4 @@
-import { crypto } from './crypto';
+import { crypto } from './crypto.js';
 
 /**
  * Utility class for AES-256 GCM encryption

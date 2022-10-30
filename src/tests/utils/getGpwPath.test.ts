@@ -1,4 +1,4 @@
-import { getGpwPath } from '../../utils/getGpwPath';
+import { getGpwPath } from '../../utils/getGpwPath.js';
 
 test("getGpwPath('')", () => {
   expect(getGpwPath('')).toBe(`${process.cwd()}/.gitpw`);

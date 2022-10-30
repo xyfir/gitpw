@@ -1,11 +1,16 @@
-import type { IntrasessionCommand, Session, Command, Argv } from '../types';
-import { sessionCommand } from './sessionCommand';
-import { unlockCommand } from './unlockCommand';
-import { initCommand } from './initCommand';
-import { lockCommand } from './lockCommand';
-import { saveCommand } from './saveCommand';
-import { moveCommand } from './moveCommand';
-import { getSession } from '../utils/getSession';
+import { sessionCommand } from './sessionCommand.js';
+import { unlockCommand } from './unlockCommand.js';
+import { initCommand } from './initCommand.js';
+import { lockCommand } from './lockCommand.js';
+import { saveCommand } from './saveCommand.js';
+import { moveCommand } from './moveCommand.js';
+import { getSession } from '../utils/getSession.js';
+import type {
+  IntrasessionCommand,
+  Session,
+  Command,
+  Argv,
+} from '../types/index.js';
 
 /**
  * @see IntrasessionCommand

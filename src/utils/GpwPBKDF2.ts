@@ -1,5 +1,5 @@
-import type { GpwBase64String } from '../types';
-import { crypto } from './crypto';
+import type { GpwBase64String } from '../types/index.js';
+import { crypto } from './crypto.js';
 
 /**
  * Derive key from a user-supplied password using PBKDF2

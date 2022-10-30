@@ -1,7 +1,7 @@
-import { readdir, remove } from 'fs-extra';
-import type { Session } from '../types';
-import { saveCommand } from './saveCommand';
-import { getPath } from '../utils/getPath';
+import type { Session } from '../types/index.js';
+import { saveCommand } from './saveCommand.js';
+import { getPath } from '../utils/getPath.js';
+import fs from 'fs-extra';
 
 /**
  * Wipe the plaintext files after encrypting any changes.
@@ -9,10 +9,10 @@ import { getPath } from '../utils/getPath';
 export async function lockCommand(session: Session): Promise<void> {
   await saveCommand(session);
 
-  const entries = await readdir(getPath(''), { withFileTypes: true });
+  const entries = await fs.readdir(getPath(''), { withFileTypes: true });
   for (const entry of entries) {
     if (!entry.name.startsWith('.')) {
-      await remove(getPath(entry.name));
+      await fs.remove(getPath(entry.name));
     }
   }
 }

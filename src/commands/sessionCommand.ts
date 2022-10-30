@@ -1,6 +1,6 @@
-import type { Command, Argv } from '../types';
-import { getSession } from '../utils/getSession';
-import { runCommand } from './runCommand';
+import type { Command, Argv } from '../types/index.js';
+import { getSession } from '../utils/getSession.js';
+import { runCommand } from './runCommand.js';
 import inquirer from 'inquirer';
 
 /**

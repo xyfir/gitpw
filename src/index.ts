@@ -1,5 +1,5 @@
-import type { GpwKeyType, Argv } from './types';
-import { runCommand } from './commands/runCommand';
+import type { GpwKeyType, Argv } from './types/index.js';
+import { runCommand } from './commands/runCommand.js';
 import { hideBin } from 'yargs/helpers';
 import yargs from 'yargs';
 

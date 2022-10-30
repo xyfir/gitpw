@@ -1,5 +1,5 @@
-import { GpwXChaCha20Poly1305 } from '../../utils/GpwXChaCha20Poly1305';
-import { GpwPBKDF2 } from '../../utils/GpwPBKDF2';
+import { GpwXChaCha20Poly1305 } from '../../utils/GpwXChaCha20Poly1305.js';
+import { GpwPBKDF2 } from '../../utils/GpwPBKDF2.js';
 
 test('GpwXChaCha20Poly1305', async () => {
   const plaintext = 'Hello, World!';

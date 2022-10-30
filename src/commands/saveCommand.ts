@@ -1,18 +1,10 @@
-import type { GpwFileMap, GpwFile, Session } from '../types';
-import { getUnlockedFileMap } from '../utils/getUnlockedFileMap';
-import { getGpwPath } from '../utils/getGpwPath';
-import { GpwCrypto } from '../utils/GpwCrypto';
-import { getPath } from '../utils/getPath';
+import type { GpwFileMap, GpwFile, Session } from '../types/index.js';
+import { getUnlockedFileMap } from '../utils/getUnlockedFileMap.js';
+import { getGpwPath } from '../utils/getGpwPath.js';
+import { GpwCrypto } from '../utils/GpwCrypto.js';
+import { getPath } from '../utils/getPath.js';
 import { nanoid } from 'nanoid';
-import {
-  writeJSON,
-  readFile,
-  readJSON,
-  readdir,
-  Dirent,
-  remove,
-  stat,
-} from 'fs-extra';
+import fs from 'fs-extra';
 
 /**
  * Save any changes made to the plaintext files to the .gitpw directory after
@@ -22,7 +14,7 @@ import {
 export async function saveCommand(session: Session): Promise<void> {
   // Grab files in gitpw repo
   const rootDir = getPath('');
-  const entries = await readdir(rootDir, { withFileTypes: true });
+  const entries = await fs.readdir(rootDir, { withFileTypes: true });
   if (!entries.some((e) => e.isDirectory() && e.name == '.gitpw')) {
     throw Error('This is not a gitpw repository');
   }
@@ -32,12 +24,12 @@ export async function saveCommand(session: Session): Promise<void> {
   const newMap: GpwFileMap = {};
 
   // Recursively encrypt directories and build newMap
-  async function encryptDir(dirs: string, entries: Dirent[]): Promise<void> {
+  async function encryptDir(dirs: string, entries: fs.Dirent[]): Promise<void> {
     for (const entry of entries) {
       // Recursively encrypt subdirectories
       if (entry.isDirectory()) {
         const subdir = `${dirs}/${entry.name}`;
-        const subentries = await readdir(subdir, { withFileTypes: true });
+        const subentries = await fs.readdir(subdir, { withFileTypes: true });
         await encryptDir(subdir, subentries);
       }
       // Encrypt file
@@ -53,7 +45,7 @@ export async function saveCommand(session: Session): Promise<void> {
         const gpwFilepath = getGpwPath(`files/${id}.json`);
 
         // Get current potentially-untracked plaintext
-        const plaintext = await readFile(filepath, 'utf8');
+        const plaintext = await fs.readFile(filepath, 'utf8');
 
         // Save relative path in newMap
         // File already exists
@@ -61,7 +53,7 @@ export async function saveCommand(session: Session): Promise<void> {
           newMap[id] = oldMaps.locked[id];
 
           // Check if the file's content changed
-          const originalEncryptedFile: GpwFile = await readJSON(gpwFilepath);
+          const originalEncryptedFile: GpwFile = await fs.readJSON(gpwFilepath);
           const originalDecryptedContent = await Promise.all(
             originalEncryptedFile.content.map((c) =>
               GpwCrypto.decrypt(c, session.unlocked_keychain),
@@ -78,7 +70,7 @@ export async function saveCommand(session: Session): Promise<void> {
         }
 
         // Encrypt file
-        const { birthtime, mtime } = await stat(filepath);
+        const { birthtime, mtime } = await fs.stat(filepath);
         const encrypted = await GpwCrypto.encrypt(
           plaintext,
           session.unlocked_keychain,
@@ -90,7 +82,7 @@ export async function saveCommand(session: Session): Promise<void> {
           content: [encrypted],
           id,
         };
-        await writeJSON(gpwFilepath, file, { spaces: 2 });
+        await fs.writeJSON(gpwFilepath, file, { spaces: 2 });
       }
     }
   }
@@ -106,9 +98,9 @@ export async function saveCommand(session: Session): Promise<void> {
     if (newMap[id]) continue;
 
     const gpwFilepath = getGpwPath(`files/${id}.json`);
-    await remove(gpwFilepath);
+    await fs.remove(gpwFilepath);
   }
 
   // Write new file map
-  await writeJSON(getGpwPath('map.json'), newMap, { spaces: 2 });
+  await fs.writeJSON(getGpwPath('map.json'), newMap, { spaces: 2 });
 }

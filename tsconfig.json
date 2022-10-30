@@ -6,7 +6,7 @@
     "sourceMap": true,
     "rootDir": "./src",
     "target": "esnext",
-    "module": "commonjs",
+    "module": "NodeNext",
     "outDir": "./build",
     "strict": true
   },

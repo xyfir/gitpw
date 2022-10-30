@@ -1,5 +1,5 @@
-import { GpwPBKDF2 } from '../../utils/GpwPBKDF2';
-import { GpwAES } from '../../utils/GpwAES';
+import { GpwPBKDF2 } from '../../utils/GpwPBKDF2.js';
+import { GpwAES } from '../../utils/GpwAES.js';
 
 test('GpwAES', async () => {
   const plaintext = 'Hello, World!';
