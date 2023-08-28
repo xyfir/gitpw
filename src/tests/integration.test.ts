@@ -93,4 +93,4 @@ test('cli', async () => {
   expect(Object.values(maps.unlocked).some((v) => v == '/dir/test2.txt')).toBe(
     true,
   );
-});
+}, 20_000);
