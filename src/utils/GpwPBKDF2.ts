@@ -59,7 +59,7 @@ export class GpwPBKDF2 {
         name: 'AES-GCM',
       },
       true,
-      [],
+      ['encrypt', 'decrypt'],
     );
 
     const keyBuffer = await crypto.subtle.exportKey('raw', derivedKey);
